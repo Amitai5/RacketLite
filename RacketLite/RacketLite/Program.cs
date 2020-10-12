@@ -24,10 +24,6 @@ namespace RacketLite
                 expressionText = Console.ReadLine();
                 expressionText = Regex.Replace(expressionText, @"\s+", " ").Trim();
 
-                //Time how long each expression takes to define
-                Stopwatch stopwatch = new Stopwatch();
-
-                stopwatch.Start();
                 try
                 {
                     //Clear the local stack each time we call
@@ -48,13 +44,6 @@ namespace RacketLite
                     Console.WriteLine(exception.Message);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
-                stopwatch.Stop();
-
-                //Print out the time it takes
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"-Evaluation Time: {stopwatch.Elapsed}");
-                Console.ForegroundColor = ConsoleColor.White;
-
             } while (expressionText.ToLower().Trim() != "exit");
         }
     }
