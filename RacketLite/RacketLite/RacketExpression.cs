@@ -4,7 +4,6 @@ using RacketLite.Operands;
 using System.Collections.Generic;
 using System.Linq;
 using RacketLite.Exceptions;
-using System.Collections;
 using System;
 
 namespace RacketLite
@@ -33,6 +32,9 @@ namespace RacketLite
                 throw new OporatorNotFoundException("");
             }
 
+            //Check syntax of expression
+            CheckExpressionSyntax(expressionText);
+
             //Clean up the expressionText after getting inner expressions
             InnerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
             expressionText = expressionText.Replace("(", ")").Replace(")", "");
@@ -44,21 +46,31 @@ namespace RacketLite
 
             //Evaluate Racket oporator for expression
             RacketOporatorSignature = tokenStrings.Dequeue();
-            Oporator = ExpressionParser.ParseRacketOporator(RacketOporatorSignature);
+            (RacketOporator, bool) oporatorValue = ExpressionParser.ParseRacketOporator(RacketOporatorSignature);
+            Oporator = oporatorValue.Item1;
+
+            //Check if oporator is a operand itself
+            if (oporatorValue.Item2)
+            {
+                tokenStrings.Enqueue(RacketOporatorSignature);
+            }
 
             //Special Check for a Define Oporator
-            if (Oporator != null && Oporator.Type == RacketOporatorType.Define && InnerExpressions.Count > 0)
+            if (Oporator != null && Oporator.Type == RacketOporatorType.Define && InnerExpressions.Count == 2)
             {
                 string firstExpressionKey = $"{ParsingRules.ExpressionPerface}0";
                 RacketExpression firstExpression = InnerExpressions[firstExpressionKey];
                 if (firstExpression.Oporator == null)
                 {
+                    //Add a single null to differentiate between definition of var and function
+                    LocalVarNames.Add(null);
+
                     //Add the parameters to the new user function
-                    do
+                    while (firstExpression.Operands.Count > 0)
                     {
                         string paramName = firstExpression.Operands.Dequeue().GetUnknownValue().ToString();
                         LocalVarNames.Add(paramName);
-                    } while (firstExpression.Operands.Count > 0);
+                    }
 
                     tokenStrings.Dequeue(); //Remove the function header from the tokens
                     InnerExpressions.Remove(firstExpressionKey);
@@ -67,12 +79,22 @@ namespace RacketLite
                 else
                 {
                     //Trying to define the same function twice
-                    //TODO: MAKE ERROR
+                    throw new DefinitionOverrideException(firstExpression.RacketOporatorSignature);
                 }
             }
 
             //Create opernds
             Operands.Enqueue(ExpressionParser.ParseTokensAsOperands(tokenStrings, InnerExpressions));
+
+            //Check if user typed in a constant value
+            if (Oporator == null && Operands.Count == 1)
+            {
+                RacketOperandType operandType = Operands.Peek().Type;
+                if (operandType != RacketOperandType.Unknown && operandType != RacketOperandType.Expression)
+                {
+                    Oporator = new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any);
+                }
+            }
         }
 
         private DynamicOperand EvaluateExpression(OperandQueue operands)
@@ -80,13 +102,14 @@ namespace RacketLite
             switch (Oporator.Type)
             {
                 //Special Oporators
-                case RacketOporatorType.NOP:
-                    return StaticsManager.VariableMap[RacketOporatorSignature];
+                case RacketOporatorType.ReturnVariable:
+                case RacketOporatorType.ReturnConstant:
+                    return operands.Dequeue();
                 case RacketOporatorType.Define:
                     if (LocalVarNames.Count > 0)
                     {
-                        string newOpCode = operands.Dequeue().GetStringValue();
-                        UserDefinedOporator newOporator = new UserDefinedOporator(newOpCode, LocalVarNames.Count);
+                        string newOpCode = operands.Dequeue(1).GetStringValue(); //throw out the extra null
+                        UserDefinedOporator newOporator = new UserDefinedOporator(newOpCode, LocalVarNames.Count - 1);
                         RacketExpression expression = ((RacketExpression)operands.Dequeue().OperableValue);
                         StaticsManager.userDefinedOporators.Add(newOpCode, newOporator);
 
@@ -99,22 +122,93 @@ namespace RacketLite
                         string varName = varNameOperand.GetUnknownValue().ToString();
                         if (!StaticsManager.VariableMap.ContainsKey(varName))
                         {
-                            StaticsManager.VariableMap.Add(varName, operands.Dequeue());
+                            DynamicOperand varValue = operands.Dequeue();
+                            if (varValue.Type == RacketOperandType.Expression)
+                            {
+                                StaticsManager.VariableMap.Add(varName, varValue.GetExpressionValue());
+                            }
+                            else
+                            {
+                                StaticsManager.VariableMap.Add(varName, varValue);
+                            }
                         }
                     }
                     return null;
                 case RacketOporatorType.UserDefinedFunction:
                     return StaticsManager.UserDefinedExpressions[RacketOporatorSignature].Evaluate(operands);
 
-                //Numeric Oporators
-                case RacketOporatorType.Multiply:
-                    return operands.Dequeue() * operands.Dequeue();
-                case RacketOporatorType.Divide:
-                    return operands.Dequeue() / operands.Dequeue();
+                #region Numeric Oporators
+                case RacketOporatorType.Abs:
+                    double absValue = Math.Abs(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(absValue);
                 case RacketOporatorType.Add:
                     return operands.Dequeue() + operands.Dequeue();
+                case RacketOporatorType.AddOne:
+                    return new NumericOperand(operands.Dequeue().GetDoubleValue() + 1);
+                case RacketOporatorType.ArcCosine:
+                    double arcCosine = Math.Acos(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(arcCosine);
+                case RacketOporatorType.ArcSine:
+                    double arcSine = Math.Asin(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(arcSine);
+                case RacketOporatorType.ArcTangent:
+                    double arcTangent = Math.Atan(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(arcTangent);
+                case RacketOporatorType.Ceiling:
+                    double ceiling = Math.Ceiling(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(ceiling);
+                case RacketOporatorType.Cosine:
+                    double cosine = Math.Cos(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(cosine);
+                case RacketOporatorType.Divide:
+                    return operands.Dequeue() / operands.Dequeue();
+                case RacketOporatorType.ExponentialPower:
+                    double exp = Math.Exp(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(exp);
+                case RacketOporatorType.Exponent:
+                    double exponent = Math.Pow(operands.Dequeue().GetDoubleValue(), operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(exponent);
+                case RacketOporatorType.Floor:
+                    double floor = Math.Floor(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(floor);
+                case RacketOporatorType.HyperbolicCosine:
+                    double hypCosine = Math.Cosh(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(hypCosine);
+                case RacketOporatorType.HyperbolicSign:
+                    double hypSine = Math.Sinh(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(hypSine);
+                case RacketOporatorType.HyperbolicTangent:
+                    double hypTangent = Math.Tanh(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(hypTangent);
+                case RacketOporatorType.LogBaseE:
+                    double logE = Math.Log(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(logE);
+                case RacketOporatorType.Modulo:
+                case RacketOporatorType.Remainder:
+                    double modulo = operands.Dequeue().GetDoubleValue() % operands.Dequeue().GetDoubleValue();
+                    return new NumericOperand(modulo);
+                case RacketOporatorType.Multiply:
+                    return operands.Dequeue() * operands.Dequeue();
+                case RacketOporatorType.Random:
+                    int randValue = new Random().Next((int)operands.Dequeue().GetDoubleValue()); //TODO: NATURALS
+                    return new NumericOperand(randValue);
+                case RacketOporatorType.Round:
+                    double roundedValue = Math.Round(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(roundedValue);
+                case RacketOporatorType.Sign:
+                    double signValue = Math.Sign(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(signValue);
+                case RacketOporatorType.Square:
+                    double squaredValue = Math.Pow(operands.Dequeue().GetDoubleValue(), 2);
+                    return new NumericOperand(squaredValue);
+                case RacketOporatorType.SquareRoot:
+                    double squareRootValue = Math.Sqrt(operands.Dequeue().GetDoubleValue());
+                    return new NumericOperand(squareRootValue);
                 case RacketOporatorType.Subtract:
                     return operands.Dequeue() - operands.Dequeue();
+                case RacketOporatorType.SubtractOne:
+                    return new NumericOperand(operands.Dequeue().GetDoubleValue() - 1);
+                #endregion Numeric Oporators
 
                 //Numeric Comparisons
                 case RacketOporatorType.Equal:
@@ -152,6 +246,8 @@ namespace RacketLite
                         return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
                     }
                     return operands.Dequeue() >= operands.Dequeue();
+                case RacketOporatorType.CheckZero:
+                    return new BooleanOperand(operands.Dequeue().GetDoubleValue() == 0);
 
                 //Boolean Oporators
                 case RacketOporatorType.Or:
@@ -268,6 +364,25 @@ namespace RacketLite
             }
         }
 
+        private void CheckExpressionSyntax(string expressionText)
+        {
+            //Check parenthesis balance
+            int openParenthesis = expressionText.Count(x => x == '(');
+            int closeParenthesis = expressionText.Count(x => x == ')');
+            if (openParenthesis != closeParenthesis)
+            {
+                bool missingClose = openParenthesis > closeParenthesis;
+                throw new UnexpectedParenthesisException(missingClose);
+            }
+
+            //Check for balanced quotes
+            int quoteCount = expressionText.Count(x => x == '\"');
+            if (quoteCount % 2 != 0)
+            {
+                throw new UnexpectedQuoteException();
+            }
+        }
+
         protected static void SetUserDefinedOperands(RacketExpression racketExpression, Dictionary<string, DynamicOperand> localVarValues)
         {
             if (racketExpression.UDEOperands == null || racketExpression.UDEOperands.Count == 0)
@@ -290,7 +405,8 @@ namespace RacketLite
 
         public override int CompareTo(object obj)
         {
-            throw new Exception("You should never be trying to compare expressions");
+            DynamicOperand thisValue = Evaluate();
+            return thisValue.CompareTo(obj);
         }
     }
 }

@@ -125,8 +125,20 @@ namespace RacketLite.Operands
                 throw new ArgumentNullException("CompareTo on 'DynamicOperand' does not support null.");
             }
 
-            //Check for same type
+            //Evaluate the operand if it is an expression
             DynamicOperand otherDynOperand = (DynamicOperand)obj;
+            if(otherDynOperand.Type == RacketOperandType.Expression)
+            {
+                otherDynOperand = otherDynOperand.GetExpressionValue();
+            }
+
+            //Evaluate this if it is an expression
+            if (Type == RacketOperandType.Expression)
+            {
+                OperableValue = GetExpressionValue().OperableValue;
+            }
+
+            //Check for same type
             if (otherDynOperand.Type != OperableValue.Type)
             {
                 throw new TypeConversionException(OperableValue.Type, otherDynOperand.Type);
@@ -138,9 +150,10 @@ namespace RacketLite.Operands
         {
             return Type switch
             {
-                RacketOperandType.Number => ((NumericOperand)OperableValue).OperandValue.ToString(),
-                RacketOperandType.Boolean => ((BooleanOperand)OperableValue).ToString(),
-                RacketOperandType.String => ((StringOperand)OperableValue).OperandValue,
+                RacketOperandType.Expression => GetExpressionValue().ToString(),
+                RacketOperandType.Boolean => GetBooleanValue().ToString(),
+                RacketOperandType.Number => GetDoubleValue().ToString(),
+                RacketOperandType.String => GetStringValue().ToString(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -153,8 +166,20 @@ namespace RacketLite.Operands
                 return false;
             }
 
-            //Check for same type
+            //Evaluate the operand if it is an expression
             DynamicOperand otherDynOperand = (DynamicOperand)obj;
+            if (otherDynOperand.Type == RacketOperandType.Expression)
+            {
+                otherDynOperand = otherDynOperand.GetExpressionValue();
+            }
+
+            //Evaluate this if it is an expression
+            if (Type == RacketOperandType.Expression)
+            {
+                OperableValue = GetExpressionValue().OperableValue;
+            }
+
+            //Check for same type
             if (otherDynOperand.Type != OperableValue.Type)
             {
                 throw new TypeConversionException(OperableValue.Type, otherDynOperand.Type);
@@ -229,7 +254,7 @@ namespace RacketLite.Operands
             }
         }
 
-        private DynamicOperand GetExpressionValue()
+        public DynamicOperand GetExpressionValue()
         {
             if (Type != RacketOperandType.Expression)
             {

@@ -54,21 +54,25 @@ namespace RacketLite.Parsing
             return operands.ToArray();
         }
 
-        public static RacketOporator ParseRacketOporator(string racketOporatorName)
+        public static (RacketOporator, bool) ParseRacketOporator(string racketOporatorName)
         {
             if (OporatorDefinitions.RacketOporatorMap.ContainsKey(racketOporatorName))
             {
-                return OporatorDefinitions.RacketOporatorMap[racketOporatorName];
+                return (OporatorDefinitions.RacketOporatorMap[racketOporatorName], false);
             }
             else if (StaticsManager.UserDefinedExpressions.ContainsKey(racketOporatorName))
             {
-                return StaticsManager.userDefinedOporators[racketOporatorName];
+                return (StaticsManager.userDefinedOporators[racketOporatorName], false);
             }
             else if (StaticsManager.VariableMap.ContainsKey(racketOporatorName))
             {
-                return new RacketOporator(RacketOporatorType.NOP, 1, 1, RacketOperandType.Variable);
+                return (new RacketOporator(RacketOporatorType.ReturnVariable, 1, 1, RacketOperandType.Any), true);
             }
-            return null;
+            else if (StaticsManager.RacketConstants.ContainsKey(racketOporatorName))
+            {
+                return (new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any), true);
+            }
+            return (null, false);
         }
 
         public static Dictionary<string, RacketExpression> ParseInnerExpressions(ref string expressionText)

@@ -2,32 +2,62 @@
 {
     public enum RacketOporatorType
     {
-        NOP = 0,
+        //Special Oporators
+        NOP,
         If,
         Define,
         ReturnVariable,
-        FunctionHeader,
-        CreateFunction,
+        ReturnConstant,
         UserDefinedFunction,
 
-        Multiply = 16,
-        Divide,
+        //Numeric Oporators
+        Abs,
         Add,
+        AddOne,
+        ArcCosine,
+        ArcSine,
+        ArcTangent,
+        Ceiling,
+        Cosine,
+        Divide,
+        ExponentialPower,
+        Exponent,
+        Floor,
+        HyperbolicSign,
+        HyperbolicCosine,
+        HyperbolicTangent,
+        LogBaseE,
+        Modulo,
+        Multiply,
+        Random,
+        Remainder,
+        Round,
+        Sign,
+        Square,
+        SquareRoot,
         Subtract,
+        SubtractOne,
+
+        //Numeric Comparisons
         Equal,
         LessThan,
         GreaterThan,
         LessThanEqualTo,
         GreaterThanEqualTo,
+        CheckZero,
 
-        Or = 32,
+        //Boolean Oporators
+        Or,
         And,
         Not,
 
-        StringEqual = 64,
+        //String Oporators
+        StringLength,
         StringAppend,
         Substring,
-        StringLength,
+
+        //String Comparisons
+        StringEqual,
         StringLessThan,
         StringGreaterThan,
         StringLessThanEqualTo,
