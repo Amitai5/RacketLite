@@ -20,6 +20,7 @@
         ArcTangent,
         Ceiling,
         Cosine,
+        CurrentSeconds,
         Divide,
         ExponentialPower,
         Exponent,

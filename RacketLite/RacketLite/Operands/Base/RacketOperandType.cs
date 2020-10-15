@@ -7,11 +7,13 @@ namespace RacketLite.Operands
     public enum RacketOperandType
     {
         Any = -1,
-        Unknown,
-        String,
-        Number,
-        Boolean,
-        Variable,
-        Expression,
+        Unknown = 0,
+
+        Number = 1,
+        Natural = 2,
+        String = 3,
+        Boolean = 4,
+        Variable = 5,
+        Expression = 6,
     }
 }

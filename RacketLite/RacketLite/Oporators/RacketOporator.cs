@@ -24,7 +24,7 @@ namespace RacketLite.Oporators
         public bool IsValidExpression(OperandQueue operandQueue)
         {
             //If we see NOP, return true
-            if(Type == RacketOporatorType.NOP || Type == RacketOporatorType.ReturnExpression)
+            if (Type == RacketOporatorType.NOP || Type == RacketOporatorType.ReturnExpression)
             {
                 return true;
             }
@@ -37,7 +37,7 @@ namespace RacketLite.Oporators
             RacketOperandType[] operandTypes = operandQueue.OperandTypes;
 
             //Mask the extra operand for define
-            if(Type == RacketOporatorType.Define)
+            if (Type == RacketOporatorType.Define)
             {
                 RacketOperandType[] tempOperandArray = operandTypes;
                 operandTypes = new RacketOperandType[operandTypes.Length - 1];
@@ -54,8 +54,8 @@ namespace RacketLite.Oporators
                 throw new ArityMismatchException(Type, OperandMax.Value, operandTypes.Length); //TODO: Write correct function name when user defines it
             }
 
-            //Check for UserDefinedOporator or Define
-            if(Type == RacketOporatorType.UserDefinedFunction || Type == RacketOporatorType.Define)
+            //Cannot tell if UDF are not right type at "compile time"
+            if (Type == RacketOporatorType.UserDefinedFunction || Type == RacketOporatorType.Define)
             {
                 return true;
             }
@@ -64,32 +64,42 @@ namespace RacketLite.Oporators
             for (int i = 0; i < operandTypes.Length; i++)
             {
                 //Check for expressions
-                if(operandTypes[i] == RacketOperandType.Expression)
+                if (operandTypes[i] == RacketOperandType.Expression)
                 {
                     continue; //Cannot tell if expressions are not right type at "compile time"
                 }
 
                 //Check for unknowns
-                if(operandTypes[i] == RacketOperandType.Unknown)
+                if (operandTypes[i] == RacketOperandType.Unknown)
                 {
                     string varName = operandQueue.Dequeue(i + 1).OperableValue.ToString();
                     throw new VariableNotFoundException(varName);
                 }
 
-                //Check if we run out of operand types
+                //Parse correct operand type
+                int correctOperandType = (int)OperandTypes[^1];
                 if (i < OperandTypes.Length)
                 {
-                    if (operandTypes[i] != OperandTypes[i] && OperandTypes[i] != RacketOperandType.Any)
-                    {
-                        throw new TypeConversionException(operandTypes[i], OperandTypes[i]);
-                    }
+                    correctOperandType = (int)OperandTypes[i];
                 }
-                else
+
+                //Check if the expression accepts any
+                if (correctOperandType < 0)
                 {
-                    if (operandTypes[i] != OperandTypes[^1] && OperandTypes[^1] != RacketOperandType.Any)
-                    {
-                        throw new TypeConversionException(operandTypes[i], OperandTypes[^1]);
-                    }
+                    continue;
+                }
+
+                //Conversion between Number and Natural can only be judged run-time
+                if((operandTypes[i] == RacketOperandType.Natural && correctOperandType == (int)RacketOperandType.Number)
+                    || (operandTypes[i] == RacketOperandType.Number && correctOperandType == (int)RacketOperandType.Natural))
+                {
+                    continue;
+                }
+
+                //Check the operand type
+                if ((int)operandTypes[i] != correctOperandType)
+                {
+                    throw new TypeConversionException(operandTypes[i], OperandTypes[i]);
                 }
             }
             return true;

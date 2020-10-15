@@ -30,7 +30,12 @@ namespace RacketLite.Operands
             return new DynamicOperand(stringOperand);
         }
 
-        public static implicit operator DynamicOperand(NumericOperand numericOperand)
+        public static implicit operator DynamicOperand(NaturalOperand naturalOperand)
+        {
+            return new DynamicOperand(naturalOperand);
+        }
+
+        public static implicit operator DynamicOperand(NumberOperand numericOperand)
         {
             return new DynamicOperand(numericOperand);
         }
@@ -48,22 +53,22 @@ namespace RacketLite.Operands
         public static DynamicOperand operator *(DynamicOperand dynamicOperand, DynamicOperand otherOperand)
         {
             double result = dynamicOperand.GetDoubleValue() * otherOperand.GetDoubleValue();
-            return new DynamicOperand(new NumericOperand(result));
+            return new DynamicOperand(new NumberOperand(result));
         }
         public static DynamicOperand operator /(DynamicOperand dynamicOperand, DynamicOperand otherOperand)
         {
             double result = dynamicOperand.GetDoubleValue() / otherOperand.GetDoubleValue();
-            return new DynamicOperand(new NumericOperand(result));
+            return new DynamicOperand(new NumberOperand(result));
         }
         public static DynamicOperand operator +(DynamicOperand dynamicOperand, DynamicOperand otherOperand)
         {
             double result = dynamicOperand.GetDoubleValue() + otherOperand.GetDoubleValue();
-            return new DynamicOperand(new NumericOperand(result));
+            return new DynamicOperand(new NumberOperand(result));
         }
         public static DynamicOperand operator -(DynamicOperand dynamicOperand, DynamicOperand otherOperand)
         {
             double result = dynamicOperand.GetDoubleValue() - otherOperand.GetDoubleValue();
-            return new DynamicOperand(new NumericOperand(result));
+            return new DynamicOperand(new NumberOperand(result));
         }
 
         //Boolean Oporators
@@ -154,6 +159,7 @@ namespace RacketLite.Operands
                 RacketOperandType.Boolean => GetBooleanValue().ToString(),
                 RacketOperandType.Number => GetDoubleValue().ToString(),
                 RacketOperandType.String => GetStringValue().ToString(),
+                RacketOperandType.Natural => GetLongValue().ToString(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -219,7 +225,9 @@ namespace RacketLite.Operands
             switch (Type)
             {
                 case RacketOperandType.Number:
-                    return ((NumericOperand)OperableValue).OperandValue;
+                    return ((NumberOperand)OperableValue).OperandValue;
+                case RacketOperandType.Natural:
+                    return ((NaturalOperand)OperableValue).OperandValue;
 
                 case RacketOperandType.Expression:
                     DynamicOperand expressionValue = GetExpressionValue();
@@ -227,10 +235,34 @@ namespace RacketLite.Operands
                     {
                         return expressionValue.GetDoubleValue();
                     }
+                    else if(expressionValue.Type == RacketOperandType.Natural)
+                    {
+                        return expressionValue.GetLongValue();
+                    }
                     throw new TypeConversionException(expressionValue.Type, RacketOperandType.Number);
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.Number);
+            }
+        }
+
+        public long GetLongValue()
+        {
+            switch (Type)
+            {
+                case RacketOperandType.Natural:
+                    return ((NaturalOperand)OperableValue).OperandValue;
+
+                case RacketOperandType.Expression:
+                    DynamicOperand expressionValue = GetExpressionValue();
+                    if (expressionValue.Type == RacketOperandType.Natural)
+                    {
+                        return expressionValue.GetLongValue();
+                    }
+                    throw new TypeConversionException(expressionValue.Type, RacketOperandType.Natural);
+
+                default:
+                    throw new TypeConversionException(Type, RacketOperandType.Natural);
             }
         }
 

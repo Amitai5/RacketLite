@@ -113,7 +113,7 @@ namespace RacketLite
         {
             switch (Oporator.Type)
             {
-                //Special Oporators
+                #region Special Oporators
                 case RacketOporatorType.ReturnVariable:
                 case RacketOporatorType.ReturnConstant:
                     return operands.Dequeue();
@@ -152,81 +152,88 @@ namespace RacketLite
                     return null;
                 case RacketOporatorType.UserDefinedFunction:
                     return StaticsManager.UserDefinedExpressions[RacketOporatorSignature].Evaluate(operands);
+                #endregion Special Oporators
 
                 #region Numeric Oporators
                 case RacketOporatorType.Abs:
                     double absValue = Math.Abs(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(absValue);
+                    return new NumberOperand(absValue);
                 case RacketOporatorType.Add:
                     return operands.Dequeue() + operands.Dequeue();
                 case RacketOporatorType.AddOne:
-                    return new NumericOperand(operands.Dequeue().GetDoubleValue() + 1);
+                    return new NumberOperand(operands.Dequeue().GetDoubleValue() + 1);
                 case RacketOporatorType.ArcCosine:
                     double arcCosine = Math.Acos(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(arcCosine);
+                    return new NumberOperand(arcCosine);
                 case RacketOporatorType.ArcSine:
                     double arcSine = Math.Asin(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(arcSine);
+                    return new NumberOperand(arcSine);
                 case RacketOporatorType.ArcTangent:
                     double arcTangent = Math.Atan(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(arcTangent);
+                    return new NumberOperand(arcTangent);
                 case RacketOporatorType.Ceiling:
-                    double ceiling = Math.Ceiling(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(ceiling);
+                    long ceiling = Convert.ToInt64(Math.Ceiling(operands.Dequeue().GetDoubleValue()));
+                    return new NaturalOperand(ceiling);
                 case RacketOporatorType.Cosine:
                     double cosine = Math.Cos(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(cosine);
+                    return new NumberOperand(cosine);
+                case RacketOporatorType.CurrentSeconds:
+                    double currentSecondsDouble = Math.Round((DateTime.UtcNow - DateTime.MinValue).TotalSeconds);
+                    long currentSeconds = Convert.ToInt64(currentSecondsDouble);
+                    return new NaturalOperand(currentSeconds);
                 case RacketOporatorType.Divide:
                     return operands.Dequeue() / operands.Dequeue();
                 case RacketOporatorType.ExponentialPower:
                     double exp = Math.Exp(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(exp);
+                    return new NumberOperand(exp);
                 case RacketOporatorType.Exponent:
                     double exponent = Math.Pow(operands.Dequeue().GetDoubleValue(), operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(exponent);
+                    return new NumberOperand(exponent);
                 case RacketOporatorType.Floor:
-                    double floor = Math.Floor(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(floor);
+                    long floor = Convert.ToInt64(Math.Floor(operands.Dequeue().GetDoubleValue()));
+                    return new NaturalOperand(floor);
                 case RacketOporatorType.HyperbolicCosine:
                     double hypCosine = Math.Cosh(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(hypCosine);
+                    return new NumberOperand(hypCosine);
                 case RacketOporatorType.HyperbolicSign:
                     double hypSine = Math.Sinh(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(hypSine);
+                    return new NumberOperand(hypSine);
                 case RacketOporatorType.HyperbolicTangent:
                     double hypTangent = Math.Tanh(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(hypTangent);
+                    return new NumberOperand(hypTangent);
                 case RacketOporatorType.LogBaseE:
                     double logE = Math.Log(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(logE);
+                    return new NumberOperand(logE);
                 case RacketOporatorType.Modulo:
                 case RacketOporatorType.Remainder:
-                    double modulo = operands.Dequeue().GetDoubleValue() % operands.Dequeue().GetDoubleValue();
-                    return new NumericOperand(modulo);
+                    long modulo = operands.Dequeue().GetLongValue() % operands.Dequeue().GetLongValue();
+                    return new NaturalOperand(modulo);
                 case RacketOporatorType.Multiply:
                     return operands.Dequeue() * operands.Dequeue();
                 case RacketOporatorType.Random:
-                    int randValue = new Random().Next((int)operands.Dequeue().GetDoubleValue()); //TODO: NATURALS
-                    return new NumericOperand(randValue);
+                    double randValueDouble = new Random().NextDouble();
+                    double roundedRandValue = Math.Round(randValueDouble * operands.Dequeue().GetLongValue());
+                    long randValue = Convert.ToInt64(roundedRandValue);
+                    return new NaturalOperand(randValue);
                 case RacketOporatorType.Round:
-                    double roundedValue = Math.Round(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(roundedValue);
+                    long roundedValue = Convert.ToInt64(Math.Round(operands.Dequeue().GetDoubleValue()));
+                    return new NaturalOperand(roundedValue);
                 case RacketOporatorType.Sign:
                     double signValue = Math.Sign(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(signValue);
+                    return new NumberOperand(signValue);
                 case RacketOporatorType.Square:
                     double squaredValue = Math.Pow(operands.Dequeue().GetDoubleValue(), 2);
-                    return new NumericOperand(squaredValue);
+                    return new NumberOperand(squaredValue);
                 case RacketOporatorType.SquareRoot:
                     double squareRootValue = Math.Sqrt(operands.Dequeue().GetDoubleValue());
-                    return new NumericOperand(squareRootValue);
+                    return new NumberOperand(squareRootValue);
                 case RacketOporatorType.Subtract:
                     return operands.Dequeue() - operands.Dequeue();
                 case RacketOporatorType.SubtractOne:
-                    return new NumericOperand(operands.Dequeue().GetDoubleValue() - 1);
+                    return new NumberOperand(operands.Dequeue().GetDoubleValue() - 1);
                 #endregion Numeric Oporators
 
-                //Numeric Comparisons
+                #region Numeric Comparisons
                 case RacketOporatorType.Equal:
                     bool result = operands.Dequeue().Equals(operands.Dequeue());
                     return new DynamicOperand(new BooleanOperand(result));
@@ -272,8 +279,9 @@ namespace RacketLite
                     return !operands.Dequeue();
                 case RacketOporatorType.And:
                     return operands.Dequeue() & operands.Dequeue();
+                #endregion Numeric Comparisons
 
-                //String Oporators
+                #region String Oporators
                 case RacketOporatorType.StringAppend:
                     string tempString = operands.Dequeue().GetStringValue() + operands.Dequeue().GetStringValue();
                     return new DynamicOperand(new StringOperand(tempString));
@@ -288,8 +296,9 @@ namespace RacketLite
                         stringPart = stringPart.Substring((int)operands.Dequeue().GetDoubleValue(), (int)operands.Dequeue().GetDoubleValue());
                     }
                     return new DynamicOperand(new StringOperand(stringPart));
+                #endregion String Oporators
 
-                //String Comparisons
+                #region String Comparisons
                 case RacketOporatorType.StringEqual:
                     bool stringResult = operands.Dequeue().Equals(operands.Dequeue());
                     return new DynamicOperand(new BooleanOperand(stringResult));
@@ -325,6 +334,7 @@ namespace RacketLite
                         return (val1 >= val2).GetBooleanValue() == true ? val1 : val2;
                     }
                     return operands.Dequeue() >= operands.Dequeue();
+                #endregion String Comparisons
 
                 //In case it does not yet defined, throw an error
                 default:

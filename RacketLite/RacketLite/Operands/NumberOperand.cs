@@ -2,11 +2,11 @@
 
 namespace RacketLite.Operands
 {
-    public class NumericOperand : IOperable
+    public class NumberOperand : IOperable
     {
         public double OperandValue;
 
-        public NumericOperand(double value)
+        public NumberOperand(double value)
             : base(RacketOperandType.Number)
         {
             OperandValue = value;
@@ -16,12 +16,12 @@ namespace RacketLite.Operands
 
         public override bool Equals(object obj)
         {
-            return OperandValue == ((NumericOperand)obj).OperandValue;
+            return OperandValue == ((NumberOperand)obj).OperandValue;
         }
 
         public override int CompareTo(object obj)
         {
-            double otherValue = ((NumericOperand)obj).OperandValue;
+            double otherValue = ((NumberOperand)obj).OperandValue;
             return OperandValue.CompareTo(otherValue);
         }
 

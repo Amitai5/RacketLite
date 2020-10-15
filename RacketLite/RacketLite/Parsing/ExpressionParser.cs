@@ -16,9 +16,15 @@ namespace RacketLite.Parsing
             foreach (string token in tokens)
             {
                 //Try convert to number
-                if (double.TryParse(token, out double numberValue))
+                if (int.TryParse(token, out int naturalValue))
                 {
-                    operands.Enqueue(new NumericOperand(numberValue));
+                    operands.Enqueue(new NaturalOperand(naturalValue));
+                }
+
+                //Try convert to number
+                else if (double.TryParse(token, out double numberValue))
+                {
+                    operands.Enqueue(new NumberOperand(numberValue));
                 }
 
                 //Try convert to string
