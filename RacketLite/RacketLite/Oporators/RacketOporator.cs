@@ -24,7 +24,7 @@ namespace RacketLite.Oporators
         public bool IsValidExpression(OperandQueue operandQueue)
         {
             //If we see NOP, return true
-            if(Type == RacketOporatorType.NOP)
+            if(Type == RacketOporatorType.NOP || Type == RacketOporatorType.ReturnExpression)
             {
                 return true;
             }
@@ -35,6 +35,14 @@ namespace RacketLite.Oporators
                 operandQueue.ValidateOperandQueue();
             }
             RacketOperandType[] operandTypes = operandQueue.OperandTypes;
+
+            //Mask the extra operand for define
+            if(Type == RacketOporatorType.Define)
+            {
+                RacketOperandType[] tempOperandArray = operandTypes;
+                operandTypes = new RacketOperandType[operandTypes.Length - 1];
+                Array.Copy(tempOperandArray, 1, operandTypes, 0, operandTypes.Length);
+            }
 
             //Check operand bounds
             if (operandTypes.Length < OperandMin)

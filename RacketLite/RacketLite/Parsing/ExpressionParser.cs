@@ -72,7 +72,7 @@ namespace RacketLite.Parsing
             {
                 return (new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any), true);
             }
-            return (null, false);
+            return (null, true);
         }
 
         public static Dictionary<string, RacketExpression> ParseInnerExpressions(ref string expressionText)

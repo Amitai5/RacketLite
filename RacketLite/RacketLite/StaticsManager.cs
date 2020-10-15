@@ -25,7 +25,8 @@ namespace RacketLite
             { "#false", new BooleanOperand(false) },
 
             //Numeric Constants
-            { "PI", new NumericOperand(Math.PI) },
+            { "e", new NumericOperand(Math.E) },
+            { "pi", new NumericOperand(Math.PI) },
         };
     }
 }

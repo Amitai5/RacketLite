@@ -21,7 +21,7 @@ namespace RacketLite
         public DynamicOperand Evaluate(OperandQueue functionParamQueue)
         {
             //Create var name/value map
-            for (int i = 1; i < LocalVarNames.Count; i++)
+            for (int i = 0; i < LocalVarNames.Count; i++)
             {
                 DynamicOperand varValue = functionParamQueue.Dequeue();
                 if (!StaticsManager.LocalStack.ContainsKey(LocalVarNames[i]))

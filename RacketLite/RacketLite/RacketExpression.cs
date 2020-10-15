@@ -37,11 +37,11 @@ namespace RacketLite
 
             //Clean up the expressionText after getting inner expressions
             InnerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
-            expressionText = expressionText.Replace("(", ")").Replace(")", "");
-            expressionText = expressionText.Replace("  ", " ").Trim();
+            string parsedExpressionText = expressionText.Replace("(", ")").Replace(")", "");
+            parsedExpressionText = parsedExpressionText.Replace("  ", " ").Trim();
 
             //Create tokens
-            Queue<string> tokenStrings = new Queue<string>(expressionText.Split(' ').ToList());
+            Queue<string> tokenStrings = new Queue<string>(parsedExpressionText.Split(' ').ToList());
             Operands = new OperandQueue(tokenStrings.Count);
 
             //Evaluate Racket oporator for expression
@@ -58,15 +58,15 @@ namespace RacketLite
             //Special Check for a Define Oporator
             if (Oporator != null && Oporator.Type == RacketOporatorType.Define && InnerExpressions.Count == 2)
             {
+                //Ensure that expression is defined as a function
+                Operands.Enqueue(new BooleanOperand(true));
+
                 string firstExpressionKey = $"{ParsingRules.ExpressionPerface}0";
                 RacketExpression firstExpression = InnerExpressions[firstExpressionKey];
                 if (firstExpression.Oporator == null)
                 {
-                    //Add a single null to differentiate between definition of var and function
-                    LocalVarNames.Add(null);
-
-                    //Add the parameters to the new user function
-                    while (firstExpression.Operands.Count > 0)
+                    //Add the parameters to the new user function (skip the last one)
+                    while (firstExpression.Operands.Count > 1)
                     {
                         string paramName = firstExpression.Operands.Dequeue().GetUnknownValue().ToString();
                         LocalVarNames.Add(paramName);
@@ -82,11 +82,16 @@ namespace RacketLite
                     throw new DefinitionOverrideException(firstExpression.RacketOporatorSignature);
                 }
             }
+            else if(Oporator != null && Oporator.Type == RacketOporatorType.Define)
+            {
+                //All other cases, define expression as variable
+                Operands.Enqueue(new BooleanOperand(false));
+            }
 
             //Create opernds
             Operands.Enqueue(ExpressionParser.ParseTokensAsOperands(tokenStrings, InnerExpressions));
 
-            //Check if user typed in a constant value
+            //Check if user typed in a constant number or string
             if (Oporator == null && Operands.Count == 1)
             {
                 RacketOperandType operandType = Operands.Peek().Type;
@@ -94,6 +99,13 @@ namespace RacketLite
                 {
                     Oporator = new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any);
                 }
+            }
+
+            //Ensure all expressions contain at least one set of parenthesis
+            else if (Oporator != null && !expressionText.Contains('(')) //TODO: Make sure that return variable does not hit this
+            {
+                Oporator = new RacketOporator(RacketOporatorType.ReturnExpression, 1, 1, RacketOperandType.Any);
+                Operands.Enqueue(new StringOperand(RacketOporatorSignature));
             }
         }
 
@@ -105,11 +117,15 @@ namespace RacketLite
                 case RacketOporatorType.ReturnVariable:
                 case RacketOporatorType.ReturnConstant:
                     return operands.Dequeue();
+                case RacketOporatorType.ReturnExpression:
+                    string procedureName = operands.Dequeue(operands.Count).GetStringValue();
+                    return new StringOperand($"#<procedure:{procedureName}>");
                 case RacketOporatorType.Define:
-                    if (LocalVarNames.Count > 0)
+                    bool isUDF = operands.Dequeue().GetBooleanValue();
+                    if (isUDF)
                     {
-                        string newOpCode = operands.Dequeue(1).GetStringValue(); //throw out the extra null
-                        UserDefinedOporator newOporator = new UserDefinedOporator(newOpCode, LocalVarNames.Count - 1);
+                        string newOpCode = operands.Dequeue().GetStringValue();
+                        UserDefinedOporator newOporator = new UserDefinedOporator(newOpCode, LocalVarNames.Count);
                         RacketExpression expression = ((RacketExpression)operands.Dequeue().OperableValue);
                         StaticsManager.userDefinedOporators.Add(newOpCode, newOporator);
 

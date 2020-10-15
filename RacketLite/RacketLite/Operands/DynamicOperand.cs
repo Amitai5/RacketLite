@@ -269,7 +269,7 @@ namespace RacketLite.Operands
                 {
                     return userDefinedExpression.Evaluate(racketExpression.UDEOperands);
                 }
-                return userDefinedExpression.Evaluate(racketExpression.Operands);
+                return userDefinedExpression.Evaluate(racketExpression.Operands.GetCopy());
             }
             else
             {

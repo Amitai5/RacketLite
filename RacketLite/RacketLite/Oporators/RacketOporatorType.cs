@@ -8,6 +8,7 @@
         Define,
         ReturnVariable,
         ReturnConstant,
+        ReturnExpression,
         UserDefinedFunction,
 
         //Numeric Oporators
