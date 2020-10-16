@@ -6,4 +6,10 @@
     <ApplicationIcon>Assets\RacketIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="AEapps.CoreLibrary">
+      <HintPath>..\..\..\CoreLibrary\AEapps.CoreLibrary\AEapps.CoreLibrary\bin\Debug\netcoreapp3.1\AEapps.CoreLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

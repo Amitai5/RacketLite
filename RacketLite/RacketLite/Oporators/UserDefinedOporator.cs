@@ -10,7 +10,7 @@ namespace RacketLite.Oporators
         public string DefinitionString { get; }
 
         public UserDefinedOporator(string opCode, int minOperands)
-            : base(RacketOporatorType.UserDefinedFunction, minOperands, minOperands, null)
+            : base(RacketOporatorType.UserDefinedFunction, null, minOperands, minOperands, null)
         {
             DefinitionString = opCode;
         }

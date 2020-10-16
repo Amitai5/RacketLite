@@ -97,14 +97,14 @@ namespace RacketLite
                 RacketOperandType operandType = Operands.Peek().Type;
                 if (operandType != RacketOperandType.Unknown && operandType != RacketOperandType.Expression)
                 {
-                    Oporator = new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any);
+                    Oporator = new RacketOporator(RacketOporatorType.ReturnConstant, null, 1, 1, RacketOperandType.Any);
                 }
             }
 
             //Ensure all expressions contain at least one set of parenthesis
             else if (Oporator != null && !expressionText.Contains('(')) //TODO: Make sure that return variable does not hit this
             {
-                Oporator = new RacketOporator(RacketOporatorType.ReturnExpression, 1, 1, RacketOperandType.Any);
+                Oporator = new RacketOporator(RacketOporatorType.ReturnExpression, null, 1, 1, RacketOperandType.Any);
                 Operands.Enqueue(new StringOperand(RacketOporatorSignature));
             }
         }
@@ -236,7 +236,7 @@ namespace RacketLite
                 #region Numeric Comparisons
                 case RacketOporatorType.Equal:
                     bool result = operands.Dequeue().Equals(operands.Dequeue());
-                    return new DynamicOperand(new BooleanOperand(result));
+                    return new BooleanOperand(result);
                 case RacketOporatorType.LessThan:
                     if (operands.Count > 2)
                     {
@@ -282,9 +282,12 @@ namespace RacketLite
                 #endregion Numeric Comparisons
 
                 #region String Oporators
+                case RacketOporatorType.StringLength:
+                    int stringLength = operands.Dequeue().GetStringValue().Length;
+                    return new NaturalOperand(stringLength);
                 case RacketOporatorType.StringAppend:
                     string tempString = operands.Dequeue().GetStringValue() + operands.Dequeue().GetStringValue();
-                    return new DynamicOperand(new StringOperand(tempString));
+                    return new StringOperand(tempString);
                 case RacketOporatorType.Substring:
                     string stringPart = operands.Dequeue().GetStringValue();
                     if (operands.Peek() != null)
@@ -295,7 +298,7 @@ namespace RacketLite
                     {
                         stringPart = stringPart.Substring((int)operands.Dequeue().GetDoubleValue(), (int)operands.Dequeue().GetDoubleValue());
                     }
-                    return new DynamicOperand(new StringOperand(stringPart));
+                    return new StringOperand(stringPart);
                 #endregion String Oporators
 
                 #region String Comparisons

@@ -72,11 +72,11 @@ namespace RacketLite.Parsing
             }
             else if (StaticsManager.VariableMap.ContainsKey(racketOporatorName))
             {
-                return (new RacketOporator(RacketOporatorType.ReturnVariable, 1, 1, RacketOperandType.Any), true);
+                return (new RacketOporator(RacketOporatorType.ReturnVariable, null, 1, 1, RacketOperandType.Any), true);
             }
             else if (StaticsManager.RacketConstants.ContainsKey(racketOporatorName))
             {
-                return (new RacketOporator(RacketOporatorType.ReturnConstant, 1, 1, RacketOperandType.Any), true);
+                return (new RacketOporator(RacketOporatorType.ReturnConstant, null, 1, 1, RacketOperandType.Any), true);
             }
             return (null, true);
         }

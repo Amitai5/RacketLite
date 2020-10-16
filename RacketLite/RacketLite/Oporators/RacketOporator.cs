@@ -11,11 +11,13 @@ namespace RacketLite.Oporators
         private int OperandMin { get; }
         private int? OperandMax { get; }
         public RacketOporatorType Type { get; }
+        public RacketOperandType? ReturnType { get; }
         private RacketOperandType[] OperandTypes { get; }
 
-        public RacketOporator(RacketOporatorType oporatorType, int minOperands, int? maxOperands, params RacketOperandType[] operandTypes)
+        public RacketOporator(RacketOporatorType oporatorType, RacketOperandType? returnType, int minOperands, int? maxOperands, params RacketOperandType[] operandTypes)
         {
             Type = oporatorType;
+            ReturnType = returnType;
             OperandMin = minOperands;
             OperandMax = maxOperands;
             OperandTypes = operandTypes;
@@ -66,6 +68,7 @@ namespace RacketLite.Oporators
                 //Check for expressions
                 if (operandTypes[i] == RacketOperandType.Expression)
                 {
+                    //TODO: FIX THIS
                     continue; //Cannot tell if expressions are not right type at "compile time"
                 }
 
@@ -90,7 +93,7 @@ namespace RacketLite.Oporators
                 }
 
                 //Conversion between Number and Natural can only be judged run-time
-                if((operandTypes[i] == RacketOperandType.Natural && correctOperandType == (int)RacketOperandType.Number)
+                if ((operandTypes[i] == RacketOperandType.Natural && correctOperandType == (int)RacketOperandType.Number)
                     || (operandTypes[i] == RacketOperandType.Number && correctOperandType == (int)RacketOperandType.Natural))
                 {
                     continue;
@@ -104,5 +107,93 @@ namespace RacketLite.Oporators
             }
             return true;
         }
+
+        #region Oporator Signature
+        public string GetSignature(int largestKey, int largestOperandList, int largestOperandName)
+        {
+            //Create signature
+            StringBuilder signatureBuilder = new StringBuilder(":");
+            signatureBuilder.Append(' ', largestKey);
+            signatureBuilder.Append('\t');
+
+            //Add operand string
+            string operandString = GetOperandString();
+            signatureBuilder.Append(operandString);
+
+            int newOperandPadCount = largestOperandList - operandString.Length;
+            signatureBuilder.Append(' ', newOperandPadCount);
+            signatureBuilder.Append(" -> ");
+
+            //Check for null return types
+            int returnTypeNameLength;
+            if (ReturnType.HasValue && ReturnType.Value == RacketOperandType.Any)
+            {
+                signatureBuilder.Append("Unkown");
+                returnTypeNameLength = 6;
+            }
+            else if (ReturnType.HasValue)
+            {
+                string returnTypeName = Enum.GetName(typeof(RacketOperandType), ReturnType.Value);
+                returnTypeNameLength = returnTypeName.Length;
+                signatureBuilder.Append(returnTypeName);
+            }
+            else
+            {
+                signatureBuilder.Append("Void");
+                returnTypeNameLength = 4;
+            }
+
+            //Pad the last part of the string
+            int endPadCount = largestOperandName - returnTypeNameLength;
+            signatureBuilder.Append(' ', endPadCount);
+
+            //Return the built string
+            return signatureBuilder.ToString();
+        }
+
+        public string GetOperandString()
+        {
+            //Create string builder
+            StringBuilder stringBuilder = new StringBuilder();
+
+            //Add operand syntax
+            if (OperandMin > 0)
+            {
+                //Get largest value
+                int maxOperand = OperandTypes.Length;
+                if (OperandMax.HasValue)
+                {
+                    maxOperand = OperandMax.Value;
+                }
+
+                for (int i = 0; i < maxOperand; i++)
+                {
+                    //Check for universal type
+                    string operandName = Enum.GetName(typeof(RacketOperandType), OperandTypes[^1]);
+                    if (i < OperandTypes.Length)
+                    {
+                        operandName = Enum.GetName(typeof(RacketOperandType), OperandTypes[i]);
+                    }
+                    stringBuilder.Append($"{operandName}");
+
+                    //Check if operand is optional
+                    if (OperandMax.HasValue && i > OperandMin - 1)
+                    {
+                        stringBuilder.Append("?");
+                    }
+                    stringBuilder.Append(' ');
+                }
+            }
+
+            //Add the elipses if there is no max
+            if (!OperandMax.HasValue)
+            {
+                stringBuilder.Append("... ");
+            }
+
+            //Return built string
+            return stringBuilder.ToString();
+        }
+        #endregion Oporator Signature
     }
 }
