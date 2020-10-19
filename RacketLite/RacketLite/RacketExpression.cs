@@ -15,9 +15,8 @@ namespace RacketLite
         public RacketOporator Oporator { get; protected set; }
 
         public string RacketOporatorSignature { get; }
-        public OperandQueue UDEOperands { get; private set; }
-        protected List<string> LocalVarNames = new List<string>();
-        protected Dictionary<string, RacketExpression> InnerExpressions;
+        private List<string> LocalVarNames = new List<string>();
+        private readonly Dictionary<string, RacketExpression> InnerExpressions;
 
         public RacketExpression(string expressionText)
             : base(RacketOperandType.Expression)
@@ -82,7 +81,7 @@ namespace RacketLite
                     throw new DefinitionOverrideException(firstExpression.RacketOporatorSignature);
                 }
             }
-            else if(Oporator != null && Oporator.Type == RacketOporatorType.Define)
+            else if (Oporator != null && Oporator.Type == RacketOporatorType.Define)
             {
                 //All other cases, define expression as variable
                 Operands.Enqueue(new BooleanOperand(false));
@@ -91,21 +90,14 @@ namespace RacketLite
             //Create opernds
             Operands.Enqueue(ExpressionParser.ParseTokensAsOperands(tokenStrings, InnerExpressions));
 
-            //Check if user typed in a constant number or string
-            if (Oporator == null && Operands.Count == 1)
-            {
-                RacketOperandType operandType = Operands.Peek().Type;
-                if (operandType != RacketOperandType.Unknown && operandType != RacketOperandType.Expression)
-                {
-                    Oporator = new RacketOporator(RacketOporatorType.ReturnConstant, null, 1, 1, RacketOperandType.Any);
-                }
-            }
-
             //Ensure all expressions contain at least one set of parenthesis
-            else if (Oporator != null && !expressionText.Contains('(')) //TODO: Make sure that return variable does not hit this
+            if (Oporator != null && !expressionText.Contains('('))
             {
-                Oporator = new RacketOporator(RacketOporatorType.ReturnExpression, null, 1, 1, RacketOperandType.Any);
-                Operands.Enqueue(new StringOperand(RacketOporatorSignature));
+                if (Oporator.Type != RacketOporatorType.ReturnConstant && Oporator.Type != RacketOporatorType.ReturnVariable)
+                {
+                    Oporator = new RacketOporator(RacketOporatorType.ReturnExpression, null, 1, 1, RacketOperandType.Any);
+                    Operands.Enqueue(new StringOperand(RacketOporatorSignature));
+                }
             }
         }
 
@@ -127,10 +119,10 @@ namespace RacketLite
                         string newOpCode = operands.Dequeue().GetStringValue();
                         UserDefinedOporator newOporator = new UserDefinedOporator(newOpCode, LocalVarNames.Count);
                         RacketExpression expression = ((RacketExpression)operands.Dequeue().OperableValue);
-                        StaticsManager.userDefinedOporators.Add(newOpCode, newOporator);
+                        expression.LocalVarNames = LocalVarNames;
 
-                        UserDefinedExpression newExpression = new UserDefinedExpression(expression.Oporator, expression.Operands, LocalVarNames, expression.InnerExpressions);
-                        StaticsManager.UserDefinedExpressions.Add(newOpCode, newExpression);
+                        StaticsManager.UserDefinedOporators.Add(newOpCode, newOporator);
+                        StaticsManager.AddUDE(newOpCode, expression);
                     }
                     else
                     {
@@ -151,7 +143,10 @@ namespace RacketLite
                     }
                     return null;
                 case RacketOporatorType.UserDefinedFunction:
-                    return StaticsManager.UserDefinedExpressions[RacketOporatorSignature].Evaluate(operands);
+                    UserDefinedOporator userDefinedOporator = (UserDefinedOporator)Oporator;
+                    RacketExpression udExpression = StaticsManager.GetUDE(userDefinedOporator.DefinitionString);
+                    udExpression.SetFunctionLocals(operands);
+                    return udExpression.Evaluate();
                 #endregion Special Oporators
 
                 #region Numeric Oporators
@@ -353,45 +348,72 @@ namespace RacketLite
                 throw new OporatorNotFoundException(RacketOporatorSignature);
             }
 
+            //Replace locals except on define
+            if (Oporator.Type != RacketOporatorType.Define)
+            {
+                ReplaceFunctionLocal(this);
+            }
+
             //Check for valid expression
-            if (UDEOperands != null)
-            {
-                Oporator.IsValidExpression(UDEOperands);
-            }
-            else
-            {
-                Oporator.IsValidExpression(Operands);
-            }
+            Oporator.IsValidExpression(Operands);
 
-            //Check if we are inside a User Defined Expression
-            if (UDEOperands != null && UDEOperands.Count > 0)
+            //Check which operands to use
+            do
             {
-                do
+                DynamicOperand newOperand = EvaluateExpression(Operands);
+                Operands.AddLast(newOperand);
+            } while (Operands.Count > 1);
+
+            DynamicOperand result = Operands.Dequeue();
+            return result;
+        }
+
+        #region User Definied Functions
+        public RacketExpression GetCopy()
+        {
+            return new RacketExpression(Oporator, Operands.GetCopy(), LocalVarNames, InnerExpressions);
+        }
+
+        private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames, Dictionary<string, RacketExpression> innerExpressions)
+        {
+            Oporator = oporator;
+            Operands = operands;
+            LocalVarNames = localVarNames;
+            InnerExpressions = innerExpressions;
+        }
+
+        private void SetFunctionLocals(OperandQueue localVarValues)
+        {
+            //Create var name/value map
+            for (int i = 0; i < LocalVarNames.Count; i++)
+            {
+                DynamicOperand varValue = localVarValues.Dequeue();
+                if (!StaticsManager.LocalStack.ContainsKey(LocalVarNames[i]))
                 {
-                    DynamicOperand newOperand = EvaluateExpression(UDEOperands);
-                    if (UDEOperands == null)
-                    {
-                        //In a few cases we will lose our operand copy mid run...
-                        return newOperand;
-                    }
-
-                    UDEOperands.AddLast(newOperand);
-                } while (UDEOperands.Count > 1);
-
-                DynamicOperand result = UDEOperands.Dequeue();
-                UDEOperands = null;
-                return result;
-            }
-            else
-            {
-                do
+                    StaticsManager.LocalStack.Add(LocalVarNames[i], varValue);
+                }
+                else if (varValue.Type != RacketOperandType.Unknown)
                 {
-                    DynamicOperand newOperand = EvaluateExpression(Operands);
-                    Operands.AddLast(newOperand);
-                } while (Operands.Count > 1);
-                return Operands.Dequeue();
+                    StaticsManager.LocalStack[LocalVarNames[i]] = varValue;
+                }
             }
         }
+
+        private static void ReplaceFunctionLocal(RacketExpression racketExpression)
+        {
+            //Replace operands for the expression
+            racketExpression.Operands = racketExpression.Operands.ReplaceUnknowns(StaticsManager.LocalStack);
+
+            //Run on the inner expressions too
+            if (racketExpression.InnerExpressions != null)
+            {
+                foreach (KeyValuePair<string, RacketExpression> valuePair in racketExpression.InnerExpressions)
+                {
+                    ReplaceFunctionLocal(valuePair.Value);
+                }
+            }
+        }
+        #endregion User Defined Functions
 
         private void CheckExpressionSyntax(string expressionText)
         {
@@ -409,26 +431,6 @@ namespace RacketLite
             if (quoteCount % 2 != 0)
             {
                 throw new UnexpectedQuoteException();
-            }
-        }
-
-        protected static void SetUserDefinedOperands(RacketExpression racketExpression, Dictionary<string, DynamicOperand> localVarValues)
-        {
-            if (racketExpression.UDEOperands == null || racketExpression.UDEOperands.Count == 0)
-            {
-                racketExpression.UDEOperands = racketExpression.Operands.ReplaceUnknowns(localVarValues);
-            }
-
-            //Run on the inner expressions too
-            if (racketExpression.InnerExpressions != null)
-            {
-                foreach (KeyValuePair<string, RacketExpression> valuePair in racketExpression.InnerExpressions)
-                {
-                    if (valuePair.Value.UDEOperands == null)
-                    {
-                        SetUserDefinedOperands(valuePair.Value, localVarValues);
-                    }
-                }
             }
         }
 

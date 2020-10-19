@@ -12,7 +12,7 @@ namespace RacketLite
         private const int HeadIndex = 0;
 
         public int Count => TailIndex + 1;
-        private readonly DynamicOperand[] queueData;
+        private DynamicOperand[] queueData;
         public RacketOperandType[] OperandTypes => queueData[0..Count].Select(op => op.Type).ToArray();
 
         public OperandQueue(int capacity = 10)
@@ -28,16 +28,12 @@ namespace RacketLite
 
         public OperandQueue ReplaceUnknowns(Dictionary<string, DynamicOperand> localVarValues)
         {
-            //Create new copy of queueData
-            DynamicOperand[] newQueueData = new DynamicOperand[queueData.Length];
-            queueData.CopyTo(newQueueData, 0);
-
-            for(int i = 0; i < newQueueData.Length; i++)
+            for(int i = 0; i < Count; i++)
             {
-                if (newQueueData[i] != null && newQueueData[i].Type == RacketOperandType.Unknown)
+                if (queueData[i].Type == RacketOperandType.Unknown)
                 {
-                    //If now locals are defined then we have a problem
-                    string unknownValue = newQueueData[i].GetUnknownValue().ToString();
+                    //If now locals are not defined then we have a problem
+                    string unknownValue = queueData[i].GetUnknownValue().ToString();
                     if (localVarValues == null || localVarValues.Count == 0)
                     {
                         throw new VariableNotFoundException(unknownValue);
@@ -46,11 +42,11 @@ namespace RacketLite
                     //Check for local variable stored as Unknown
                     else if (localVarValues.ContainsKey(unknownValue))
                     {
-                        newQueueData[i] = localVarValues[unknownValue];
+                        queueData[i] = localVarValues[unknownValue];
                     }
                 }
             }
-            return new OperandQueue(newQueueData, TailIndex);
+            return new OperandQueue(queueData, TailIndex);
         }
 
         public void ValidateOperandQueue()
@@ -73,6 +69,18 @@ namespace RacketLite
                     }
                 }
             }
+        }
+
+        private void Resize()
+        {
+            if(TailIndex + 1 < queueData.Length)
+            {
+                return;
+            }
+
+            DynamicOperand[] newArray = new DynamicOperand[queueData.Length * 2];
+            Array.Copy(queueData, 0, newArray, 0, queueData.Length);
+            queueData = newArray;
         }
 
         public DynamicOperand Dequeue(int dequeueCount)
@@ -103,6 +111,7 @@ namespace RacketLite
 
         public void AddLast(DynamicOperand operand)
         {
+            Resize();
             Array.Copy(queueData, 0, queueData, 1, queueData.Length - 1);
             queueData[0] = operand;
             TailIndex++;
@@ -110,18 +119,21 @@ namespace RacketLite
 
         public void Enqueue(DynamicOperand operand)
         {
+            Resize();
             TailIndex++;
             queueData[TailIndex] = operand;
         }
 
-        internal DynamicOperand[] ToArray()
+        public DynamicOperand[] ToArray()
         {
             return queueData;
         }
 
         public OperandQueue GetCopy()
         {
-            return new OperandQueue(queueData, TailIndex);
+            DynamicOperand[] arrCopy = new DynamicOperand[queueData.Length];
+            Array.Copy(queueData, arrCopy, queueData.Length);
+            return new OperandQueue(arrCopy, TailIndex);
         }
 
         public DynamicOperand Peek()

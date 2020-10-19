@@ -10,8 +10,19 @@ namespace RacketLite
     {
         public static Dictionary<string, DynamicOperand> LocalStack = new Dictionary<string, DynamicOperand>();
 
-        public static readonly Dictionary<string, UserDefinedOporator> userDefinedOporators = new Dictionary<string, UserDefinedOporator>();
-        public static readonly Dictionary<string, UserDefinedExpression> UserDefinedExpressions = new Dictionary<string, UserDefinedExpression>();
+        #region User Defined Expression Methods
+        public static void AddUDE(string key, RacketExpression expression)
+        {
+            userDefinedExpressions.Add(key, expression);
+        }
+
+        public static RacketExpression GetUDE(string key)
+        {
+            return userDefinedExpressions[key].GetCopy();
+        }
+        #endregion User Defined Expression Methods
+        public static readonly Dictionary<string, RacketOporator> UserDefinedOporators = new Dictionary<string, RacketOporator>();
+        private static readonly Dictionary<string, RacketExpression> userDefinedExpressions = new Dictionary<string, RacketExpression>();
 
         public static readonly Dictionary<string, DynamicOperand> VariableMap = new Dictionary<string, DynamicOperand>();
         public static readonly Dictionary<string, DynamicOperand> RacketConstants = new Dictionary<string, DynamicOperand>()

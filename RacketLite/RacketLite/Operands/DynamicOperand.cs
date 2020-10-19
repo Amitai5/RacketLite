@@ -294,19 +294,7 @@ namespace RacketLite.Operands
             }
 
             RacketExpression racketExpression = (RacketExpression)OperableValue;
-            if (racketExpression.Oporator.Type == RacketOporatorType.UserDefinedFunction)
-            {
-                UserDefinedExpression userDefinedExpression = StaticsManager.UserDefinedExpressions[racketExpression.RacketOporatorSignature];
-                if (racketExpression.UDEOperands != null)
-                {
-                    return userDefinedExpression.Evaluate(racketExpression.UDEOperands);
-                }
-                return userDefinedExpression.Evaluate(racketExpression.Operands.GetCopy());
-            }
-            else
-            {
-                return racketExpression.Evaluate();
-            }
+            return racketExpression.Evaluate();
         }
 
         public object GetUnknownValue()

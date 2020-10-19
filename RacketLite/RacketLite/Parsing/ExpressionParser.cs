@@ -66,9 +66,9 @@ namespace RacketLite.Parsing
             {
                 return (OporatorDefinitions.RacketOporatorMap[racketOporatorName], false);
             }
-            else if (StaticsManager.UserDefinedExpressions.ContainsKey(racketOporatorName))
+            else if (StaticsManager.UserDefinedOporators.ContainsKey(racketOporatorName))
             {
-                return (StaticsManager.userDefinedOporators[racketOporatorName], false);
+                return (StaticsManager.UserDefinedOporators[racketOporatorName], false);
             }
             else if (StaticsManager.VariableMap.ContainsKey(racketOporatorName))
             {
