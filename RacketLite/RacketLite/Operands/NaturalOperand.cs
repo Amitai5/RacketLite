@@ -12,8 +12,7 @@ namespace RacketLite.Operands
             OperandValue = value;
         }
 
-        #region Object Overrides
-
+        #region IOperable Overrides
         public override bool Equals(object obj)
         {
             return OperandValue == ((NaturalOperand)obj).OperandValue;
@@ -22,14 +21,13 @@ namespace RacketLite.Operands
         public override int CompareTo(object obj)
         {
             double otherValue = ((NaturalOperand)obj).OperandValue;
-            return OperandValue.CompareTo(otherValue);
+            return ((double)OperandValue).CompareTo(otherValue);
         }
 
         public override int GetHashCode()
         {
             return HashCode.Combine(Type, OperandValue);
         }
-
-        #endregion Object Overrides
+        #endregion IOperable Overrides
     }
 }

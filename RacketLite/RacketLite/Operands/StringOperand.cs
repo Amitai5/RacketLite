@@ -14,8 +14,7 @@ namespace RacketLite.Operands
             OperandValue = value;
         }
 
-        #region Object Overrides
-
+        #region IOperable Overrides
         public override bool Equals(object obj)
         {
             return OperandValue == ((StringOperand)obj).OperandValue;
@@ -36,7 +35,6 @@ namespace RacketLite.Operands
         {
             return $"\"{OperandValue}\"";
         }
-
-        #endregion Object Overrides
+        #endregion IOperable Overrides
     }
 }

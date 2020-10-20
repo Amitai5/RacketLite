@@ -20,13 +20,13 @@ namespace RacketLite
             queueData = new DynamicOperand[capacity];
         }
 
-        private OperandQueue(DynamicOperand[] queue, int tailIndex)
+        public OperandQueue(DynamicOperand[] queue, int count)
         {
             queueData = queue;
-            TailIndex = tailIndex;
+            TailIndex = count - 1;
         }
 
-        public OperandQueue ReplaceUnknowns(Dictionary<string, DynamicOperand> localVarValues)
+        public void ReplaceUnknowns(Dictionary<string, DynamicOperand> localVarValues)
         {
             for(int i = 0; i < Count; i++)
             {
@@ -46,7 +46,6 @@ namespace RacketLite
                     }
                 }
             }
-            return new OperandQueue(queueData, TailIndex);
         }
 
         public void ValidateOperandQueue()
@@ -127,13 +126,6 @@ namespace RacketLite
         public DynamicOperand[] ToArray()
         {
             return queueData;
-        }
-
-        public OperandQueue GetCopy()
-        {
-            DynamicOperand[] arrCopy = new DynamicOperand[queueData.Length];
-            Array.Copy(queueData, arrCopy, queueData.Length);
-            return new OperandQueue(arrCopy, TailIndex);
         }
 
         public DynamicOperand Peek()

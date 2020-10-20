@@ -14,6 +14,7 @@ namespace RacketLite
         public OperandQueue Operands { get; protected set; }
         public RacketOporator Oporator { get; protected set; }
 
+        public string ExpressionText { get; }
         public string RacketOporatorSignature { get; }
         private List<string> LocalVarNames = new List<string>();
         private readonly Dictionary<string, RacketExpression> InnerExpressions;
@@ -32,6 +33,7 @@ namespace RacketLite
             }
 
             //Check syntax of expression
+            ExpressionText = expressionText;
             CheckExpressionSyntax(expressionText);
 
             //Clean up the expressionText after getting inner expressions
@@ -112,6 +114,15 @@ namespace RacketLite
                 case RacketOporatorType.ReturnExpression:
                     string procedureName = operands.Dequeue(operands.Count).GetStringValue();
                     return new StringOperand($"#<procedure:{procedureName}>");
+                case RacketOporatorType.If:
+                    bool condition = operands.Dequeue().GetBooleanValue();
+                    if (condition)
+                    {
+                        DynamicOperand trueReturnValue = operands.Dequeue();
+                        operands.Dequeue(operands.Count);
+                        return trueReturnValue;
+                    }
+                    return operands.Dequeue(operands.Count);
                 case RacketOporatorType.Define:
                     bool isUDF = operands.Dequeue().GetBooleanValue();
                     if (isUDF)
@@ -149,12 +160,27 @@ namespace RacketLite
                     return udExpression.Evaluate();
                 #endregion Special Oporators
 
+                #region Boolean Oporators
+                case RacketOporatorType.And:
+                    bool leftAndValue = operands.Dequeue().GetBooleanValue();
+                    bool rightAndValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(leftAndValue && rightAndValue);
+                case RacketOporatorType.Not:
+                    bool notValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(!notValue);
+                case RacketOporatorType.Or:
+                    bool leftOrValue = operands.Dequeue().GetBooleanValue();
+                    bool rightOrValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(leftOrValue || rightOrValue);
+                #endregion
+
                 #region Numeric Oporators
                 case RacketOporatorType.Abs:
                     double absValue = Math.Abs(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(absValue);
                 case RacketOporatorType.Add:
-                    return operands.Dequeue() + operands.Dequeue();
+                    double sum = operands.Dequeue().GetDoubleValue() + operands.Dequeue().GetDoubleValue();
+                    return new NumberOperand(sum);
                 case RacketOporatorType.AddOne:
                     return new NumberOperand(operands.Dequeue().GetDoubleValue() + 1);
                 case RacketOporatorType.ArcCosine:
@@ -177,7 +203,8 @@ namespace RacketLite
                     long currentSeconds = Convert.ToInt64(currentSecondsDouble);
                     return new NaturalOperand(currentSeconds);
                 case RacketOporatorType.Divide:
-                    return operands.Dequeue() / operands.Dequeue();
+                    double quotient = operands.Dequeue().GetDoubleValue() / operands.Dequeue().GetDoubleValue();
+                    return new NumberOperand(quotient);
                 case RacketOporatorType.ExponentialPower:
                     double exp = Math.Exp(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(exp);
@@ -204,7 +231,8 @@ namespace RacketLite
                     long modulo = operands.Dequeue().GetLongValue() % operands.Dequeue().GetLongValue();
                     return new NaturalOperand(modulo);
                 case RacketOporatorType.Multiply:
-                    return operands.Dequeue() * operands.Dequeue();
+                    double product = operands.Dequeue().GetDoubleValue() * operands.Dequeue().GetDoubleValue();
+                    return new NumberOperand(product);
                 case RacketOporatorType.Random:
                     double randValueDouble = new Random().NextDouble();
                     double roundedRandValue = Math.Round(randValueDouble * operands.Dequeue().GetLongValue());
@@ -223,7 +251,8 @@ namespace RacketLite
                     double squareRootValue = Math.Sqrt(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(squareRootValue);
                 case RacketOporatorType.Subtract:
-                    return operands.Dequeue() - operands.Dequeue();
+                    double difference = operands.Dequeue().GetDoubleValue() - operands.Dequeue().GetDoubleValue();
+                    return new NumberOperand(difference);
                 case RacketOporatorType.SubtractOne:
                     return new NumberOperand(operands.Dequeue().GetDoubleValue() - 1);
                 #endregion Numeric Oporators
@@ -266,14 +295,6 @@ namespace RacketLite
                     return operands.Dequeue() >= operands.Dequeue();
                 case RacketOporatorType.CheckZero:
                     return new BooleanOperand(operands.Dequeue().GetDoubleValue() == 0);
-
-                //Boolean Oporators
-                case RacketOporatorType.Or:
-                    return operands.Dequeue() | operands.Dequeue();
-                case RacketOporatorType.Not:
-                    return !operands.Dequeue();
-                case RacketOporatorType.And:
-                    return operands.Dequeue() & operands.Dequeue();
                 #endregion Numeric Comparisons
 
                 #region String Oporators
@@ -369,17 +390,18 @@ namespace RacketLite
         }
 
         #region User Definied Functions
-        public RacketExpression GetCopy()
-        {
-            return new RacketExpression(Oporator, Operands.GetCopy(), LocalVarNames, InnerExpressions);
-        }
-
         private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames, Dictionary<string, RacketExpression> innerExpressions)
         {
-            Oporator = oporator;
             Operands = operands;
+            Oporator = oporator;
             LocalVarNames = localVarNames;
             InnerExpressions = innerExpressions;
+        }
+
+        public RacketExpression GetCopy()
+        {
+            RacketExpression innerExpression = new RacketExpression(ExpressionText);
+            return new RacketExpression(Oporator, innerExpression.Operands, LocalVarNames, innerExpression.InnerExpressions);
         }
 
         private void SetFunctionLocals(OperandQueue localVarValues)
@@ -402,7 +424,7 @@ namespace RacketLite
         private static void ReplaceFunctionLocal(RacketExpression racketExpression)
         {
             //Replace operands for the expression
-            racketExpression.Operands = racketExpression.Operands.ReplaceUnknowns(StaticsManager.LocalStack);
+            racketExpression.Operands.ReplaceUnknowns(StaticsManager.LocalStack);
 
             //Run on the inner expressions too
             if (racketExpression.InnerExpressions != null)

@@ -15,8 +15,7 @@ namespace RacketLite.Operands
             OperandValue = value;
         }
 
-        #region Object Overrides
-
+        #region IOperable Overrides
         public override string ToString()
         {
             return OperandValue;
@@ -26,7 +25,6 @@ namespace RacketLite.Operands
         {
             throw new VariableNotFoundException(OperandValue);
         }
-
-        #endregion Object Overrides
+        #endregion IOperable Overrides
     }
 }
