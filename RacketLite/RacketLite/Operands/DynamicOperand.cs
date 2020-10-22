@@ -180,15 +180,7 @@ namespace RacketLite.Operands
 
         public override string ToString()
         {
-            return Type switch
-            {
-                RacketOperandType.Expression => GetExpressionValue().ToString(),
-                RacketOperandType.Boolean => GetBooleanValue().ToString(),
-                RacketOperandType.Number => GetDoubleValue().ToString(),
-                RacketOperandType.String => GetStringValue().ToString(),
-                RacketOperandType.Natural => GetLongValue().ToString(),
-                _ => throw new NotImplementedException()
-            };
+            return OperableValue.ToString();
         }
 
         public override int GetHashCode()

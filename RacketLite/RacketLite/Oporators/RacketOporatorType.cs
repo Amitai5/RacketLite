@@ -46,7 +46,13 @@
         GreaterThan,
         LessThanEqualTo,
         GreaterThanEqualTo,
-        CheckZero,
+        IsEven,
+        IsInteger,
+        IsNegative,
+        IsNumber,
+        IsOdd,
+        IsPositive,
+        IsZero,
 
         //Boolean Oporators
         Or,

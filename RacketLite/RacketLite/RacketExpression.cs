@@ -19,6 +19,14 @@ namespace RacketLite
         private List<string> LocalVarNames = new List<string>();
         private readonly Dictionary<string, RacketExpression> InnerExpressions;
 
+        private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames, Dictionary<string, RacketExpression> innerExpressions)
+        {
+            Operands = operands;
+            Oporator = oporator;
+            LocalVarNames = localVarNames;
+            InnerExpressions = innerExpressions;
+        }
+
         public RacketExpression(string expressionText)
             : base(RacketOperandType.Expression)
         {
@@ -34,7 +42,7 @@ namespace RacketLite
 
             //Check syntax of expression
             ExpressionText = expressionText;
-            CheckExpressionSyntax(expressionText);
+            SyntaxManager.CheckExpressionSyntax(expressionText);
 
             //Clean up the expressionText after getting inner expressions
             InnerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
@@ -293,7 +301,25 @@ namespace RacketLite
                         return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
                     }
                     return operands.Dequeue() >= operands.Dequeue();
-                case RacketOporatorType.CheckZero:
+                case RacketOporatorType.IsEven:
+                    bool isEven = operands.Dequeue().GetLongValue() % 2 == 0;
+                    return new BooleanOperand(isEven);
+                case RacketOporatorType.IsInteger:
+                    bool isInteger = operands.Dequeue().Type == RacketOperandType.Natural;
+                    return new BooleanOperand(isInteger);
+                case RacketOporatorType.IsNegative:
+                    bool isNegative = operands.Dequeue().GetDoubleValue() < 0;
+                    return new BooleanOperand(isNegative);
+                case RacketOporatorType.IsNumber:
+                    bool isNumber = operands.Dequeue().Type == RacketOperandType.Number;
+                    return new BooleanOperand(isNumber);
+                case RacketOporatorType.IsOdd:
+                    bool isOdd = operands.Dequeue().GetLongValue() % 2 == 1;
+                    return new BooleanOperand(isOdd);
+                case RacketOporatorType.IsPositive:
+                    bool isPositive = operands.Dequeue().GetDoubleValue() > 0;
+                    return new BooleanOperand(isPositive);
+                case RacketOporatorType.IsZero:
                     return new BooleanOperand(operands.Dequeue().GetDoubleValue() == 0);
                 #endregion Numeric Comparisons
 
@@ -389,21 +415,7 @@ namespace RacketLite
             return result;
         }
 
-        #region User Definied Functions
-        private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames, Dictionary<string, RacketExpression> innerExpressions)
-        {
-            Operands = operands;
-            Oporator = oporator;
-            LocalVarNames = localVarNames;
-            InnerExpressions = innerExpressions;
-        }
-
-        public RacketExpression GetCopy()
-        {
-            RacketExpression innerExpression = new RacketExpression(ExpressionText);
-            return new RacketExpression(Oporator, innerExpression.Operands, LocalVarNames, innerExpression.InnerExpressions);
-        }
-
+        #region User Definied Expressions
         private void SetFunctionLocals(OperandQueue localVarValues)
         {
             //Create var name/value map
@@ -435,25 +447,16 @@ namespace RacketLite
                 }
             }
         }
-        #endregion User Defined Functions
+        #endregion User Defined Expressions
 
-        private void CheckExpressionSyntax(string expressionText)
+        /// <summary>
+        /// Creates a fresh copy of the racket expression
+        /// </summary>
+        /// <returns>The copy of the expression as a new instance</returns>
+        public RacketExpression GetCopy()
         {
-            //Check parenthesis balance
-            int openParenthesis = expressionText.Count(x => x == '(');
-            int closeParenthesis = expressionText.Count(x => x == ')');
-            if (openParenthesis != closeParenthesis)
-            {
-                bool missingClose = openParenthesis > closeParenthesis;
-                throw new UnexpectedParenthesisException(missingClose);
-            }
-
-            //Check for balanced quotes
-            int quoteCount = expressionText.Count(x => x == '\"');
-            if (quoteCount % 2 != 0)
-            {
-                throw new UnexpectedQuoteException();
-            }
+            RacketExpression innerExpression = new RacketExpression(ExpressionText);
+            return new RacketExpression(Oporator, innerExpression.Operands, LocalVarNames, innerExpression.InnerExpressions);
         }
 
         public override int CompareTo(object obj)

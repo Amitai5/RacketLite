@@ -15,17 +15,30 @@ namespace RacketLite
         private DynamicOperand[] queueData;
         public RacketOperandType[] OperandTypes => queueData[0..Count].Select(op => op.Type).ToArray();
 
+        /// <summary>
+        /// Creates an operand queue with a default intitial capacity of 10
+        /// </summary>
+        /// <param name="capacity">The initial size of the operand queue</param>
         public OperandQueue(int capacity = 10)
         {
             queueData = new DynamicOperand[capacity];
         }
 
+        /// <summary>
+        /// Creates an operand queue using the data provided form the queue array
+        /// </summary>
+        /// <param name="queue">The data to initialize the queue with</param>
+        /// <param name="count">The amount of data preset into the array</param>
         public OperandQueue(DynamicOperand[] queue, int count)
         {
             queueData = queue;
             TailIndex = count - 1;
         }
 
+        /// <summary>
+        /// Replaces "unknown" operands found within the operand queue
+        /// </summary>
+        /// <param name="localVarValues">The values to set to each operand of type unknown</param>
         public void ReplaceUnknowns(Dictionary<string, DynamicOperand> localVarValues)
         {
             for(int i = 0; i < Count; i++)
@@ -48,6 +61,10 @@ namespace RacketLite
             }
         }
 
+        /// <summary>
+        /// Ensures that the operand queue does not contain any "unknown" operands (not including locals)
+        /// Throws an error if any "unknowns" are found
+        /// </summary>
         public void ValidateOperandQueue()
         {
             for (int i = 0; i < queueData.Length; i++)
@@ -70,6 +87,9 @@ namespace RacketLite
             }
         }
 
+        /// <summary>
+        /// Checks if the queue needs to be resized, if needed, the queue will be resized to double that of before
+        /// </summary>
         private void Resize()
         {
             if(TailIndex + 1 < queueData.Length)
@@ -82,6 +102,11 @@ namespace RacketLite
             queueData = newArray;
         }
 
+        /// <summary>
+        /// Dequeues a number of operands, only returning the value of the last one
+        /// </summary>
+        /// <param name="dequeueCount">The amount of operands to dequeue</param>
+        /// <returns>The last operand dequeued from the queue</returns>
         public DynamicOperand Dequeue(int dequeueCount)
         {
             DynamicOperand lastNodeOperand = Dequeue();
@@ -92,6 +117,10 @@ namespace RacketLite
             return lastNodeOperand;
         }
 
+        /// <summary>
+        /// Enqueues a collection of operands to the front of the queue
+        /// </summary>
+        /// <param name="operands">The collection of operands to enqueue</param>
         public void Enqueue(IEnumerable<DynamicOperand> operands)
         {
             foreach (DynamicOperand operand in operands)
@@ -100,6 +129,10 @@ namespace RacketLite
             }
         }
 
+        /// <summary>
+        /// Removes the operand at the front of the queue
+        /// </summary>
+        /// <returns>The operand at the front of the queue</returns>
         public DynamicOperand Dequeue()
         {
             TailIndex--;
@@ -108,6 +141,10 @@ namespace RacketLite
             return headValue;
         }
 
+        /// <summary>
+        /// Enqueues an operand at the end of the queue.
+        /// </summary>
+        /// <param name="operand">The operand to enqeue</param>
         public void AddLast(DynamicOperand operand)
         {
             Resize();
@@ -116,6 +153,10 @@ namespace RacketLite
             TailIndex++;
         }
 
+        /// <summary>
+        /// Enqueues an operand into the queue of operands
+        /// </summary>
+        /// <param name="operand">The operand to enqueue</param>
         public void Enqueue(DynamicOperand operand)
         {
             Resize();
@@ -123,11 +164,19 @@ namespace RacketLite
             queueData[TailIndex] = operand;
         }
 
+        /// <summary>
+        /// Returns the array backing the operand queue
+        /// </summary>
+        /// <returns>Returns the the operands in the queue as an array</returns>
         public DynamicOperand[] ToArray()
         {
             return queueData;
         }
 
+        /// <summary>
+        /// Selects the operand at the front of the queue
+        /// </summary>
+        /// <returns>The operand at the front of the queue</returns>
         public DynamicOperand Peek()
         {
             return queueData[HeadIndex];

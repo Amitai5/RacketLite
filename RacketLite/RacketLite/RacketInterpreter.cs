@@ -29,6 +29,7 @@ namespace RacketLite
                     break;
                 case "#cls":
                 case "#clr":
+                case "#clear":
                     Console.Clear();
                     Console.WriteLine(TitleMessage);
                     break;

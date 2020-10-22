@@ -49,7 +49,13 @@ namespace RacketLite.Oporators
             { ">", new RacketOporator(RacketOporatorType.GreaterThan, RacketOperandType.Boolean, 2, null, RacketOperandType.Number) },
             { "<=", new RacketOporator(RacketOporatorType.LessThanEqualTo, RacketOperandType.Boolean, 2, null, RacketOperandType.Number) },
             { ">=", new RacketOporator(RacketOporatorType.GreaterThanEqualTo, RacketOperandType.Boolean, 2, null, RacketOperandType.Number) },
-            { "zero?", new RacketOporator(RacketOporatorType.CheckZero, RacketOperandType.Boolean, 1, 1, RacketOperandType.Number) },
+            { "even?", new RacketOporator(RacketOporatorType.IsEven, RacketOperandType.Boolean, 1, 1, RacketOperandType.Natural) },
+            { "integer?", new RacketOporator(RacketOporatorType.IsInteger, RacketOperandType.Boolean, 1, 1, RacketOperandType.Any) },
+            { "negative?", new RacketOporator(RacketOporatorType.IsNegative, RacketOperandType.Boolean, 1, 1, RacketOperandType.Number) },
+            { "number?", new RacketOporator(RacketOporatorType.IsNumber, RacketOperandType.Boolean, 1, 1, RacketOperandType.Any) },
+            { "odd?", new RacketOporator(RacketOporatorType.IsOdd, RacketOperandType.Boolean, 1, 1, RacketOperandType.Natural) },
+            { "positive?", new RacketOporator(RacketOporatorType.IsPositive, RacketOperandType.Boolean, 1, 1, RacketOperandType.Number) },
+            { "zero?", new RacketOporator(RacketOporatorType.IsZero, RacketOperandType.Boolean, 1, 1, RacketOperandType.Number) },
 
             //Boolean Oporators
             { "and", new RacketOporator(RacketOporatorType.And, RacketOperandType.Boolean, 2, null, RacketOperandType.Boolean) },
