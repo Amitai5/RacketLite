@@ -1,12 +1,13 @@
 ﻿using RacketLite.Exceptions;
 using RacketLite.Operands;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RacketLite
 {
-    public class OperandQueue
+    public class OperandQueue  : IEnumerable<DynamicOperand>
     {
         private int TailIndex = -1;
         private const int HeadIndex = 0;
@@ -102,8 +103,8 @@ namespace RacketLite
                     {
                         return true;
                     }
-                    else if (queueData[i].Type == RacketOperandType.Natural
-                        && ((NaturalOperand)queueData[i].OperableValue).Inexact)
+                    else if (queueData[i].Type == RacketOperandType.Integer
+                        && ((IntegerOperand)queueData[i].OperableValue).Inexact)
                     {
                         return true;
                     }
@@ -195,7 +196,7 @@ namespace RacketLite
         /// <returns>Returns the the operands in the queue as an array</returns>
         public DynamicOperand[] ToArray()
         {
-            return queueData;
+            return queueData[0..Count];
         }
 
         /// <summary>
@@ -206,5 +207,17 @@ namespace RacketLite
         {
             return queueData[HeadIndex];
         }
+
+        #region IEnumerable Methods
+        public IEnumerator<DynamicOperand> GetEnumerator()
+        {
+            return queueData[0..Count].AsEnumerable().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return queueData[0..Count].GetEnumerator();
+        }
+        #endregion IEnumerable Methods
     }
 }

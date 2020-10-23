@@ -10,8 +10,9 @@ namespace RacketLite
     public class RacketInterpreter
     {
         private readonly ConsoleHelper Helper;
-        private readonly List<string> FunctionSignatures;
-        public const string TitleMessage = "Welcome to Racket-Lite v2.1 [cs].";
+        private readonly List<string> FunctionSignatures;   
+        public const string RacketLiteVersion = "v2.1 beta";
+        public string TitleMessage => $"Welcome to Racket-Lite {RacketLiteVersion} [cs].";
 
         public RacketInterpreter()
         {

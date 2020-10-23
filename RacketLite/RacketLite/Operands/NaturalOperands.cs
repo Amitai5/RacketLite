@@ -1,14 +1,16 @@
 ﻿using RacketLite.Parsing;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace RacketLite.Operands
 {
     public class NaturalOperand : IOperable
     {
-        public long OperandValue;
+        public ulong OperandValue;
         public bool Inexact { get; private set; }
 
-        public NaturalOperand(long value, bool inexact)
+        public NaturalOperand(ulong value, bool inexact)
             : base(RacketOperandType.Natural)
         {
             Inexact = inexact;
@@ -23,7 +25,7 @@ namespace RacketLite.Operands
 
         public override int CompareTo(object obj)
         {
-            double otherValue = ((NaturalOperand)obj).OperandValue;
+            double otherValue = ((IntegerOperand)obj).OperandValue;
             return ((double)OperandValue).CompareTo(otherValue);
         }
 

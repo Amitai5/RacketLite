@@ -3,30 +3,28 @@ using System;
 
 namespace RacketLite.Operands
 {
-    public class NumberOperand : IOperable
+    public class IntegerOperand : IOperable
     {
-        public double OperandValue;
+        public long OperandValue;
         public bool Inexact { get; private set; }
-        public bool Irrational { get; private set; }
 
-        public NumberOperand(double value, bool inexact)
-            : base(RacketOperandType.Number)
+        public IntegerOperand(long value, bool inexact)
+            : base(RacketOperandType.Integer)
         {
             Inexact = inexact;
             OperandValue = value;
-            Irrational = Inexact || double.IsNaN(value);
         }
 
         #region IOperable Overrides
         public override bool Equals(object obj)
         {
-            return OperandValue == ((NumberOperand)obj).OperandValue;
+            return OperandValue == ((IntegerOperand)obj).OperandValue;
         }
 
         public override int CompareTo(object obj)
         {
-            double otherValue = ((NumberOperand)obj).OperandValue;
-            return OperandValue.CompareTo(otherValue);
+            double otherValue = ((IntegerOperand)obj).OperandValue;
+            return ((double)OperandValue).CompareTo(otherValue);
         }
 
         public override int GetHashCode()

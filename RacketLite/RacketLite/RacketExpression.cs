@@ -48,7 +48,7 @@ namespace RacketLite
             parsedExpressionText = parsedExpressionText.Replace("  ", " ").Trim();
 
             //Create tokens
-            Queue<string> tokenStrings = new Queue<string>(parsedExpressionText.Split(' ').ToList());
+            Queue<string> tokenStrings = ExpressionParser.ParseExpressionTokens(parsedExpressionText);
             Operands = new OperandQueue(tokenStrings.Count);
 
             //Evaluate Racket oporator for expression
@@ -166,20 +166,6 @@ namespace RacketLite
                     return udExpression.Evaluate();
                 #endregion Special Oporators
 
-                #region Boolean Oporators
-                case RacketOporatorType.And:
-                    bool leftAndValue = operands.Dequeue().GetBooleanValue();
-                    bool rightAndValue = operands.Dequeue().GetBooleanValue();
-                    return new BooleanOperand(leftAndValue && rightAndValue);
-                case RacketOporatorType.Not:
-                    bool notValue = operands.Dequeue().GetBooleanValue();
-                    return new BooleanOperand(!notValue);
-                case RacketOporatorType.Or:
-                    bool leftOrValue = operands.Dequeue().GetBooleanValue();
-                    bool rightOrValue = operands.Dequeue().GetBooleanValue();
-                    return new BooleanOperand(leftOrValue || rightOrValue);
-                #endregion
-
                 #region Numeric Oporators
                 case RacketOporatorType.Abs:
                     double absValue = Math.Abs(operands.Dequeue().GetDoubleValue());
@@ -200,18 +186,21 @@ namespace RacketLite
                     return new NumberOperand(arcTangent, true);
                 case RacketOporatorType.Ceiling:
                     long ceiling = Convert.ToInt64(Math.Ceiling(operands.Dequeue().GetDoubleValue()));
-                    return new NaturalOperand(ceiling, StaticsManager.StackContainsInexact);
+                    return new IntegerOperand(ceiling, StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Cosine:
                     double cosine = Math.Cos(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(cosine, true);
                 case RacketOporatorType.CurrentSeconds:
                     double currentSecondsDouble = Math.Round((DateTime.UtcNow - DateTime.MinValue).TotalSeconds);
                     long currentSeconds = Convert.ToInt64(currentSecondsDouble);
-                    return new NaturalOperand(currentSeconds, false);
+                    return new IntegerOperand(currentSeconds, false);
                 case RacketOporatorType.Divide:
-                    double quotient = operands.Dequeue().GetDoubleValue() / operands.Dequeue().GetDoubleValue();
-                    return new NumberOperand(quotient, StaticsManager.StackContainsInexact);
-                case RacketOporatorType.ExponentialPower:
+                    double divisionQuotient = operands.Dequeue().GetDoubleValue() / operands.Dequeue().GetDoubleValue();
+                    return new NumberOperand(divisionQuotient, StaticsManager.StackContainsInexact);
+                case RacketOporatorType.Equal:
+                    bool result = operands.Dequeue().Equals(operands.Dequeue());
+                    return new BooleanOperand(result);
+                case RacketOporatorType.Exponential:
                     double exp = Math.Exp(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(exp, true);
                 case RacketOporatorType.Exponent:
@@ -219,34 +208,141 @@ namespace RacketLite
                     return new NumberOperand(exponent, StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Floor:
                     long floor = Convert.ToInt64(Math.Floor(operands.Dequeue().GetDoubleValue()));
-                    return new NaturalOperand(floor, StaticsManager.StackContainsInexact);
+                    return new IntegerOperand(floor, StaticsManager.StackContainsInexact);
+                case RacketOporatorType.GreaterThan:
+                    if (operands.Count > 2)
+                    {
+                        DynamicOperand val1 = operands.Dequeue();
+                        DynamicOperand val2 = operands.Dequeue();
+                        return (val1 > val2).GetBooleanValue() == true ? val1 : val2;
+                    }
+                    return operands.Dequeue() > operands.Dequeue();
+                case RacketOporatorType.GreaterThanOrEqual:
+                    if (operands.Count > 2)
+                    {
+                        DynamicOperand val1 = operands.Dequeue();
+                        DynamicOperand val2 = operands.Dequeue();
+                        return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
+                    }
+                    return operands.Dequeue() >= operands.Dequeue();
+                case RacketOporatorType.GreatestCommonDivisor:
+                    long findGCD(long a, long b)
+                    {
+                        if (b == 0)
+                        {
+                            return a;
+                        }
+                        return findGCD(b, a % b);
+                    }
+                    long[] gcdValues = operands.Select(x => x.GetLongValue()).ToArray();
+                    operands.Dequeue(operands.Count);
+                    return new IntegerOperand(gcdValues.Aggregate(findGCD), StaticsManager.StackContainsInexact);
                 case RacketOporatorType.HyperbolicCosine:
                     double hypCosine = Math.Cosh(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(hypCosine, true);
                 case RacketOporatorType.HyperbolicSine:
                     double hypSine = Math.Sinh(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(hypSine, true);
-                case RacketOporatorType.HyperbolicTangent:
-                    double hypTangent = Math.Tanh(operands.Dequeue().GetDoubleValue());
-                    return new NumberOperand(hypTangent, true);
-                case RacketOporatorType.LogBaseE:
-                    double logE = Math.Log(operands.Dequeue().GetDoubleValue());
-                    return new NumberOperand(logE, true);
+                case RacketOporatorType.IsEven:
+                    bool isEven = operands.Dequeue().GetLongValue() % 2 == 0;
+                    return new BooleanOperand(isEven);
+                case RacketOporatorType.IsInteger:
+                    bool isInteger = operands.Dequeue().Type == RacketOperandType.Integer;
+                    return new BooleanOperand(isInteger);
+                case RacketOporatorType.IsNegative:
+                    bool isNegative = operands.Dequeue().GetDoubleValue() < 0;
+                    return new BooleanOperand(isNegative);
+                case RacketOporatorType.IsNumber:
+                    bool isNumber = operands.Dequeue().Type == RacketOperandType.Number;
+                    return new BooleanOperand(isNumber);
+                case RacketOporatorType.IsOdd:
+                    bool isOdd = operands.Dequeue().GetLongValue() % 2 == 1;
+                    return new BooleanOperand(isOdd);
+                case RacketOporatorType.IsPositive:
+                    bool isPositive = operands.Dequeue().GetDoubleValue() > 0;
+                    return new BooleanOperand(isPositive);
+                case RacketOporatorType.IsRational:
+                    if (operands.Peek().Type != RacketOperandType.Number && operands.Peek().Type != RacketOperandType.Integer
+                        && operands.Peek().Type != RacketOperandType.Natural)
+                    {
+                        operands.Dequeue(operands.Count);
+                        return new BooleanOperand(false);
+                    }
+                    if (operands.Peek().Type == RacketOperandType.Number
+                        && ((NumberOperand)operands.Peek().OperableValue).Irrational)
+                    {
+                        operands.Dequeue(operands.Count);
+                        return new BooleanOperand(false);
+                    }
+                    else if (operands.Peek().Type == RacketOperandType.Integer
+                        && ((IntegerOperand)operands.Peek().OperableValue).Inexact)
+                    {
+                        operands.Dequeue(operands.Count);
+                        return new BooleanOperand(false);
+                    }
+                    else if(operands.Peek().Type == RacketOperandType.Natural
+                        && ((NaturalOperand)operands.Peek().OperableValue).Inexact)
+                    {
+                        operands.Dequeue(operands.Count);
+                        return new BooleanOperand(false);
+                    }
+                    operands.Dequeue(operands.Count);
+                    return new BooleanOperand(true);
+                case RacketOporatorType.IsZero:
+                    return new BooleanOperand(operands.Dequeue().GetDoubleValue() == 0);
+                case RacketOporatorType.LessThan:
+                    if (operands.Count > 2)
+                    {
+                        DynamicOperand val1 = operands.Dequeue();
+                        DynamicOperand val2 = operands.Dequeue();
+                        return (val1 < val2).GetBooleanValue() == true ? val1 : val2;
+                    }
+                    return operands.Dequeue() < operands.Dequeue();
+                case RacketOporatorType.LessThanOrEqual:
+                    if (operands.Count > 2)
+                    {
+                        DynamicOperand val1 = operands.Dequeue();
+                        DynamicOperand val2 = operands.Dequeue();
+                        return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
+                    }
+                    return operands.Dequeue() <= operands.Dequeue();
+                case RacketOporatorType.LeastCommonMultiple:
+                    long findLCM(long a, long b)
+                    {
+                        return Math.Abs(a * b) / findGCD(a, b);
+                    }
+                    long[] lcmValues = operands.Select(x => x.GetLongValue()).ToArray();
+                    operands.Dequeue(operands.Count);
+                    return new IntegerOperand(lcmValues.Aggregate(findLCM), StaticsManager.StackContainsInexact);
+                case RacketOporatorType.Maximum:
+                    double[] maxValArray = operands.Select(x => x.GetDoubleValue()).ToArray();
+                    operands.Dequeue(operands.Count);
+                    return new NumberOperand(maxValArray.Max(), StaticsManager.StackContainsInexact);
+                case RacketOporatorType.Minimum:
+                    double[] minValArray = operands.Select(x => x.GetDoubleValue()).ToArray();
+                    operands.Dequeue(operands.Count);
+                    return new NumberOperand(minValArray.Min(), StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Modulo:
                 case RacketOporatorType.Remainder:
                     long modulo = operands.Dequeue().GetLongValue() % operands.Dequeue().GetLongValue();
-                    return new NaturalOperand(modulo, StaticsManager.StackContainsInexact);
+                    return new IntegerOperand(modulo, StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Multiply:
                     double product = operands.Dequeue().GetDoubleValue() * operands.Dequeue().GetDoubleValue();
                     return new NumberOperand(product, StaticsManager.StackContainsInexact);
+                case RacketOporatorType.NaturalLog:
+                    double logE = Math.Log(operands.Dequeue().GetDoubleValue());
+                    return new NumberOperand(logE, true);
+                case RacketOporatorType.Quotient:
+                    long quotient = operands.Dequeue().GetLongValue() / operands.Dequeue().GetLongValue();
+                    return new IntegerOperand(quotient, StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Random:
                     double randValueDouble = new Random().NextDouble();
-                    double roundedRandValue = Math.Round(randValueDouble * operands.Dequeue().GetLongValue());
+                    double roundedRandValue = Math.Round(randValueDouble * operands.Dequeue().GetNaturalValue());
                     long randValue = Convert.ToInt64(roundedRandValue);
-                    return new NaturalOperand(randValue, false);
+                    return new IntegerOperand(randValue, false);
                 case RacketOporatorType.Round:
                     long roundedValue = Convert.ToInt64(Math.Round(operands.Dequeue().GetDoubleValue()));
-                    return new NaturalOperand(roundedValue, StaticsManager.StackContainsInexact);
+                    return new IntegerOperand(roundedValue, StaticsManager.StackContainsInexact);
                 case RacketOporatorType.Sine:
                     double sine = Math.Sin(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(sine, true);
@@ -269,68 +365,53 @@ namespace RacketLite
                     return new NumberOperand(tangent, true);
                 #endregion Numeric Oporators
 
-                #region Numeric Comparisons
-                case RacketOporatorType.Equal:
-                    bool result = operands.Dequeue().Equals(operands.Dequeue());
-                    return new BooleanOperand(result);
-                case RacketOporatorType.LessThan:
-                    if (operands.Count > 2)
+                #region Number Conversion
+                case RacketOporatorType.ExactToInexact:
+                    return new NumberOperand(operands.Dequeue().GetDoubleValue(), true);
+                case RacketOporatorType.InexactToExact:
+                    return new NumberOperand(operands.Dequeue().GetDoubleValue(), false);
+                case RacketOporatorType.NumberToString:
+                    return new StringOperand(operands.Dequeue().GetDoubleValue().ToString());
+                #endregion
+
+                #region Boolean Oporators
+                case RacketOporatorType.And:
+                    bool leftAndValue = operands.Dequeue().GetBooleanValue();
+                    bool rightAndValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(leftAndValue && rightAndValue);
+                case RacketOporatorType.BooleanEqual:
+                    bool booleanEqual = operands.Dequeue().GetBooleanValue() == operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(booleanEqual);
+                case RacketOporatorType.IsBoolean:
+                    return new BooleanOperand(operands.Dequeue().Type == RacketOperandType.Boolean);
+                case RacketOporatorType.IsFalse:
+                    if(operands.Peek().Type != RacketOperandType.Boolean)
                     {
-                        DynamicOperand val1 = operands.Dequeue();
-                        DynamicOperand val2 = operands.Dequeue();
-                        return (val1 < val2).GetBooleanValue() == true ? val1 : val2;
+                        operands.Dequeue(operands.Count);
+                        return new BooleanOperand(false);
                     }
-                    return operands.Dequeue() < operands.Dequeue();
-                case RacketOporatorType.GreaterThan:
-                    if (operands.Count > 2)
-                    {
-                        DynamicOperand val1 = operands.Dequeue();
-                        DynamicOperand val2 = operands.Dequeue();
-                        return (val1 > val2).GetBooleanValue() == true ? val1 : val2;
-                    }
-                    return operands.Dequeue() > operands.Dequeue();
-                case RacketOporatorType.LessThanEqualTo:
-                    if (operands.Count > 2)
-                    {
-                        DynamicOperand val1 = operands.Dequeue();
-                        DynamicOperand val2 = operands.Dequeue();
-                        return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
-                    }
-                    return operands.Dequeue() <= operands.Dequeue();
-                case RacketOporatorType.GreaterThanEqualTo:
-                    if (operands.Count > 2)
-                    {
-                        DynamicOperand val1 = operands.Dequeue();
-                        DynamicOperand val2 = operands.Dequeue();
-                        return (val1 <= val2).GetBooleanValue() == true ? val1 : val2;
-                    }
-                    return operands.Dequeue() >= operands.Dequeue();
-                case RacketOporatorType.IsEven:
-                    bool isEven = operands.Dequeue().GetLongValue() % 2 == 0;
-                    return new BooleanOperand(isEven);
-                case RacketOporatorType.IsInteger:
-                    bool isInteger = operands.Dequeue().Type == RacketOperandType.Natural;
-                    return new BooleanOperand(isInteger);
-                case RacketOporatorType.IsNegative:
-                    bool isNegative = operands.Dequeue().GetDoubleValue() < 0;
-                    return new BooleanOperand(isNegative);
-                case RacketOporatorType.IsNumber:
-                    bool isNumber = operands.Dequeue().Type == RacketOperandType.Number;
-                    return new BooleanOperand(isNumber);
-                case RacketOporatorType.IsOdd:
-                    bool isOdd = operands.Dequeue().GetLongValue() % 2 == 1;
-                    return new BooleanOperand(isOdd);
-                case RacketOporatorType.IsPositive:
-                    bool isPositive = operands.Dequeue().GetDoubleValue() > 0;
-                    return new BooleanOperand(isPositive);
-                case RacketOporatorType.IsZero:
-                    return new BooleanOperand(operands.Dequeue().GetDoubleValue() == 0);
-                #endregion Numeric Comparisons
+                    return new BooleanOperand(operands.Dequeue().GetBooleanValue() == false);
+                case RacketOporatorType.Not:
+                    bool notValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(!notValue);
+                case RacketOporatorType.Or:
+                    bool leftOrValue = operands.Dequeue().GetBooleanValue();
+                    bool rightOrValue = operands.Dequeue().GetBooleanValue();
+                    return new BooleanOperand(leftOrValue || rightOrValue);
+                #endregion
+
+                #region Boolean Conversions
+                case RacketOporatorType.BooleanToInteger:
+                    long boolAsLong = Convert.ToInt64(operands.Dequeue().GetBooleanValue());
+                    return new IntegerOperand(boolAsLong, false);
+                case RacketOporatorType.BooleanToString:
+                    return new StringOperand(operands.Dequeue().GetBooleanValue().ToString().ToLower());
+                #endregion
 
                 #region String Oporators
                 case RacketOporatorType.StringLength:
                     int stringLength = operands.Dequeue().GetStringValue().Length;
-                    return new NaturalOperand(stringLength, false);
+                    return new IntegerOperand(stringLength, false);
                 case RacketOporatorType.StringAppend:
                     string tempString = operands.Dequeue().GetStringValue() + operands.Dequeue().GetStringValue();
                     return new StringOperand(tempString);
@@ -450,18 +531,17 @@ namespace RacketLite
             racketExpression.Operands.ReplaceUnknowns(StaticsManager.LocalStack);
 
             //Check for inexact in user-set operands
-            if(racketExpression.Operands.ContainsInexact())
+            if (racketExpression.Operands.ContainsInexact())
             {
                 StaticsManager.StackContainsInexact = true;
             }
 
             //Run on the inner expressions too
-            DynamicOperand[] operandArray = racketExpression.Operands.ToArray();
-            for (int i = 0; i < racketExpression.Operands.Count; i++)
+            foreach (DynamicOperand operand in racketExpression.Operands)
             {
-                if(operandArray[i].Type == RacketOperandType.Expression)
+                if (operand.Type == RacketOperandType.Expression)
                 {
-                    ReplaceFunctionLocal(((RacketExpression)operandArray[i].OperableValue));
+                    ReplaceFunctionLocal(((RacketExpression)operand.OperableValue));
                 }
             }
         }

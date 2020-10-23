@@ -92,9 +92,14 @@ namespace RacketLite.Oporators
                     continue;
                 }
 
-                //Conversion between Number and Natural can only be judged run-time
-                if ((operandTypes[i] == RacketOperandType.Natural && correctOperandType == (int)RacketOperandType.Number)
-                    || (operandTypes[i] == RacketOperandType.Number && correctOperandType == (int)RacketOperandType.Natural))
+                //Check conversion between Number, Integer, and Natural
+                if ((RacketOperandType)correctOperandType == RacketOperandType.Number
+                    && (RacketOperandType.Number | RacketOperandType.Integer | RacketOperandType.Natural).HasFlag(operandTypes[i]))
+                {
+                    continue;
+                }
+                else if ((RacketOperandType)correctOperandType == RacketOperandType.Integer
+                    && (RacketOperandType.Integer | RacketOperandType.Natural).HasFlag(operandTypes[i]))
                 {
                     continue;
                 }

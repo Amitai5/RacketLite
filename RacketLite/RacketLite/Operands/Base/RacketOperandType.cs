@@ -4,16 +4,18 @@ using System.Text;
 
 namespace RacketLite.Operands
 {
+    [Flags]
     public enum RacketOperandType
     {
         Any = -1,
-        Unknown = 0,
+        Unknown = 1,
 
-        Number = 1,
-        Natural = 2,
-        String = 3,
-        Boolean = 4,
-        Variable = 5,
-        Expression = 6,
+        Number = 2,
+        Integer = 4,
+        Natural = 8,
+        String = 16,
+        Boolean = 32,
+        Variable = 64,
+        Expression = 128,
     }
 }

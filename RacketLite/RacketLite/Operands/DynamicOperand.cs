@@ -39,20 +39,13 @@ namespace RacketLite.Operands
             {
                 case RacketOperandType.Number:
                     return ((NumberOperand)OperableValue).OperandValue;
+                case RacketOperandType.Integer:
+                    return ((IntegerOperand)OperableValue).OperandValue;
                 case RacketOperandType.Natural:
                     return ((NaturalOperand)OperableValue).OperandValue;
-
                 case RacketOperandType.Expression:
                     DynamicOperand expressionValue = GetExpressionValue();
-                    if (expressionValue.Type == RacketOperandType.Number)
-                    {
-                        return expressionValue.GetDoubleValue();
-                    }
-                    else if(expressionValue.Type == RacketOperandType.Natural)
-                    {
-                        return expressionValue.GetLongValue();
-                    }
-                    throw new TypeConversionException(expressionValue.Type, RacketOperandType.Number);
+                    return expressionValue.GetDoubleValue();
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.Number);
@@ -63,16 +56,45 @@ namespace RacketLite.Operands
         {
             switch (Type)
             {
-                case RacketOperandType.Natural:
-                    return ((NaturalOperand)OperableValue).OperandValue;
+                //Try convert Number
+                case RacketOperandType.Number:
+                    if(long.TryParse(GetDoubleValue().ToString(), out long parsedNumber))
+                    {
+                        return parsedNumber;
+                    }
+                    throw new TypeConversionException(Type, RacketOperandType.Integer);
 
+                case RacketOperandType.Integer:
+                    return ((IntegerOperand)OperableValue).OperandValue;
+                case RacketOperandType.Natural:
+                    return (long)((NaturalOperand)OperableValue).OperandValue;
                 case RacketOperandType.Expression:
                     DynamicOperand expressionValue = GetExpressionValue();
-                    if (expressionValue.Type == RacketOperandType.Natural)
+                    return expressionValue.GetLongValue();
+
+                default:
+                    throw new TypeConversionException(Type, RacketOperandType.Integer);
+            }
+        }
+
+        public ulong GetNaturalValue()
+        {
+            switch (Type)
+            {
+                //Try convert Number & Integer
+                case RacketOperandType.Number:
+                case RacketOperandType.Integer:
+                    if (ulong.TryParse(GetDoubleValue().ToString(), out ulong parsedNumber) && parsedNumber != 0)
                     {
-                        return expressionValue.GetLongValue();
+                        return parsedNumber;
                     }
-                    throw new TypeConversionException(expressionValue.Type, RacketOperandType.Natural);
+                    throw new TypeConversionException(Type, RacketOperandType.Natural);
+
+                case RacketOperandType.Natural:
+                    return ((NaturalOperand)OperableValue).OperandValue;
+                case RacketOperandType.Expression:
+                    DynamicOperand expressionValue = GetExpressionValue();
+                    return expressionValue.GetNaturalValue();
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.Natural);
@@ -88,11 +110,7 @@ namespace RacketLite.Operands
 
                 case RacketOperandType.Expression:
                     DynamicOperand expressionValue = GetExpressionValue();
-                    if (expressionValue.Type == RacketOperandType.String)
-                    {
-                        return expressionValue.GetStringValue();
-                    }
-                    throw new TypeConversionException(expressionValue.Type, RacketOperandType.String);
+                    return expressionValue.GetStringValue();
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.String);
@@ -236,6 +254,11 @@ namespace RacketLite.Operands
         public static implicit operator DynamicOperand(NaturalOperand naturalOperand)
         {
             return new DynamicOperand(naturalOperand);
+        }
+
+        public static implicit operator DynamicOperand(IntegerOperand integerOperand)
+        {
+            return new DynamicOperand(integerOperand);
         }
 
         public static implicit operator DynamicOperand(NumberOperand numericOperand)

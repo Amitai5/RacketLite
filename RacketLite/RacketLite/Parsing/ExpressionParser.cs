@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RacketLite.Parsing    
+namespace RacketLite.Parsing
 {
     public static class ExpressionParser
     {
@@ -18,15 +18,21 @@ namespace RacketLite.Parsing
             {
                 //Check if token starts with inexact prefix
                 bool inexact = tokenArray[i].StartsWith(ParsingRules.InexactNumberPrefix);
-                if(inexact)
+                if (inexact)
                 {
                     tokenArray[i] = tokenArray[i].Remove(0, ParsingRules.InexactNumberPrefix.Length);
                 }
 
-                //Try convert to number
-                if (int.TryParse(tokenArray[i], out int naturalValue))
+                //Try convert to natural
+                if (ulong.TryParse(tokenArray[i], out ulong naturalValue) && naturalValue != 0)
                 {
                     operands.Enqueue(new NaturalOperand(naturalValue, inexact));
+                }
+
+                //Try convert to integer
+                else if (long.TryParse(tokenArray[i], out long integerValue))
+                {
+                    operands.Enqueue(new IntegerOperand(integerValue, inexact));
                 }
 
                 //Try convert to number
@@ -115,6 +121,44 @@ namespace RacketLite.Parsing
                 }
             }
             return innerExpressions;
+        }
+
+        public static Queue<string> ParseExpressionTokens(string parsedExpressionText)
+        {
+            bool seenQuote = false;
+            Queue<string> tokenQueue = new Queue<string>();
+            StringBuilder currentToken = new StringBuilder();
+            foreach(char currentChar in parsedExpressionText)
+            {
+                currentToken.Append(currentChar);
+
+                //Check for strings
+                if (currentChar == '"')
+                {
+                    if (!seenQuote)
+                    {
+                        seenQuote = true;
+                    }
+                    else
+                    {
+                        tokenQueue.Enqueue(currentToken.ToString().Trim());
+                        currentToken.Clear();
+                        seenQuote = false;
+                    }
+                }
+                else if (currentChar == ' ' && !seenQuote && !string.IsNullOrWhiteSpace(currentToken.ToString()))
+                {
+                    tokenQueue.Enqueue(currentToken.ToString().Trim());
+                    currentToken.Clear();
+                }
+            }
+
+            //Add the last token if not empty
+            if(!string.IsNullOrWhiteSpace(currentToken.ToString()))
+            {
+                tokenQueue.Enqueue(currentToken.ToString().Trim());
+            }
+            return tokenQueue;
         }
 
         public static (RacketOporator, bool) ParseRacketOporator(string racketOporatorName)
