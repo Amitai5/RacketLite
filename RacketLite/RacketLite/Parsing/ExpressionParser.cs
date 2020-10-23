@@ -6,61 +6,69 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RacketLite.Parsing
+namespace RacketLite.Parsing    
 {
     public static class ExpressionParser
     {
         public static DynamicOperand[] ParseTokensAsOperands(Queue<string> tokens, Dictionary<string, RacketExpression> innerExpressions)
         {
+            string[] tokenArray = tokens.ToArray();
             OperandQueue operands = new OperandQueue(tokens.Count);
-            foreach (string token in tokens)
+            for (int i = 0; i < tokenArray.Length; i++)
             {
-                //Try convert to number
-                if (int.TryParse(token, out int naturalValue))
+                //Check if token starts with inexact prefix
+                bool inexact = tokenArray[i].StartsWith(ParsingRules.InexactNumberPrefix);
+                if(inexact)
                 {
-                    operands.Enqueue(new NaturalOperand(naturalValue));
+                    tokenArray[i] = tokenArray[i].Remove(0, ParsingRules.InexactNumberPrefix.Length);
                 }
 
                 //Try convert to number
-                else if (double.TryParse(token, out double numberValue))
+                if (int.TryParse(tokenArray[i], out int naturalValue))
                 {
-                    operands.Enqueue(new NumberOperand(numberValue));
+                    operands.Enqueue(new NaturalOperand(naturalValue, inexact));
+                }
+
+                //Try convert to number
+                else if (double.TryParse(tokenArray[i], out double numberValue))
+                {
+                    operands.Enqueue(new NumberOperand(numberValue, inexact));
                 }
 
                 //Try convert to string
-                else if (token.Count(s => s == '"') == 2)
+                else if (tokenArray[i].Count(s => s == '"') == 2)
                 {
-                    operands.Enqueue(new StringOperand(token.Replace("\"", "")));
+                    operands.Enqueue(new StringOperand(tokenArray[i].Replace("\"", "")));
                 }
 
                 //Try convert to inner expression
-                else if (innerExpressions.ContainsKey(token))
+                else if (innerExpressions.ContainsKey(tokenArray[i]))
                 {
-                    operands.Enqueue(innerExpressions[token]);
+                    operands.Enqueue(innerExpressions[tokenArray[i]]);
                 }
 
                 //Try to get variable value of token
-                else if (StaticsManager.VariableMap.ContainsKey(token))
+                else if (StaticsManager.VariableMap.ContainsKey(tokenArray[i]))
                 {
-                    operands.Enqueue(StaticsManager.VariableMap[token]);
+                    operands.Enqueue(StaticsManager.VariableMap[tokenArray[i]]);
                 }
 
                 //Try to get racket constant value of token
-                else if (StaticsManager.RacketConstants.ContainsKey(token))
+                else if (StaticsManager.RacketConstants.ContainsKey(tokenArray[i]))
                 {
-                    operands.Enqueue(StaticsManager.RacketConstants[token]);
+                    operands.Enqueue(StaticsManager.RacketConstants[tokenArray[i]]);
                 }
 
                 //At last resort add the token as an Unkown Operand (if valid)
-                else if(!ContainsInvalidCharacter(token))
+                else if (!ContainsInvalidCharacter(tokenArray[i]))
                 {
-                    operands.Enqueue(new UnknownOperand(token));
+                    operands.Enqueue(new UnknownOperand(tokenArray[i]));
                 }
 
                 //If the token is using an invalid character, throw error
                 else
                 {
-                    throw new InvalidNameException(token);
+                    throw new InvalidNameException(tokenArray[i]);
                 }
             }
             return operands.ToArray();
@@ -132,9 +140,9 @@ namespace RacketLite.Parsing
 
         private static bool ContainsInvalidCharacter(string unknownToken)
         {
-            for(int i = 0; i < ParsingRules.InvalidCharacters.Length; i++)
+            for (int i = 0; i < ParsingRules.InvalidCharacters.Length; i++)
             {
-                if(unknownToken.StartsWith(ParsingRules.InvalidCharacters[i]))
+                if (unknownToken.StartsWith(ParsingRules.InvalidCharacters[i]))
                 {
                     return true;
                 }

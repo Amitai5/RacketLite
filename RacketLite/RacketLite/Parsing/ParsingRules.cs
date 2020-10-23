@@ -8,6 +8,7 @@ namespace RacketLite.Parsing
     {
         public const string ExpressionPerface = "##";
         public const string ReservedLocalPreface = "#";
+        public const string InexactNumberPrefix = "#i";
         public static readonly char[] InvalidCharacters = { '"', ',', '`', '(', ')', '[', ']', '{', '}', '|', ';', '#' };
     }
 }

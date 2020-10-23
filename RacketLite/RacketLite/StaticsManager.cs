@@ -8,10 +8,12 @@ namespace RacketLite
 {
     public static class StaticsManager
     {
+        public static bool StackContainsInexact { get; set; }
         public static Dictionary<string, DynamicOperand> LocalStack = new Dictionary<string, DynamicOperand>();
         public static void ResetCurrentStackVars()
         {
             LocalStack.Clear();
+            StackContainsInexact = false;
         }
 
         #region User Defined Expression Methods
@@ -40,8 +42,8 @@ namespace RacketLite
             { "#false", new BooleanOperand(false) },
 
             //Numeric Constants
-            { "e", new NumberOperand(Math.E) },
-            { "pi", new NumberOperand(Math.PI) },
+            { "e", new NumberOperand(Math.E, true) },
+            { "pi", new NumberOperand(Math.PI, true) },
         };
     }
 }

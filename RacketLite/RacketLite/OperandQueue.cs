@@ -88,6 +88,31 @@ namespace RacketLite
         }
 
         /// <summary>
+        /// Looks for a number operand that is flagged as inexact
+        /// </summary>
+        /// <returns>Boolean, true if a value in the queue is flagged as inexact</returns>
+        public bool ContainsInexact()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (queueData[i] != null)
+                {
+                    if (queueData[i].Type == RacketOperandType.Number
+                        && ((NumberOperand)queueData[i].OperableValue).Inexact)
+                    {
+                        return true;
+                    }
+                    else if (queueData[i].Type == RacketOperandType.Natural
+                        && ((NaturalOperand)queueData[i].OperableValue).Inexact)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Checks if the queue needs to be resized, if needed, the queue will be resized to double that of before
         /// </summary>
         private void Resize()

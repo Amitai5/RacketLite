@@ -1,14 +1,17 @@
-﻿using System;
+﻿using RacketLite.Parsing;
+using System;
 
 namespace RacketLite.Operands
 {
     public class NaturalOperand : IOperable
     {
         public long OperandValue;
+        public bool Inexact { get; private set; }
 
-        public NaturalOperand(long value)
+        public NaturalOperand(long value, bool inexact)
             : base(RacketOperandType.Natural)
         {
+            Inexact = inexact;
             OperandValue = value;
         }
 
@@ -31,7 +34,12 @@ namespace RacketLite.Operands
 
         public override string ToString()
         {
-            return OperandValue.ToString().ToUpper();
+            string operandValueString = OperandValue.ToString().ToUpper();
+            if (Inexact)
+            {
+                return $"{ParsingRules.InexactNumberPrefix}{operandValueString:0.0}";
+            }
+            return operandValueString;
         }
         #endregion IOperable Overrides
     }
