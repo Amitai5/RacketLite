@@ -33,7 +33,7 @@ namespace RacketLite.Operands
 
         public override string ToString()
         {
-            return $"#{OperandValue.ToString().ToLower()[0]}";
+            return $"#{OperandValue.ToString().ToLower()}";
         }
         #endregion IOperable Overrides
     }

@@ -51,34 +51,19 @@ namespace RacketLite.Parsing
                     operands.Enqueue(StaticsManager.RacketConstants[token]);
                 }
 
-                //At last resort add the token as an Unkown Operand
-                else
+                //At last resort add the token as an Unkown Operand (if valid)
+                else if(!ContainsInvalidCharacter(token))
                 {
                     operands.Enqueue(new UnknownOperand(token));
                 }
+
+                //If the token is using an invalid character, throw error
+                else
+                {
+                    throw new InvalidNameException(token);
+                }
             }
             return operands.ToArray();
-        }
-
-        public static (RacketOporator, bool) ParseRacketOporator(string racketOporatorName)
-        {
-            if (OporatorDefinitions.RacketOporatorMap.ContainsKey(racketOporatorName))
-            {
-                return (OporatorDefinitions.RacketOporatorMap[racketOporatorName], false);
-            }
-            else if (StaticsManager.UserDefinedOporators.ContainsKey(racketOporatorName))
-            {
-                return (StaticsManager.UserDefinedOporators[racketOporatorName], false);
-            }
-            else if (StaticsManager.VariableMap.ContainsKey(racketOporatorName))
-            {
-                return (new RacketOporator(RacketOporatorType.ReturnVariable, null, 1, 1, RacketOperandType.Any), true);
-            }
-            else if (StaticsManager.RacketConstants.ContainsKey(racketOporatorName))
-            {
-                return (new RacketOporator(RacketOporatorType.ReturnConstant, null, 1, 1, RacketOperandType.Any), true);
-            }
-            return (null, true);
         }
 
         public static Dictionary<string, RacketExpression> ParseInnerExpressions(ref string expressionText)
@@ -122,6 +107,39 @@ namespace RacketLite.Parsing
                 }
             }
             return innerExpressions;
+        }
+
+        public static (RacketOporator, bool) ParseRacketOporator(string racketOporatorName)
+        {
+            if (OporatorDefinitions.RacketOporatorMap.ContainsKey(racketOporatorName))
+            {
+                return (OporatorDefinitions.RacketOporatorMap[racketOporatorName], false);
+            }
+            else if (StaticsManager.UserDefinedOporators.ContainsKey(racketOporatorName))
+            {
+                return (StaticsManager.UserDefinedOporators[racketOporatorName], false);
+            }
+            else if (StaticsManager.VariableMap.ContainsKey(racketOporatorName))
+            {
+                return (new RacketOporator(RacketOporatorType.ReturnVariable, null, 1, 1, RacketOperandType.Any), true);
+            }
+            else if (StaticsManager.RacketConstants.ContainsKey(racketOporatorName))
+            {
+                return (new RacketOporator(RacketOporatorType.ReturnConstant, null, 1, 1, RacketOperandType.Any), true);
+            }
+            return (null, true);
+        }
+
+        private static bool ContainsInvalidCharacter(string unknownToken)
+        {
+            for(int i = 0; i < ParsingRules.InvalidCharacters.Length; i++)
+            {
+                if(unknownToken.StartsWith(ParsingRules.InvalidCharacters[i]))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

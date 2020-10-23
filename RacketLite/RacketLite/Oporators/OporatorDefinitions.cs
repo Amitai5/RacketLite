@@ -29,7 +29,6 @@ namespace RacketLite.Oporators
             { "expt", new RacketOporator(RacketOporatorType.Exponent, RacketOperandType.Number, 2, 2, RacketOperandType.Number) },
             { "floor", new RacketOporator(RacketOporatorType.Floor, RacketOperandType.Natural, 1, 1, RacketOperandType.Number) },
             { "cosh", new RacketOporator(RacketOporatorType.HyperbolicCosine, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
-            { "sinh", new RacketOporator(RacketOporatorType.HyperbolicSign, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "tanh", new RacketOporator(RacketOporatorType.HyperbolicTangent, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "log", new RacketOporator(RacketOporatorType.LogBaseE, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "modulo", new RacketOporator(RacketOporatorType.Modulo, RacketOperandType.Natural, 2, 2, RacketOperandType.Natural) },
@@ -38,10 +37,13 @@ namespace RacketLite.Oporators
             { "remainder", new RacketOporator(RacketOporatorType.Remainder, RacketOperandType.Natural, 2, 2, RacketOperandType.Natural) },
             { "round", new RacketOporator(RacketOporatorType.Round, RacketOperandType.Natural, 1, 1, RacketOperandType.Number) },
             { "sgn", new RacketOporator(RacketOporatorType.Sign, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
+            { "sinh", new RacketOporator(RacketOporatorType.HyperbolicSine, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
+            { "sin", new RacketOporator(RacketOporatorType.Sine, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "sqr", new RacketOporator(RacketOporatorType.Square, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "sqrt", new RacketOporator(RacketOporatorType.SquareRoot, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
             { "-", new RacketOporator(RacketOporatorType.Subtract, RacketOperandType.Number, 2, null, RacketOperandType.Number) },
             { "sub1", new RacketOporator(RacketOporatorType.SubtractOne, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
+            { "tan", new RacketOporator(RacketOporatorType.Tangent, RacketOperandType.Number, 1, 1, RacketOperandType.Number) },
 
             //Numeric Comparisons
             { "=", new RacketOporator(RacketOporatorType.Equal, RacketOperandType.Boolean, 2, null, RacketOperandType.Number) },

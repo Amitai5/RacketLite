@@ -9,6 +9,10 @@ namespace RacketLite
     public static class StaticsManager
     {
         public static Dictionary<string, DynamicOperand> LocalStack = new Dictionary<string, DynamicOperand>();
+        public static void ResetCurrentStackVars()
+        {
+            LocalStack.Clear();
+        }
 
         #region User Defined Expression Methods
         public static void AddUDE(string key, RacketExpression expression)

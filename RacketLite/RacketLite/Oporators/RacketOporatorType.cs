@@ -25,7 +25,7 @@
         ExponentialPower,
         Exponent,
         Floor,
-        HyperbolicSign,
+        HyperbolicSine,
         HyperbolicCosine,
         HyperbolicTangent,
         LogBaseE,
@@ -35,10 +35,12 @@
         Remainder,
         Round,
         Sign,
+        Sine,
         Square,
         SquareRoot,
         Subtract,
         SubtractOne,
+        Tangent,
 
         //Numeric Comparisons
         Equal,

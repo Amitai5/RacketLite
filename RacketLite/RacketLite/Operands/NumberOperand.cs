@@ -28,6 +28,11 @@ namespace RacketLite.Operands
         {
             return HashCode.Combine(Type, OperandValue);
         }
+
+        public override string ToString()
+        {
+            return OperandValue.ToString().ToUpper();
+        }
         #endregion IOperable Overrides
     }
 }

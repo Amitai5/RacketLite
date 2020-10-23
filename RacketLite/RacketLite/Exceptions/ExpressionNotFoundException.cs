@@ -7,7 +7,7 @@ namespace RacketLite.Exceptions
     public class ExpressionNotFoundException : RacketException
     {
         public ExpressionNotFoundException(string expression) 
-            : base("")
+            : base($"The expression, '{expression}', does not exist.")
         {
 
         }

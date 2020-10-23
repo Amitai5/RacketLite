@@ -69,8 +69,8 @@ namespace RacketLite
         {
             try
             {
-                //Clear the local stack each time we call
-                StaticsManager.LocalStack.Clear();
+                //Reset the current stack vars each command
+                StaticsManager.ResetCurrentStackVars();
 
                 RacketExpression mainEx = new RacketExpression(expressionText);
                 DynamicOperand result = mainEx.Evaluate();

@@ -17,14 +17,12 @@ namespace RacketLite
         public string ExpressionText { get; }
         public string RacketOporatorSignature { get; }
         private List<string> LocalVarNames = new List<string>();
-        private readonly Dictionary<string, RacketExpression> InnerExpressions;
 
-        private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames, Dictionary<string, RacketExpression> innerExpressions)
+        private RacketExpression(RacketOporator oporator, OperandQueue operands, List<string> localVarNames)
         {
             Operands = operands;
             Oporator = oporator;
             LocalVarNames = localVarNames;
-            InnerExpressions = innerExpressions;
         }
 
         public RacketExpression(string expressionText)
@@ -45,7 +43,7 @@ namespace RacketLite
             SyntaxManager.CheckExpressionSyntax(expressionText);
 
             //Clean up the expressionText after getting inner expressions
-            InnerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
+            Dictionary<string, RacketExpression> innerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
             string parsedExpressionText = expressionText.Replace("(", ")").Replace(")", "");
             parsedExpressionText = parsedExpressionText.Replace("  ", " ").Trim();
 
@@ -65,13 +63,13 @@ namespace RacketLite
             }
 
             //Special Check for a Define Oporator
-            if (Oporator != null && Oporator.Type == RacketOporatorType.Define && InnerExpressions.Count == 2)
+            if (Oporator != null && Oporator.Type == RacketOporatorType.Define && innerExpressions.Count == 2)
             {
                 //Ensure that expression is defined as a function
                 Operands.Enqueue(new BooleanOperand(true));
 
                 string firstExpressionKey = $"{ParsingRules.ExpressionPerface}0";
-                RacketExpression firstExpression = InnerExpressions[firstExpressionKey];
+                RacketExpression firstExpression = innerExpressions[firstExpressionKey];
                 if (firstExpression.Oporator == null)
                 {
                     //Add the parameters to the new user function (skip the last one)
@@ -82,7 +80,7 @@ namespace RacketLite
                     }
 
                     tokenStrings.Dequeue(); //Remove the function header from the tokens
-                    InnerExpressions.Remove(firstExpressionKey);
+                    innerExpressions.Remove(firstExpressionKey);
                     Operands.Enqueue(new StringOperand(firstExpression.RacketOporatorSignature));
                 }
                 else
@@ -98,7 +96,7 @@ namespace RacketLite
             }
 
             //Create opernds
-            Operands.Enqueue(ExpressionParser.ParseTokensAsOperands(tokenStrings, InnerExpressions));
+            Operands.Enqueue(ExpressionParser.ParseTokensAsOperands(tokenStrings, innerExpressions));
 
             //Ensure all expressions contain at least one set of parenthesis
             if (Oporator != null && !expressionText.Contains('('))
@@ -113,6 +111,8 @@ namespace RacketLite
 
         private DynamicOperand EvaluateExpression(OperandQueue operands)
         {
+            System.Threading.Thread.Sleep(100);
+
             switch (Oporator.Type)
             {
                 #region Special Oporators
@@ -225,7 +225,7 @@ namespace RacketLite
                 case RacketOporatorType.HyperbolicCosine:
                     double hypCosine = Math.Cosh(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(hypCosine);
-                case RacketOporatorType.HyperbolicSign:
+                case RacketOporatorType.HyperbolicSine:
                     double hypSine = Math.Sinh(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(hypSine);
                 case RacketOporatorType.HyperbolicTangent:
@@ -249,6 +249,9 @@ namespace RacketLite
                 case RacketOporatorType.Round:
                     long roundedValue = Convert.ToInt64(Math.Round(operands.Dequeue().GetDoubleValue()));
                     return new NaturalOperand(roundedValue);
+                case RacketOporatorType.Sine:
+                    double sine = Math.Sin(operands.Dequeue().GetDoubleValue());
+                    return new NumberOperand(sine);
                 case RacketOporatorType.Sign:
                     double signValue = Math.Sign(operands.Dequeue().GetDoubleValue());
                     return new NumberOperand(signValue);
@@ -263,6 +266,9 @@ namespace RacketLite
                     return new NumberOperand(difference);
                 case RacketOporatorType.SubtractOne:
                     return new NumberOperand(operands.Dequeue().GetDoubleValue() - 1);
+                case RacketOporatorType.Tangent:
+                    double tangent = Math.Tan(operands.Dequeue().GetDoubleValue());
+                    return new NumberOperand(tangent);
                 #endregion Numeric Oporators
 
                 #region Numeric Comparisons
@@ -439,11 +445,12 @@ namespace RacketLite
             racketExpression.Operands.ReplaceUnknowns(StaticsManager.LocalStack);
 
             //Run on the inner expressions too
-            if (racketExpression.InnerExpressions != null)
+            DynamicOperand[] operandArray = racketExpression.Operands.ToArray();
+            for (int i = 0; i < racketExpression.Operands.Count; i++)
             {
-                foreach (KeyValuePair<string, RacketExpression> valuePair in racketExpression.InnerExpressions)
+                if(operandArray[i].Type == RacketOperandType.Expression)
                 {
-                    ReplaceFunctionLocal(valuePair.Value);
+                    ReplaceFunctionLocal(((RacketExpression)operandArray[i].OperableValue));
                 }
             }
         }
@@ -456,7 +463,7 @@ namespace RacketLite
         public RacketExpression GetCopy()
         {
             RacketExpression innerExpression = new RacketExpression(ExpressionText);
-            return new RacketExpression(Oporator, innerExpression.Operands, LocalVarNames, innerExpression.InnerExpressions);
+            return new RacketExpression(Oporator, innerExpression.Operands, LocalVarNames);
         }
 
         public override int CompareTo(object obj)
