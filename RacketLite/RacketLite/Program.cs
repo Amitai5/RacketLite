@@ -31,7 +31,7 @@ namespace RacketLite
                 }
 
                 //Parse Racket-Lite Expressions
-                interpreter.ParseExpression(expressionText);
+                interpreter.ParseSingleLine(expressionText);
 
             } while (expressionText.ToLower().Trim() != "exit");
         }

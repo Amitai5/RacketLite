@@ -5,7 +5,7 @@ namespace RacketLite.Operands
 {
     public class NumberOperand : IOperable
     {
-        public double OperandValue;
+        public double NumberValue;
         public bool Inexact { get; private set; }
         public bool Irrational { get; private set; }
 
@@ -13,30 +13,31 @@ namespace RacketLite.Operands
             : base(RacketOperandType.Number)
         {
             Inexact = inexact;
-            OperandValue = value;
+            NumberValue = value;
             Irrational = Inexact || double.IsNaN(value);
         }
 
         #region IOperable Overrides
         public override bool Equals(object obj)
         {
-            return OperandValue == ((NumberOperand)obj).OperandValue;
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return ((double)NumberValue).Equals(otherOperand.GetNumberValue());
         }
 
         public override int CompareTo(object obj)
         {
-            double otherValue = ((NumberOperand)obj).OperandValue;
-            return OperandValue.CompareTo(otherValue);
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return ((double)NumberValue).CompareTo(otherOperand.GetNumberValue());
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Type, OperandValue);
+            return HashCode.Combine(Type, NumberValue);
         }
 
         public override string ToString()
         {
-            string operandValueString = OperandValue.ToString().ToUpper();
+            string operandValueString = NumberValue.ToString().ToUpper();
             if (Inexact)
             {
                 return $"{ParsingRules.InexactNumberPrefix}{operandValueString:0.0}";

@@ -17,13 +17,14 @@ namespace RacketLite.Operands
         #region IOperable Overrides
         public override bool Equals(object obj)
         {
-            return OperandValue == ((BooleanOperand)obj).OperandValue;
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return OperandValue.Equals(otherOperand.GetBooleanValue());
         }
 
         public override int CompareTo(object obj)
         {
-            bool otherValue = ((BooleanOperand)obj).OperandValue;
-            return OperandValue.CompareTo(otherValue);
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return OperandValue.CompareTo(otherOperand.GetBooleanValue());
         }
 
         public override int GetHashCode()

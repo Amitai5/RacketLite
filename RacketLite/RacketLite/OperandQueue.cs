@@ -98,15 +98,12 @@ namespace RacketLite
             {
                 if (queueData[i] != null)
                 {
-                    if (queueData[i].Type == RacketOperandType.Number
-                        && ((NumberOperand)queueData[i].OperableValue).Inexact)
+                    switch (queueData[i].Type)
                     {
-                        return true;
-                    }
-                    else if (queueData[i].Type == RacketOperandType.Integer
-                        && ((IntegerOperand)queueData[i].OperableValue).Inexact)
-                    {
-                        return true;
+                        case RacketOperandType.Number when queueData[i].Inexact.Value:
+                            return true;
+                        case RacketOperandType.Integer when queueData[i].Inexact.Value:
+                            return true;
                     }
                 }
             }

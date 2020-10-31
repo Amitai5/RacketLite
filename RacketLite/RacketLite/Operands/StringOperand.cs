@@ -6,34 +6,35 @@ namespace RacketLite.Operands
 {
     public class StringOperand : IOperable
     {
-        public string OperandValue;
+        public string StringValue;
 
         public StringOperand(string value)
             : base(RacketOperandType.String)
         {
-            OperandValue = value;
+            StringValue = value;
         }
 
         #region IOperable Overrides
         public override bool Equals(object obj)
         {
-            return OperandValue == ((StringOperand)obj).OperandValue;
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return StringValue.Equals(otherOperand.GetStringValue());
         }
 
         public override int CompareTo(object obj)
         {
-            string otherValue = ((StringOperand)obj).OperandValue;
-            return OperandValue.CompareTo(otherValue);
+            DynamicOperand otherOperand = (DynamicOperand)obj;
+            return StringValue.CompareTo(otherOperand.GetStringValue());
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Type, OperandValue);
+            return HashCode.Combine(Type, StringValue);
         }
 
         public override string ToString()
         {
-            return $"\"{OperandValue}\"";
+            return $"\"{StringValue}\"";
         }
         #endregion IOperable Overrides
     }

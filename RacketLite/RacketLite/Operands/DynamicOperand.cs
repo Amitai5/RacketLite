@@ -6,7 +6,32 @@ namespace RacketLite.Operands
 {
     public class DynamicOperand : IOperable
     {
-        public IOperable OperableValue { get; private set; }
+        public bool? Inexact
+        {
+            get
+            {
+                return OperableValue.Type switch
+                {
+                    RacketOperandType.Number => ((NumberOperand)OperableValue).Inexact,
+                    RacketOperandType.Natural => ((NaturalOperand)OperableValue).Inexact,
+                    RacketOperandType.Integer => ((IntegerOperand)OperableValue).Inexact,
+                    _ => null,
+                };
+            }
+        }
+        public bool? Irrational
+        {
+            get
+            {
+                return OperableValue.Type switch
+                {
+                    RacketOperandType.Number => ((NumberOperand)OperableValue).Irrational,
+                    _ => null,
+                };
+            }
+        }
+        private IOperable OperableValue { get; set; }
+
         public DynamicOperand(IOperable operableValue = null)
             : base(operableValue.Type)
         {
@@ -21,7 +46,7 @@ namespace RacketLite.Operands
                     return ((BooleanOperand)OperableValue).OperandValue;
 
                 case RacketOperandType.Expression:
-                    DynamicOperand expressionValue = GetExpressionValue();
+                    DynamicOperand expressionValue = EvaluateExpressionOperand();
                     if (expressionValue.Type == RacketOperandType.Boolean)
                     {
                         return expressionValue.GetBooleanValue();
@@ -33,44 +58,44 @@ namespace RacketLite.Operands
             }
         }
 
-        public double GetDoubleValue()
+        public double GetNumberValue()
         {
             switch (Type)
             {
                 case RacketOperandType.Number:
-                    return ((NumberOperand)OperableValue).OperandValue;
+                    return ((NumberOperand)OperableValue).NumberValue;
                 case RacketOperandType.Integer:
-                    return ((IntegerOperand)OperableValue).OperandValue;
+                    return ((IntegerOperand)OperableValue).IntegerValue;
                 case RacketOperandType.Natural:
-                    return ((NaturalOperand)OperableValue).OperandValue;
+                    return ((NaturalOperand)OperableValue).NaturalValue;
                 case RacketOperandType.Expression:
-                    DynamicOperand expressionValue = GetExpressionValue();
-                    return expressionValue.GetDoubleValue();
+                    DynamicOperand expressionValue = EvaluateExpressionOperand();
+                    return expressionValue.GetNumberValue();
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.Number);
             }
         }
 
-        public long GetLongValue()
+        public long GetIntegerValue()
         {
             switch (Type)
             {
                 //Try convert Number
                 case RacketOperandType.Number:
-                    if(long.TryParse(GetDoubleValue().ToString(), out long parsedNumber))
+                    if(long.TryParse(GetNumberValue().ToString(), out long parsedNumber))
                     {
                         return parsedNumber;
                     }
                     throw new TypeConversionException(Type, RacketOperandType.Integer);
 
                 case RacketOperandType.Integer:
-                    return ((IntegerOperand)OperableValue).OperandValue;
+                    return ((IntegerOperand)OperableValue).IntegerValue;
                 case RacketOperandType.Natural:
-                    return (long)((NaturalOperand)OperableValue).OperandValue;
+                    return (long)((NaturalOperand)OperableValue).NaturalValue;
                 case RacketOperandType.Expression:
-                    DynamicOperand expressionValue = GetExpressionValue();
-                    return expressionValue.GetLongValue();
+                    DynamicOperand expressionValue = EvaluateExpressionOperand();
+                    return expressionValue.GetIntegerValue();
 
                 default:
                     throw new TypeConversionException(Type, RacketOperandType.Integer);
@@ -84,16 +109,16 @@ namespace RacketLite.Operands
                 //Try convert Number & Integer
                 case RacketOperandType.Number:
                 case RacketOperandType.Integer:
-                    if (ulong.TryParse(GetDoubleValue().ToString(), out ulong parsedNumber) && parsedNumber != 0)
+                    if (ulong.TryParse(GetNumberValue().ToString(), out ulong parsedNumber) && parsedNumber != 0)
                     {
                         return parsedNumber;
                     }
                     throw new TypeConversionException(Type, RacketOperandType.Natural);
 
                 case RacketOperandType.Natural:
-                    return ((NaturalOperand)OperableValue).OperandValue;
+                    return ((NaturalOperand)OperableValue).NaturalValue;
                 case RacketOperandType.Expression:
-                    DynamicOperand expressionValue = GetExpressionValue();
+                    DynamicOperand expressionValue = EvaluateExpressionOperand();
                     return expressionValue.GetNaturalValue();
 
                 default:
@@ -106,10 +131,10 @@ namespace RacketLite.Operands
             switch (Type)
             {
                 case RacketOperandType.String:
-                    return ((StringOperand)OperableValue).OperandValue;
+                    return ((StringOperand)OperableValue).StringValue;
 
                 case RacketOperandType.Expression:
-                    DynamicOperand expressionValue = GetExpressionValue();
+                    DynamicOperand expressionValue = EvaluateExpressionOperand();
                     return expressionValue.GetStringValue();
 
                 default:
@@ -117,7 +142,7 @@ namespace RacketLite.Operands
             }
         }
 
-        public DynamicOperand GetExpressionValue()
+        public DynamicOperand EvaluateExpressionOperand()
         {
             if (Type != RacketOperandType.Expression)
             {
@@ -127,6 +152,16 @@ namespace RacketLite.Operands
             RacketExpression racketExpression = (RacketExpression)OperableValue;
             return racketExpression.Evaluate();
         }
+
+        public RacketExpression GetExpressionValue()
+        {
+            if (Type != RacketOperandType.Expression)
+            {
+                throw new TypeConversionException(Type, RacketOperandType.Expression);
+            }
+            return (RacketExpression)OperableValue;
+        }
+
 
         public object GetUnknownValue()
         {
@@ -150,21 +185,15 @@ namespace RacketLite.Operands
             DynamicOperand otherDynOperand = (DynamicOperand)obj;
             if (otherDynOperand.Type == RacketOperandType.Expression)
             {
-                otherDynOperand = otherDynOperand.GetExpressionValue();
+                otherDynOperand = otherDynOperand.EvaluateExpressionOperand();
             }
 
             //Evaluate this if it is an expression
             if (Type == RacketOperandType.Expression)
             {
-                OperableValue = GetExpressionValue().OperableValue;
+                OperableValue = EvaluateExpressionOperand().OperableValue;
             }
-
-            //Check for same type
-            if (otherDynOperand.Type != OperableValue.Type)
-            {
-                throw new TypeConversionException(OperableValue.Type, otherDynOperand.Type);
-            }
-            return OperableValue.CompareTo(otherDynOperand.OperableValue);
+            return OperableValue.CompareTo(otherDynOperand);
         }
 
         public override bool Equals(object obj)
@@ -179,13 +208,13 @@ namespace RacketLite.Operands
             DynamicOperand otherDynOperand = (DynamicOperand)obj;
             if (otherDynOperand.Type == RacketOperandType.Expression)
             {
-                otherDynOperand = otherDynOperand.GetExpressionValue();
+                otherDynOperand = otherDynOperand.EvaluateExpressionOperand();
             }
 
             //Evaluate this if it is an expression
             if (Type == RacketOperandType.Expression)
             {
-                OperableValue = GetExpressionValue().OperableValue;
+                OperableValue = EvaluateExpressionOperand().OperableValue;
             }
 
             //Check for same type

@@ -75,7 +75,7 @@ namespace RacketLite.Oporators
                 //Check for unknowns
                 if (operandTypes[i] == RacketOperandType.Unknown)
                 {
-                    string varName = operandQueue.Dequeue(i + 1).OperableValue.ToString();
+                    string varName = operandQueue.Dequeue(i + 1).ToString();
                     throw new VariableNotFoundException(varName);
                 }
 
