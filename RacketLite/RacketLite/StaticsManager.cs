@@ -8,6 +8,7 @@ namespace RacketLite
 {
     public static class StaticsManager
     {
+        public static bool IsWithinLocal = false;
         public static bool StackContainsInexact
         {
             get => containsInexact;
@@ -24,6 +25,7 @@ namespace RacketLite
         public static void ResetCurrentStackVars()
         {
             LocalStack.Clear();
+            IsWithinLocal = false;
             containsInexact = false;
         }
 

@@ -21,7 +21,6 @@ namespace RacketLite
             {
                 Console.Write("> ");
                 expressionText = Console.ReadLine();
-                expressionText = Regex.Replace(expressionText, @"\s+", " ").Trim();
 
                 //Parse Racket-Lite Interpreter Directives
                 if(expressionText.StartsWith('#'))

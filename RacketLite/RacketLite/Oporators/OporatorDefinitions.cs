@@ -12,6 +12,7 @@ namespace RacketLite.Oporators
         {
             //Special Oporators
             { "define", new RacketOporator(RacketOporatorType.Define, null, 2, 2, RacketOperandType.Any) },
+            { "local", new RacketOporator(RacketOporatorType.Local, RacketOperandType.Any, 2, 2, RacketOperandType.Expression) },
             { "if", new RacketOporator(RacketOporatorType.If, RacketOperandType.Any, 3, 3, RacketOperandType.Expression, RacketOperandType.Any) },
 
             //Numeric Oporators

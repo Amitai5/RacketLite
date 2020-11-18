@@ -5,6 +5,7 @@
         //Special Oporators
         NOP,
         If,
+        Local,
         Define,
         ReturnVariable,
         ReturnConstant,

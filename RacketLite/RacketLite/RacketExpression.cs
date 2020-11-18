@@ -45,6 +45,7 @@ namespace RacketLite
             //Clean up the expressionText after getting inner expressions
             Dictionary<string, RacketExpression> innerExpressions = ExpressionParser.ParseInnerExpressions(ref expressionText);
             string parsedExpressionText = expressionText.Replace("(", ")").Replace(")", "");
+            parsedExpressionText = parsedExpressionText.Replace("[", "]").Replace("]", "");
             parsedExpressionText = parsedExpressionText.Replace("  ", " ").Trim();
 
             //Create tokens
@@ -62,7 +63,7 @@ namespace RacketLite
                 tokenStrings.Enqueue(RacketOporatorSignature);
             }
 
-            //Special Check for a Define Oporator
+            //Special Check for a define oporator
             if (Oporator != null && Oporator.Type == RacketOporatorType.Define && innerExpressions.Count == 2)
             {
                 //Ensure that expression is defined as a function
@@ -129,6 +130,15 @@ namespace RacketLite
                         return trueReturnValue.EvaluateExpressionOperand();
                     }
                     return operands.Dequeue(operands.Count).EvaluateExpressionOperand();
+                case RacketOporatorType.Local:
+                    StaticsManager.IsWithinLocal = true;
+                    RacketExpression defineExpression = operands.Dequeue().GetExpressionValue();
+                    if (defineExpression.Oporator.Type != RacketOporatorType.Define)
+                    {
+                        throw new LocalDefinedVariableNotFound();
+                    }
+                    defineExpression.Evaluate();
+                    return operands.Dequeue().EvaluateExpressionOperand();
                 case RacketOporatorType.Define:
                     bool isUDF = operands.Dequeue().GetBooleanValue();
                     if (isUDF)
@@ -145,16 +155,18 @@ namespace RacketLite
                     {
                         DynamicOperand varNameOperand = operands.Dequeue();
                         string varName = varNameOperand.GetUnknownValue().ToString();
-                        if (!StaticsManager.VariableMap.ContainsKey(varName))
+                        Dictionary<string, DynamicOperand> VarMap = StaticsManager.IsWithinLocal ? StaticsManager.LocalStack : StaticsManager.VariableMap;
+
+                        if (!VarMap.ContainsKey(varName))
                         {
                             DynamicOperand varValue = operands.Dequeue();
                             if (varValue.Type == RacketOperandType.Expression)
                             {
-                                StaticsManager.VariableMap.Add(varName, varValue.EvaluateExpressionOperand());
+                                VarMap.Add(varName, varValue.EvaluateExpressionOperand());
                             }
                             else
                             {
-                                StaticsManager.VariableMap.Add(varName, varValue);
+                                VarMap.Add(varName, varValue);
                             }
                         }
                     }
@@ -395,7 +407,7 @@ namespace RacketLite
                     bool rightOrValue = operands.Dequeue().GetBooleanValue();
                     return new BooleanOperand(leftOrValue || rightOrValue);
                 #endregion
-
+                        
                 #region Boolean Conversions
                 case RacketOporatorType.BooleanToInteger:
                     long boolAsLong = Convert.ToInt64(operands.Dequeue().GetBooleanValue());
@@ -477,7 +489,7 @@ namespace RacketLite
             }
 
             //Replace locals except on define
-            if (Oporator.Type != RacketOporatorType.Define)
+            if (Oporator.Type != RacketOporatorType.Define && Oporator.Type != RacketOporatorType.Local)
             {
                 ReplaceFunctionLocal(this);
             }

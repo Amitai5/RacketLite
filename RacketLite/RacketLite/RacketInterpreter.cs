@@ -6,6 +6,7 @@ using RacketLite.Operands;
 using RacketLite.Exceptions;
 using System.IO;
 using RacketLite.Parsing;
+using System.Text.RegularExpressions;
 
 namespace RacketLite
 {
@@ -76,6 +77,9 @@ namespace RacketLite
 
         public void ParseSingleLine(string expressionText, int lineNumber = -1)
         {
+            //Trim the extra spaces
+            expressionText = Regex.Replace(expressionText, @"\s+", " ").Trim();
+
             try
             {
                 //Reset the current stack vars each command

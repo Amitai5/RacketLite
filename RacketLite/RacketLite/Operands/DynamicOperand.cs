@@ -31,6 +31,7 @@ namespace RacketLite.Operands
             }
         }
         private IOperable OperableValue { get; set; }
+        public new RacketOperandType Type => OperableValue.Type;
 
         public DynamicOperand(IOperable operableValue = null)
             : base(operableValue.Type)
@@ -142,17 +143,6 @@ namespace RacketLite.Operands
             }
         }
 
-        public DynamicOperand EvaluateExpressionOperand()
-        {
-            if (Type != RacketOperandType.Expression)
-            {
-                throw new TypeConversionException(Type, RacketOperandType.Expression);
-            }
-
-            RacketExpression racketExpression = (RacketExpression)OperableValue;
-            return racketExpression.Evaluate();
-        }
-
         public RacketExpression GetExpressionValue()
         {
             if (Type != RacketOperandType.Expression)
@@ -170,6 +160,12 @@ namespace RacketLite.Operands
                 RacketOperandType.Unknown => ((UnknownOperand)OperableValue).OperandValue,
                 _ => throw new TypeConversionException(Type, RacketOperandType.Unknown)
             };
+        }
+
+        public DynamicOperand EvaluateExpressionOperand()
+        {
+            RacketExpression racketExpression = GetExpressionValue();
+            return racketExpression.Evaluate();
         }
 
         #region IOperable Overrides
