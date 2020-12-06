@@ -2,10 +2,15 @@
 {
     public class RacketInteger : RacketNumber
     {
-        public RacketInteger(float value, bool exact)
-            : base(value, exact, true)
+        public RacketInteger(int value)
+            : base(value, true, true)
         {
 
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 }

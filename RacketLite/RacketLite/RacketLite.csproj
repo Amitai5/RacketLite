@@ -4,16 +4,11 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon>Assets\RacketIcon.ico</ApplicationIcon>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="AEapps.CoreLibrary">
-      <HintPath>..\..\..\CoreLibrary\AEapps.CoreLibrary\AEapps.CoreLibrary\bin\Debug\netcoreapp3.1\AEapps.CoreLibrary.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>

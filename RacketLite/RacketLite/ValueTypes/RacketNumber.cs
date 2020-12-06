@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System;
 
 namespace RacketLite.ValueTypes
 {
@@ -15,32 +16,40 @@ namespace RacketLite.ValueTypes
             IsRational = rational;
         }
 
-        public new static RacketNumber Parse(string str)
+        public new static RacketNumber? Parse(string str)
         {
-            bool isExact = str.Contains(SyntaxRules.InexactNumberPrefix);
-            str = str.Replace(SyntaxRules.InexactNumberPrefix, "");
+            bool isExact = true;
+            if (str.StartsWith(RacketParsingHelper.InexactNumberPrefix))
+            {
+                str = str.Remove(0, 2);
+                isExact = false;
+            }
+
+            if (int.TryParse(str, out int intValue) && isExact)
+            {
+                return new RacketInteger(intValue);
+            }
 
             if (float.TryParse(str, out float floatValue))
             {
                 return new RacketFloat(floatValue, isExact, true);
             }
-
-            if (int.TryParse(str, out int intValue))
-            {
-                return new RacketInteger(intValue, isExact);
-            }
             return null;
+        }
+
+        public static RacketNumber Parse(float value, bool isExact, bool isRational)
+        {
+            if (value == Math.Floor(value) && isExact && isRational)
+            {
+                return new RacketInteger((int)value);
+            }
+            return new RacketFloat(value, isExact, isRational);
         }
 
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
             stringBuilder.Append(Value).Append('\n');
-        }
-
-        public override string GetSignature()
-        {
-            return "[Number]";
         }
     }
 }

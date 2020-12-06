@@ -7,5 +7,10 @@
         {
 
         }
+
+        public override string ToString()
+        {
+            return $"{(IsExact ? "" : "#i")}{Value:.0################}";
+        }
     }
 }

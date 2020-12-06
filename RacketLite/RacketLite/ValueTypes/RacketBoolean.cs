@@ -11,7 +11,7 @@ namespace RacketLite.ValueTypes
             Value = value;
         }
 
-        public new static RacketBoolean Parse(string str)
+        public new static RacketBoolean? Parse(string str)
         {
             str = str.Replace("#", "").ToLower();
             return str switch
@@ -31,9 +31,9 @@ namespace RacketLite.ValueTypes
             stringBuilder.Append(Value).Append('\n');
         }
 
-        public override string GetSignature()
+        public override string ToString()
         {
-            return "[String]";
+            return Value.ToString();
         }
     }
 }

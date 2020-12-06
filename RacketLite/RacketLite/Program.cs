@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RacketLite.ConsoleTools;
+using RacketLite.ValueTypes;
+using System;
 
 namespace RacketLite
 {
@@ -8,16 +10,31 @@ namespace RacketLite
         {
             //Set up console window
             Console.Title = "Racket-Lite";
-            RacketInterpreter interpreter = new RacketInterpreter();
+            ConsoleHelper helper = new ConsoleHelper(ConsoleColor.Black, ConsoleColor.White);
+            Console.WriteLine($"Welcome to Racket-Lite {RacketInterpreter.RacketLiteVersion} [cs].");
 
             string expressionText;
             do
             {
                 Console.Write("> ");
-                expressionText = Console.ReadLine();
+                expressionText = Console.ReadLine() ?? "";
 
-                //Parse Racket-Lite Expressions
-                interpreter.Parse(expressionText);
+                //Parse Racket-Lite expressions
+                RacketValueType? result = RacketInterpreter.ParseLine(expressionText);
+                if(result != null)
+                {
+                    Console.WriteLine(result.ToString());
+                    continue;
+                }
+
+                //Highlight the last line in red
+                helper.ClearConsoleLine(1);
+                Console.CursorTop--;
+                Console.Write("> ");
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(expressionText);
+                helper.ResetColors();
 
             } while (expressionText.ToLower().Trim() != "exit");
         }

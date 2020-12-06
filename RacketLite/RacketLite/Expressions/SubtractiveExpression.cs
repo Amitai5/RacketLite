@@ -4,35 +4,35 @@ using System.Text;
 
 namespace RacketLite.Expressions
 {
-    public class AdditiveExpression : RacketExpression
+    public class SubtractiveExpression : RacketExpression
     {
-        private AdditiveExpression(List<IRacketObject> args)
+        private SubtractiveExpression(List<IRacketObject> args)
         {
             arguments = args;
         }
 
-        public static new AdditiveExpression? Parse(string str)
+        public static new SubtractiveExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments != null)
             {
-                return new AdditiveExpression(arguments);
+                return new SubtractiveExpression(arguments);
             }
             return null;
         }
 
         public override RacketValueType Evaluate()
         {
-            float retValue = 0;
             bool isExact = true;
             bool isRational = true;
+            float retValue = ((RacketNumber)arguments[0].Evaluate()).Value;
 
-            for (int i = 0; i < arguments.Count; i++)
+            for (int i = 1; i < arguments.Count; i++)
             {
                 RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
                 isRational = isRational && currentNumber.IsRational;
                 isExact = isExact && currentNumber.IsExact;
-                retValue += currentNumber.Value;
+                retValue -= currentNumber.Value;
 
             }
             return RacketNumber.Parse(retValue, isExact, isRational);
@@ -41,7 +41,7 @@ namespace RacketLite.Expressions
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append("Add").Append('\n');
+            stringBuilder.Append("Subtract").Append('\n');
             ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
     }

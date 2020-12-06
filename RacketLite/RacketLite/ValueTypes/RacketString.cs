@@ -12,9 +12,9 @@ namespace RacketLite.ValueTypes
             Value = value;
         }
 
-        public new static RacketString Parse(string str)
+        public new static RacketString? Parse(string str)
         {
-            if(str.Count(s => s == '"') == 2)
+            if(str.StartsWith('"') && str.EndsWith('"'))
             {
                 return new RacketString(str[1..^1]);
             }
@@ -25,11 +25,6 @@ namespace RacketLite.ValueTypes
         {
             stringBuilder.Append('\t', tabIndex);
             stringBuilder.Append(Value).Append('\n');
-        }
-
-        public override string GetSignature()
-        {
-            return "[String]";
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using RacketLite.ValueTypes;
+using System.Text;
 
 namespace RacketLite
 {
     public interface IRacketObject
     {
-        public string GetSignature();
+        public RacketValueType Evaluate();
 
         public void ToTreeString(StringBuilder stringBuilder, int tabIndex);
     }
