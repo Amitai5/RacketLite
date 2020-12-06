@@ -1,19 +1,13 @@
-﻿using AEapps.CoreLibrary.ConsoleTools;
-using RacketLite.Exceptions;
-using RacketLite.Operands;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System;
 
 namespace RacketLite
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Set up console window
             Console.Title = "Racket-Lite";
-            Console.SetWindowSize(128, 36);
             RacketInterpreter interpreter = new RacketInterpreter();
 
             string expressionText;
@@ -22,15 +16,8 @@ namespace RacketLite
                 Console.Write("> ");
                 expressionText = Console.ReadLine();
 
-                //Parse Racket-Lite Interpreter Directives
-                if(expressionText.StartsWith('#'))
-                {
-                    interpreter.ParseDirective(expressionText);
-                    continue;
-                }
-
                 //Parse Racket-Lite Expressions
-                interpreter.ParseSingleLine(expressionText);
+                interpreter.Parse(expressionText);
 
             } while (expressionText.ToLower().Trim() != "exit");
         }
