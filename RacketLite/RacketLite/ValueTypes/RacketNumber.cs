@@ -16,40 +16,24 @@ namespace RacketLite.ValueTypes
             IsRational = rational;
         }
 
-        public new static RacketNumber? Parse(string str)
-        {
-            bool isExact = true;
-            if (str.StartsWith(RacketParsingHelper.InexactNumberPrefix))
-            {
-                str = str.Remove(0, 2);
-                isExact = false;
-            }
-
-            if (int.TryParse(str, out int intValue) && isExact)
-            {
-                return new RacketInteger(intValue);
-            }
-
-            if (float.TryParse(str, out float floatValue))
-            {
-                return new RacketFloat(floatValue, isExact, true);
-            }
-            return null;
-        }
-
-        public static RacketNumber Parse(float value, bool isExact, bool isRational)
-        {
-            if (value == Math.Floor(value) && isExact && isRational)
-            {
-                return new RacketInteger((long)value);
-            }
-            return new RacketFloat(value, isExact, isRational);
-        }
-
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
             stringBuilder.Append(Value).Append('\n');
+        }
+
+        public static RacketNumber Parse(float value, bool isExact, bool isRational)
+        {
+            if (value == Math.Floor(value) && isRational)
+            {
+                return new RacketInteger((long)value, isExact);
+            }
+            return new RacketFloat(value, isExact, isRational);
+        }
+
+        public new static RacketNumber? Parse(string str)
+        {
+            return RacketInteger.Parse(str) ?? (RacketNumber?)RacketFloat.Parse(str);
         }
     }
 }

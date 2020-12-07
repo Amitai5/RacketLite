@@ -4,20 +4,20 @@ using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class CeilingExpression : RacketExpression
+    public sealed class ArcSineExpression : RacketExpression
     {
-        private CeilingExpression(List<IRacketObject> args)
-            : base("Ceiling")
+        private ArcSineExpression(List<IRacketObject> args)
+            : base("ArcSine")
         {
             arguments = args;
         }
 
-        public static new CeilingExpression? Parse(string str)
+        public static new ArcSineExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
-                return new CeilingExpression(arguments);
+                return new ArcSineExpression(arguments);
             }
             return null;
         }
@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return new RacketInteger((long)MathF.Ceiling(currentNumber.Value), true);
+            return RacketNumber.Parse(MathF.Asin(currentNumber.Value), false, currentNumber.IsRational);
         }
     }
 }

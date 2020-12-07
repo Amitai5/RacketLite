@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         {
             double currentSecondsDouble = Math.Round((DateTime.UtcNow - DateTime.MinValue).TotalSeconds);
             long currentSeconds = Convert.ToInt64(currentSecondsDouble);
-            return RacketNumber.Parse(currentSeconds, true, true);
+            return new RacketInteger(currentSeconds, true);
         }
     }
 }

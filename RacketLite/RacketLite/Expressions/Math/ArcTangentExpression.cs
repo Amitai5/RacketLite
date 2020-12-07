@@ -4,20 +4,20 @@ using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ArcTanExpression : RacketExpression
+    public sealed class ArcTangentExpression : RacketExpression
     {
-        private ArcTanExpression(List<IRacketObject> args)
-            : base("ArcTan")
+        private ArcTangentExpression(List<IRacketObject> args)
+            : base("ArcTangent")
         {
             arguments = args;
         }
 
-        public static new ArcTanExpression? Parse(string str)
+        public static new ArcTangentExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
-                return new ArcTanExpression(arguments);
+                return new ArcTangentExpression(arguments);
             }
             return null;
         }

@@ -4,20 +4,20 @@ using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class CeilingExpression : RacketExpression
+    public sealed class FloorExpression : RacketExpression
     {
-        private CeilingExpression(List<IRacketObject> args)
-            : base("Ceiling")
+        private FloorExpression(List<IRacketObject> args)
+            : base("Floor")
         {
             arguments = args;
         }
 
-        public static new CeilingExpression? Parse(string str)
+        public static new FloorExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
-                return new CeilingExpression(arguments);
+                return new FloorExpression(arguments);
             }
             return null;
         }
@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return new RacketInteger((long)MathF.Ceiling(currentNumber.Value), true);
+            return new RacketInteger((long)MathF.Floor(currentNumber.Value), true);
         }
     }
 }

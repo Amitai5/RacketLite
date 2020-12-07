@@ -11,9 +11,9 @@ namespace RacketLite
             { "abs", AbsoluteValExpression.Parse },
             { "+", AddExpression.Parse },
             { "add1", AddOneExpression.Parse },
-            { "acos", ArcCosExpression.Parse },
-            { "asin", ArcSinExpression.Parse },
-            { "atan", ArcTanExpression.Parse },
+            { "acos", ArcCosineExpression.Parse },
+            { "asin", ArcSineExpression.Parse },
+            { "atan", ArcTangentExpression.Parse },
             { "ceiling", CeilingExpression.Parse },
             { "cos", CosineExpression.Parse },
             { "current-seconds", CurrentSecondsExpression.Parse },
@@ -21,6 +21,14 @@ namespace RacketLite
             { "=", EqualExpression.Parse },
             { "expt", ExponentEpression.Parse },
             { "exp", ExponentialExpression.Parse },
+            { "floor", FloorExpression.Parse },
+            { ">", GreaterThanExpression.Parse },
+            { ">=", GreaterThanEqualExpression.Parse },
+            { "gcd", GreatestCommonDivisorExpression.Parse },
+            { "cosh", HyperbolicCosineExpression.Parse },
+            { "sinh", HyperbolicSineExpression.Parse },
+            { "even?", IsEvenExpression.Parse },
+
         };
     }
 }

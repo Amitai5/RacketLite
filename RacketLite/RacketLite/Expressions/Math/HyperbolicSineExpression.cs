@@ -4,20 +4,20 @@ using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ArcSinExpression : RacketExpression
+    public sealed class HyperbolicSineExpression : RacketExpression
     {
-        private ArcSinExpression(List<IRacketObject> args)
-            : base("ArcSin")
+        private HyperbolicSineExpression(List<IRacketObject> args)
+            : base("HyperbolicSine")
         {
             arguments = args;
         }
 
-        public static new ArcSinExpression? Parse(string str)
+        public static new HyperbolicSineExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
-                return new ArcSinExpression(arguments);
+                return new HyperbolicSineExpression(arguments);
             }
             return null;
         }
@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return RacketNumber.Parse(MathF.Asin(currentNumber.Value), false, currentNumber.IsRational);
+            return RacketNumber.Parse(MathF.Sinh(currentNumber.Value), false, currentNumber.IsRational);
         }
     }
 }

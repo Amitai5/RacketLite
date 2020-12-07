@@ -4,20 +4,20 @@ using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ArcCosExpression : RacketExpression
+    public sealed class ArcCosineExpression : RacketExpression
     {
-        private ArcCosExpression(List<IRacketObject> args)
-            : base("ArcCos")
+        private ArcCosineExpression(List<IRacketObject> args)
+            : base("ArcCosine")
         {
             arguments = args;
         }
 
-        public static new ArcCosExpression? Parse(string str)
+        public static new ArcCosineExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
-                return new ArcCosExpression(arguments);
+                return new ArcCosineExpression(arguments);
             }
             return null;
         }

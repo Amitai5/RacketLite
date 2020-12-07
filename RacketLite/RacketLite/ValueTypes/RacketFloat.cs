@@ -12,5 +12,21 @@
         {
             return $"{(IsExact ? "" : "#i")}{Value:0.0################}";
         }
+
+        public new static RacketFloat? Parse(string str)
+        {
+            bool isExact = true;
+            if (str.StartsWith(RacketParsingHelper.InexactNumberPrefix))
+            {
+                str = str.Remove(0, 2);
+                isExact = false;
+            }
+
+            if (float.TryParse(str, out float floatValue) && isExact)
+            {
+                return new RacketFloat(floatValue, isExact, true);
+            }
+            return null;
+        }
     }
 }

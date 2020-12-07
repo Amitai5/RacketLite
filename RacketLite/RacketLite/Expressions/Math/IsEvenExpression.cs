@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using RacketLite.ValueTypes;
-using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AbsoluteValExpression : RacketExpression
+    public sealed class IsEvenExpression : RacketExpression
     {
-        private AbsoluteValExpression(List<IRacketObject> args)
-            : base("Abs")
+        private IsEvenExpression(List<IRacketObject> args)
+            : base("IsEven")
         {
             arguments = args;
         }
 
-        public static new AbsoluteValExpression? Parse(string str)
+        public static new IsEvenExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumber(str);
             if (arguments?.Count == 1)
             {
-                return new AbsoluteValExpression(arguments);
+                return new IsEvenExpression(arguments);
             }
             return null;
         }
@@ -25,7 +24,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return new RacketInteger((long)MathF.Abs(currentNumber.Value), currentNumber.IsExact);
+            return new RacketBoolean(currentNumber.Value % 2 == 0);
         }
     }
 }
