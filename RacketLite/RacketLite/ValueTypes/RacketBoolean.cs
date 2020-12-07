@@ -33,7 +33,7 @@ namespace RacketLite.ValueTypes
 
         public override string ToString()
         {
-            return Value.ToString();
+            return $"#{(Value ? "t" : "f")}";
         }
     }
 }

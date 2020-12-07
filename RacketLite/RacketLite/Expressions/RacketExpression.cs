@@ -6,10 +6,24 @@ namespace RacketLite.Expressions
 {
     public abstract class RacketExpression : IRacketObject
     {
+        public string ExpressionName { get; init; }
         protected List<IRacketObject> arguments = new List<IRacketObject>();
 
+        protected RacketExpression(string name)
+        {
+            ExpressionName = name;
+        }
+
         public abstract RacketValueType Evaluate();
-        public abstract void ToTreeString(StringBuilder stringBuilder, int tabIndex);
+
+        #region Base Methods
+
+        public void ToTreeString(StringBuilder stringBuilder, int tabIndex)
+        {
+            stringBuilder.Append('\t', tabIndex);
+            stringBuilder.Append(ExpressionName).Append('\n');
+            ArgumentsToTreeString(stringBuilder, tabIndex + 1);
+        }
 
         protected void ArgumentsToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
@@ -26,22 +40,32 @@ namespace RacketLite.Expressions
             return stringBuilder.ToString();
         }
 
+        #endregion Base Methods
+
         public static RacketExpression? Parse(string str)
         {
-            if (!str.StartsWith('(') || !str.EndsWith(')') || !str.Contains(' '))
+            str = str.Trim();
+            if (!str.StartsWith('(') || !str.EndsWith(')'))
             {
                 return null;
             }
 
-            string opCode = str[1..str.IndexOf(' ')];
-            str = str[str.IndexOf(' ')..^1].Trim();
-
-            return opCode switch
+            string opCode = str[1..^1];
+            if (str.Contains(' '))
             {
-                "+" => AdditiveExpression.Parse(str),
-                "-" => SubtractiveExpression.Parse(str),
-                _ => null
-            };
+                opCode = str[1..str.IndexOf(' ')];
+                str = str[str.IndexOf(' ')..^1].Trim();
+            }
+            else
+            {
+                str = "";
+            }
+
+            if(ExpressionDefinitions.Definitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.Definitions[opCode].Invoke(str);
+            }
+            return null;
         }
     }
 }

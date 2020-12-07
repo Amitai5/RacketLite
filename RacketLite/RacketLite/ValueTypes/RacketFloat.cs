@@ -10,7 +10,7 @@
 
         public override string ToString()
         {
-            return $"{(IsExact ? "" : "#i")}{Value:.0################}";
+            return $"{(IsExact ? "" : "#i")}{Value:0.0################}";
         }
     }
 }

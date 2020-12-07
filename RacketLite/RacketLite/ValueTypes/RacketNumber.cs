@@ -41,7 +41,7 @@ namespace RacketLite.ValueTypes
         {
             if (value == Math.Floor(value) && isExact && isRational)
             {
-                return new RacketInteger((int)value);
+                return new RacketInteger((long)value);
             }
             return new RacketFloat(value, isExact, isRational);
         }

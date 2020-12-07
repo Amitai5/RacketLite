@@ -2,7 +2,7 @@
 {
     public class RacketInteger : RacketNumber
     {
-        public RacketInteger(int value)
+        public RacketInteger(long value)
             : base(value, true, true)
         {
 
