@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return RacketNumber.Parse(MathF.Pow(MathF.E, currentNumber.Value), false, currentNumber.IsRational);
+            return RacketNumber.Parse(MathF.Cos(currentNumber.Value), false, currentNumber.IsRational);
         }
     }
 }

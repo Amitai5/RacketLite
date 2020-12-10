@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
 using RacketLite.ValueTypes;
+using System;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AddOneExpression : RacketExpression
+    public sealed class SquareExpression : RacketExpression
     {
-        private AddOneExpression(List<IRacketObject> args)
-            : base("AddOne")
+        private SquareExpression(List<IRacketObject> args)
+            : base("Square")
         {
             arguments = args;
         }
 
-        public static new AddOneExpression? Parse(string str)
+        public static new SquareExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumber(str);
             if (arguments?.Count == 1)
             {
-                return new AddOneExpression(arguments);
+                return new SquareExpression(arguments);
             }
             return null;
         }
@@ -24,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
-            return RacketNumber.Parse(currentNumber.Value + 1, currentNumber.IsExact, currentNumber.IsRational);
+            return RacketNumber.Parse(MathF.Pow(currentNumber.Value, 2), currentNumber.IsExact, currentNumber.IsRational);
         }
     }
 }

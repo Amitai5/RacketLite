@@ -24,7 +24,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
             return new RacketInteger(random.Next((int)currentNumber.Value), true);

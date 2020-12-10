@@ -1,5 +1,6 @@
 ﻿using RacketLite.Expressions;
 using RacketLite.ValueTypes;
+using System;
 
 namespace RacketLite
 {
@@ -16,7 +17,15 @@ namespace RacketLite
             }
 
             string expressionTree = expression.ToString();
-            return expression.Evaluate();
+
+            try
+            {
+                return expression.Evaluate();
+            }
+            catch
+            {
+                return null; //TODO Include errors
+            }
         }
     }
 }

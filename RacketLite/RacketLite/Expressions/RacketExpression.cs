@@ -61,9 +61,9 @@ namespace RacketLite.Expressions
                 str = "";
             }
 
-            if(ExpressionDefinitions.Definitions.ContainsKey(opCode))
+            if(ExpressionDefinitions.MathDefinitions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.Definitions[opCode].Invoke(str);
+                return ExpressionDefinitions.MathDefinitions[opCode].Invoke(str);
             }
             return null;
         }

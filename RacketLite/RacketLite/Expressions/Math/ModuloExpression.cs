@@ -23,13 +23,13 @@ namespace RacketLite.Expressions
 
         public override RacketValueType Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketInteger currentNumber = (RacketInteger)arguments[0].Evaluate();
             float retValue = currentNumber.Value;
             bool isExact = currentNumber.IsExact;
 
             for (int i = 1; i < arguments.Count; i++)
             {
-                currentNumber = (RacketNumber)arguments[i].Evaluate();
+                currentNumber = (RacketInteger)arguments[i].Evaluate();
                 isExact = isExact && currentNumber.IsExact;
                 retValue %= currentNumber.Value;
 

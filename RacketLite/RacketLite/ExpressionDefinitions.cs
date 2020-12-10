@@ -6,7 +6,7 @@ namespace RacketLite
 {
     public static class ExpressionDefinitions
     {
-        public static Dictionary<string, Func<string, RacketExpression?>> Definitions { get; } = new Dictionary<string, Func<string, RacketExpression?>>()
+        public static Dictionary<string, Func<string, RacketExpression?>> MathDefinitions { get; } = new Dictionary<string, Func<string, RacketExpression?>>()
         {
             { "abs", AbsoluteValExpression.Parse },
             { "+", AddExpression.Parse },
@@ -41,13 +41,20 @@ namespace RacketLite
             { "lcm", LeastCommonMultipleExpression.Parse },
             { "max", MaximumExpression.Parse },
             { "min", MinimumExpression.Parse },
-            { "%", ModuloExpression.Parse },
+            { "modulo", ModuloExpression.Parse },
             { "*", MultiplyExpression.Parse },
             { "log", NaturalLogarithmExpression.Parse },
             { "quotient", QuotientExpression.Parse },
             { "random", RandomExpression.Parse },
             { "remainder", ModuloExpression.Parse },
-
+            { "round", RoundExpression.Parse },
+            { "sign", SignExpression.Parse },
+            { "sin", SineExpression.Parse },
+            { "sqr", SquareExpression.Parse },
+            { "sqrt", SquareRootExpression.Parse },
+            { "-", SubtractExpression.Parse },
+            { "sub1", SubtractOneExpression.Parse },
+            { "tan", TangentExpression.Parse }
         };
     }
 }
