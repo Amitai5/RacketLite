@@ -39,7 +39,7 @@ namespace RacketLite.Expressions
             return new RacketInteger(gcd, isExact);
         }
 
-        private long FindGCD(long a, long b)
+        public static long FindGCD(long a, long b)
         {
             if (b == 0)
             {

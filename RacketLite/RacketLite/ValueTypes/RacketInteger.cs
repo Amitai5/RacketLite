@@ -2,6 +2,8 @@
 {
     public class RacketInteger : RacketNumber
     {
+        public bool IsNatural => IsExact && Value > 0;
+
         public RacketInteger(long value, bool isExact)
             : base(value, isExact, true)
         {

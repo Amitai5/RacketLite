@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class GreaterThanExpression : RacketExpression
     {
         private GreaterThanExpression(List<IRacketObject> args)
-            : base("GreaterThanEqual")
+            : base("GreaterThan")
         {
             arguments = args;
         }

@@ -3,34 +3,33 @@ using RacketLite.ValueTypes;
 
 namespace RacketLite.Expressions
 {
-    public sealed class GreaterThanEqualExpression : RacketExpression
+    public sealed class MaximumExpression : RacketExpression
     {
-        private GreaterThanEqualExpression(List<IRacketObject> args)
-            : base("GreaterThanEqual")
+        private MaximumExpression(List<IRacketObject> args)
+            : base("Maximum")
         {
             arguments = args;
         }
 
-        public static new GreaterThanEqualExpression? Parse(string str)
+        public static new MaximumExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
-                return new GreaterThanEqualExpression(arguments);
+                return new MaximumExpression(arguments);
             }
             return null;
         }
 
         public override RacketValueType Evaluate()
         {
-            bool retValue = true;
-            RacketNumber firstNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber largestNumber = (RacketNumber)arguments[0].Evaluate();
             for (int i = 1; i < arguments.Count; i++)
             {
                 RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
-                retValue = retValue && firstNumber.Value >= currentNumber.Value;
+                largestNumber = currentNumber.Value > largestNumber.Value ? currentNumber : largestNumber;
             }
-            return new RacketBoolean(retValue);
+            return largestNumber;
         }
     }
 }

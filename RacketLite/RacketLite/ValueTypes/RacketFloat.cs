@@ -22,7 +22,7 @@
                 isExact = false;
             }
 
-            if (float.TryParse(str, out float floatValue) && isExact)
+            if (float.TryParse(str, out float floatValue))
             {
                 return new RacketFloat(floatValue, isExact, true);
             }

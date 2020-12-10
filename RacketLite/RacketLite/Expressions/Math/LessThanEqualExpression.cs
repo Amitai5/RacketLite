@@ -3,20 +3,20 @@ using RacketLite.ValueTypes;
 
 namespace RacketLite.Expressions
 {
-    public sealed class GreaterThanEqualExpression : RacketExpression
+    public sealed class LessThanEqualExpression : RacketExpression
     {
-        private GreaterThanEqualExpression(List<IRacketObject> args)
-            : base("GreaterThanEqual")
+        private LessThanEqualExpression(List<IRacketObject> args)
+            : base("LessThanEqual")
         {
             arguments = args;
         }
 
-        public static new GreaterThanEqualExpression? Parse(string str)
+        public static new LessThanEqualExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
-                return new GreaterThanEqualExpression(arguments);
+                return new LessThanEqualExpression(arguments);
             }
             return null;
         }
@@ -28,7 +28,7 @@ namespace RacketLite.Expressions
             for (int i = 1; i < arguments.Count; i++)
             {
                 RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
-                retValue = retValue && firstNumber.Value >= currentNumber.Value;
+                retValue = retValue && firstNumber.Value <= currentNumber.Value;
             }
             return new RacketBoolean(retValue);
         }

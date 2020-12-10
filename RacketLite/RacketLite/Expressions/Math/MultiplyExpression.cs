@@ -3,20 +3,20 @@ using RacketLite.ValueTypes;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AddExpression : RacketExpression
+    public sealed class MultiplyExpression : RacketExpression
     {
-        private AddExpression(List<IRacketObject> args)
-            : base("Add")
+        private MultiplyExpression(List<IRacketObject> args)
+            : base("Multiply")
         {
             arguments = args;
         }
 
-        public static new AddExpression? Parse(string str)
+        public static new MultiplyExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 0)
             {
-                return new AddExpression(arguments);
+                return new MultiplyExpression(arguments);
             }
             return null;
         }
@@ -33,7 +33,7 @@ namespace RacketLite.Expressions
                 currentNumber = (RacketNumber)arguments[i].Evaluate();
                 isRational = isRational && currentNumber.IsRational;
                 isExact = isExact && currentNumber.IsExact;
-                retValue += currentNumber.Value;
+                retValue *= currentNumber.Value;
 
             }
             return RacketNumber.Parse(retValue, isExact, isRational);

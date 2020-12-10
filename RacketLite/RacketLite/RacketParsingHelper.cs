@@ -62,6 +62,16 @@ namespace RacketLite
             return arguments;
         }
 
+        public static List<IRacketObject>? ParseRacketInteger(string str)
+        {
+            IRacketObject? number = RacketInteger.Parse(str) ?? (IRacketObject?)RacketExpression.Parse(str);
+            if (number != null)
+            {
+                return new List<IRacketObject>() { number };
+            }
+            return null;
+        }
+
         public static List<IRacketObject>? ParseRacketNumber(string str)
         {
             IRacketObject? number = RacketNumber.Parse(str) ?? (IRacketObject?)RacketExpression.Parse(str);
