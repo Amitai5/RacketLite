@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System;
+﻿using System;
+using System.Text;
 
 namespace RacketLite.ValueTypes
 {
@@ -8,6 +8,9 @@ namespace RacketLite.ValueTypes
         public float Value { get; init; }
         public bool IsExact { get; init; }
         public bool IsRational { get; init; }
+
+        public bool IsNatural => Value > 0 && IsExact && IsInteger;
+        public bool IsInteger => Value == MathF.Floor(Value) && IsRational;
 
         protected RacketNumber(float value, bool exact, bool rational)
         {

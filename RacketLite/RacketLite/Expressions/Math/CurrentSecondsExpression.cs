@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
+﻿using RacketLite.ValueTypes;
 using System;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
@@ -21,7 +21,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             double currentSecondsDouble = Math.Round((DateTime.UtcNow - DateTime.MinValue).TotalSeconds);
             long currentSeconds = Convert.ToInt64(currentSecondsDouble);

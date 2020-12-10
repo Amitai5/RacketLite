@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using RacketLite.Expressions;
+﻿using RacketLite.Expressions;
 using System;
+using System.Collections.Generic;
 
 namespace RacketLite
 {

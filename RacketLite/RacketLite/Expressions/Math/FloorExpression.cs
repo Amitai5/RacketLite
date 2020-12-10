@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
+﻿using RacketLite.ValueTypes;
 using System;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
@@ -22,7 +22,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
             return new RacketInteger((long)MathF.Floor(currentNumber.Value), true);

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
-using System.Linq;
+﻿using RacketLite.ValueTypes;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RacketLite.Expressions
 {
@@ -23,7 +23,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             bool isExact = true;
             List<long> lcmValues = new List<long>();

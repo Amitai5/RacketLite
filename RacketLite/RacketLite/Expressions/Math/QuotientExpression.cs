@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
+﻿using RacketLite.ValueTypes;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
@@ -21,7 +21,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
             long retValue = (long)currentNumber.Value;
@@ -32,7 +32,6 @@ namespace RacketLite.Expressions
                 currentNumber = (RacketNumber)arguments[i].Evaluate();
                 isExact = isExact && currentNumber.IsExact;
                 retValue /= (long)currentNumber.Value;
-
             }
             return new RacketInteger(retValue, isExact);
         }

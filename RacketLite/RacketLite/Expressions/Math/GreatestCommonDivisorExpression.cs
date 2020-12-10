@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
-using System.Text;
+﻿using RacketLite.ValueTypes;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RacketLite.Expressions
@@ -23,7 +22,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketInteger Evaluate()
         {
             bool isExact = true;
             List<long> gcdValues = new List<long>();

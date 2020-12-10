@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
-using System.Text;
+﻿using RacketLite.ValueTypes;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
@@ -22,7 +21,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketBoolean Evaluate()
         {
             bool retValue = true;
             RacketNumber firstNumber = (RacketNumber)arguments[0].Evaluate();

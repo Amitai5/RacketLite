@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using RacketLite.ValueTypes;
+﻿using RacketLite.ValueTypes;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
@@ -21,7 +21,7 @@ namespace RacketLite.Expressions
             return null;
         }
 
-        public override RacketValueType Evaluate()
+        public override RacketNumber Evaluate()
         {
             RacketNumber largestNumber = (RacketNumber)arguments[0].Evaluate();
             for (int i = 1; i < arguments.Count; i++)
