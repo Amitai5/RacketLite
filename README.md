@@ -1,0 +1,2 @@
+## Language Summary
+Racket-Lite is a simple [racket](https://racket-lang.org/) interpreter specifically focused on the Beginning Student Language ([BSL](https://docs.racket-lang.org/htdp-langs/beginner.html?q=define)). The interpreter is written entirely in C# using the .NET Core Framework and was started as a passion project by [Amitai Erfanian](https://www.amitai.tech) in early September of 2020.
