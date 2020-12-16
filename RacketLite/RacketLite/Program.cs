@@ -1,42 +1,19 @@
-﻿using RacketLite.ConsoleTools;
-using RacketLite.ValueTypes;
-using System;
+﻿using System;
 
 namespace RacketLite
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             //Set up console window
             Console.Title = "Racket-Lite";
-            ConsoleHelper helper = new ConsoleHelper(ConsoleColor.Black, ConsoleColor.White);
-            Console.WriteLine($"Welcome to Racket-Lite {RacketInterpreter.RacketLiteVersion} [cs].");
+            RacketInterpreter interpreter = new RacketInterpreter(false, false);
 
-            string expressionText;
-            do
+            while(true)
             {
-                Console.Write("> ");
-                expressionText = Console.ReadLine() ?? "";
-
-                //Parse Racket-Lite expressions
-                RacketValueType? result = RacketInterpreter.ParseLine(expressionText);
-                if(result != null)
-                {
-                    Console.WriteLine(result.ToString());
-                    continue;
-                }
-
-                //Highlight the last line in red
-                helper.ClearConsoleLine(1);
-                Console.CursorTop--;
-                Console.Write("> ");
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(expressionText);
-                helper.ResetColors();
-
-            } while (expressionText.ToLower().Trim() != "exit");
+                interpreter.ReadAndParseLine();
+            }
         }
     }
 }

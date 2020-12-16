@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace RacketLite.ConsoleTools
 {
@@ -175,7 +175,7 @@ namespace RacketLite.ConsoleTools
                 {
                     case ConsoleKey.Tab:
                         ClearConsoleLine(0);
-                        possibleDirects = GetPossibleOptions(currentSearch.Substring(0, currentSearch.LastIndexOf('\\')), currentSearch.Substring(currentSearch.LastIndexOf('\\') + 1));
+                        possibleDirects = GetPossibleOptions(currentSearch.Substring(0, currentSearch.LastIndexOf('\\')), currentSearch[(currentSearch.LastIndexOf('\\') + 1)..]);
 
                         if (tabPressIndex >= possibleDirects.Count)
                         {
