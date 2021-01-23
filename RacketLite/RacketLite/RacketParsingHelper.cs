@@ -1,5 +1,6 @@
 ﻿using RacketLite.Expressions;
 using RacketLite.ValueTypes;
+using System;
 using System.Collections.Generic;
 
 namespace RacketLite
@@ -8,7 +9,7 @@ namespace RacketLite
     {
         public const string InexactNumberPrefix = "#i";
 
-        public static List<IRacketObject>? ParseRacketNumbers(string str)
+        public static List<IRacketObject>? ParseRacketAny(string str)
         {
             string[] args = str.Split(" ");
             List<IRacketObject> arguments = new List<IRacketObject>();
@@ -17,34 +18,8 @@ namespace RacketLite
             for (int i = 0; i < args.Length; i++)
             {
                 string currentToken = predicate + args[i];
-                IRacketObject? newRacketObject = RacketNumber.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken);
-
-                if (newRacketObject != null)
-                {
-                    arguments.Add(newRacketObject);
-                    predicate = "";
-                    continue;
-                }
-                predicate += $"{args[i]} ";
-            }
-
-            if(predicate != "")
-            {
-                return null;
-            }
-            return arguments;
-        }
-
-        public static List<IRacketObject>? ParseRacketIntegers(string str)
-        {
-            string[] args = str.Split(" ");
-            List<IRacketObject> arguments = new List<IRacketObject>();
-
-            string predicate = "";
-            for (int i = 0; i < args.Length; i++)
-            {
-                string currentToken = predicate + args[i];
-                IRacketObject? newRacketObject = RacketInteger.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken);
+                IRacketObject? newRacketObject = RacketBoolean.Parse(currentToken)
+                    ?? RacketNumber.Parse(currentToken) ?? RacketString.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken);
 
                 if (newRacketObject != null)
                 {
@@ -62,24 +37,31 @@ namespace RacketLite
             return arguments;
         }
 
-        public static List<IRacketObject>? ParseRacketInteger(string str)
+        public static List<IRacketObject>? ParseRacketObjects(string str, Func<string, IRacketObject?> parseFunc)
         {
-            IRacketObject? number = RacketInteger.Parse(str) ?? (IRacketObject?)RacketExpression.Parse(str);
-            if (number != null)
-            {
-                return new List<IRacketObject>() { number };
-            }
-            return null;
-        }
+            string[] args = str.Split(" ");
+            List<IRacketObject> arguments = new List<IRacketObject>();
 
-        public static List<IRacketObject>? ParseRacketNumber(string str)
-        {
-            IRacketObject? number = RacketNumber.Parse(str) ?? (IRacketObject?)RacketExpression.Parse(str);
-            if (number != null)
+            string predicate = "";
+            for (int i = 0; i < args.Length; i++)
             {
-                return new List<IRacketObject>() { number };
+                string currentToken = predicate + args[i];
+                IRacketObject? newRacketObject = parseFunc.Invoke(currentToken) ?? RacketExpression.Parse(currentToken);
+
+                if (newRacketObject != null)
+                {
+                    arguments.Add(newRacketObject);
+                    predicate = "";
+                    continue;
+                }
+                predicate += $"{args[i]} ";
             }
-            return null;
+
+            if (predicate != "")
+            {
+                return null;
+            }
+            return arguments;
         }
     }
 }

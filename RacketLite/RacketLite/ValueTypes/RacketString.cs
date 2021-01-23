@@ -25,5 +25,10 @@ namespace RacketLite.ValueTypes
             stringBuilder.Append('\t', tabIndex);
             stringBuilder.Append(Value).Append('\n');
         }
+
+        public override string ToString()
+        {
+            return $"\"{Value}\"";
+        }
     }
 }
