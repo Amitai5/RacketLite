@@ -82,8 +82,16 @@ namespace RacketLite
 
             //String Methods
             { "string-alphabetic?", AlphabeticExpression.Parse },
-            { "string-whitespace?", WhitespaceExpression.Parse },
+            { "string-append", StringAppendExpression.Parse },
+            { "string-contains", StringContainsExpression.Parse },
+            { "string-copy", StringCopyExpression.Parse },
+            { "string-downcase", StringDowncaseExpression.Parse },
+            { "string-length", StringLengthExpression.Parse },
+            { "string-lower-case?", StringLowerCaseExpression.Parse },
             { "string-numeric?", NumericExpression.Parse },
+            { "string-upcase", StringUpcaseExpression.Parse },
+            { "string-upper-case?", StringUpperCaseExpression.Parse },
+            { "string-whitespace?", WhitespaceExpression.Parse },
         };
     }
 }
