@@ -4,20 +4,20 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AlphabeticExpression : RacketExpression
+    public sealed class StringAlphabeticExpression : RacketExpression
     {
-        private AlphabeticExpression(List<IRacketObject> args)
+        private StringAlphabeticExpression(List<IRacketObject> args)
             : base("StringAlphabetic")
         {
             arguments = args;
         }
 
-        public static new AlphabeticExpression? Parse(string str)
+        public static new StringAlphabeticExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
             if (arguments?.Count == 1)
             {
-                return new AlphabeticExpression(arguments);
+                return new StringAlphabeticExpression(arguments);
             }
             return null;
         }

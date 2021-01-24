@@ -13,7 +13,7 @@ namespace RacketLite.ValueTypes
 
         public new static RacketString? Parse(string str)
         {
-            if(str.StartsWith('"') && str.EndsWith('"'))
+            if(str.StartsWith('"') && str.EndsWith('"') && str.Length >= 2)
             {
                 return new RacketString(str[1..^1]);
             }
@@ -23,7 +23,7 @@ namespace RacketLite.ValueTypes
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(Value).Append('\n');
+            stringBuilder.Append(this).Append('\n');
         }
 
         public override string ToString()

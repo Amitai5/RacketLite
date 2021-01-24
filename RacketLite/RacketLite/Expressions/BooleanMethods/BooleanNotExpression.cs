@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class NotExpression : RacketExpression
+    public sealed class BooleanNotExpression : RacketExpression
     {
-        private NotExpression(List<IRacketObject> args)
+        private BooleanNotExpression(List<IRacketObject> args)
             : base("Not")
         {
             arguments = args;
         }
 
-        public static new NotExpression? Parse(string str)
+        public static new BooleanNotExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
             if (arguments?.Count == 1)
             {
-                return new NotExpression(arguments);
+                return new BooleanNotExpression(arguments);
             }
             return null;
         }

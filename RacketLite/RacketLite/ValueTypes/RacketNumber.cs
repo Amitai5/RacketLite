@@ -22,7 +22,7 @@ namespace RacketLite.ValueTypes
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(Value).Append('\n');
+            stringBuilder.Append(this).Append('\n');
         }
 
         public static RacketNumber Parse(float value, bool isExact, bool isRational)

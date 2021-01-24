@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AndExpression : RacketExpression
+    public sealed class BooleanOrExpression : RacketExpression
     {
-        private AndExpression(List<IRacketObject> args)
-            : base("And")
+        private BooleanOrExpression(List<IRacketObject> args)
+            : base("Or")
         {
             arguments = args;
         }
 
-        public static new AndExpression? Parse(string str)
+        public static new BooleanOrExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
             if (arguments?.Count > 0)
             {
-                return new AndExpression(arguments);
+                return new BooleanOrExpression(arguments);
             }
             return null;
         }
@@ -29,7 +29,7 @@ namespace RacketLite.Expressions
             for (int i = 1; i < arguments.Count; i++)
             {
                 currentBool = (RacketBoolean)arguments[i].Evaluate();
-                retValue = retValue && currentBool.Value;
+                retValue = retValue || currentBool.Value;
             }
             return new RacketBoolean(retValue);
         }

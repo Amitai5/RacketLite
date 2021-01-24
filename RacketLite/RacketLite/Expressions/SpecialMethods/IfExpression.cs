@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using System.Text;
+using RacketLite.ValueTypes;
 using System.Collections.Generic;
 
 namespace RacketLite.Expressions
@@ -30,5 +31,37 @@ namespace RacketLite.Expressions
             }
             return arguments[2].Evaluate();
         }
+
+
+        #region Override Methods
+
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            this.ToTreeString(stringBuilder, 0);
+            return stringBuilder.ToString();
+        }
+
+        public new void ToTreeString(StringBuilder stringBuilder, int tabIndex)
+        {
+            stringBuilder.Append('\t', tabIndex);
+            stringBuilder.Append(ExpressionName).Append('\n');
+            this.ArgumentsToTreeString(stringBuilder, tabIndex + 1);
+        }
+
+        public new void ArgumentsToTreeString(StringBuilder stringBuilder, int tabIndex)
+        {
+            arguments[0].ToTreeString(stringBuilder, tabIndex);
+
+            stringBuilder.Append('\t', tabIndex - 1);
+            stringBuilder.Append("Then").Append('\n');
+            arguments[1].ToTreeString(stringBuilder, tabIndex);
+
+            stringBuilder.Append('\t', tabIndex - 1);
+            stringBuilder.Append("Else").Append('\n');
+            arguments[2].ToTreeString(stringBuilder, tabIndex);
+        }
+
+        #endregion Override Methods
     }
 }

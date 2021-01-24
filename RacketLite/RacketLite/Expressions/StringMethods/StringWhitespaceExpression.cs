@@ -4,20 +4,20 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class NumericExpression : RacketExpression
+    public sealed class StringWhitespaceExpression : RacketExpression
     {
-        private NumericExpression(List<IRacketObject> args)
-            : base("StringAlphabetic")
+        private StringWhitespaceExpression(List<IRacketObject> args)
+            : base("StringWhitespace")
         {
             arguments = args;
         }
 
-        public static new NumericExpression? Parse(string str)
+        public static new StringWhitespaceExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
             if (arguments?.Count == 1)
             {
-                return new NumericExpression(arguments);
+                return new StringWhitespaceExpression(arguments);
             }
             return null;
         }
@@ -25,7 +25,7 @@ namespace RacketLite.Expressions
         public override RacketBoolean Evaluate()
         {
             string value = ((RacketString)arguments[0].Evaluate()).Value;
-            return new RacketBoolean(Regex.IsMatch(value, "^\\d+$"));
+            return new RacketBoolean(Regex.IsMatch(value, "^\\s+$"));
         }
     }
 }

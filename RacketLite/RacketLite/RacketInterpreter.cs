@@ -23,7 +23,7 @@ namespace RacketLite
 
         public RacketInterpreter(bool printTree, bool expressionClear)
         {
-            PrintTree = printTree;
+            PrintTree = true;
             ExpressionClear = expressionClear;
 
             //Add interpreter commands

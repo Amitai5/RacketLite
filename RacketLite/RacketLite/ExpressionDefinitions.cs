@@ -9,12 +9,12 @@ namespace RacketLite
         public static Dictionary<string, Func<string, RacketExpression?>> MathDefinitions { get; } = new Dictionary<string, Func<string, RacketExpression?>>()
         {
             //Boolean Methods
-            { "and", AndExpression.Parse },
+            { "and", BooleanAndExpression.Parse },
             { "boolean=?", BooleanEqualExpression.Parse },
             { "boolean?", IsBooleanExpression.Parse },
             { "false?", IsFalseExpression.Parse },
-            { "not", NotExpression.Parse },
-            { "or", OrExpression.Parse },
+            { "not", BooleanNotExpression.Parse },
+            { "or", BooleanOrExpression.Parse },
 
 
             //Conversion Methods
@@ -81,17 +81,17 @@ namespace RacketLite
 
 
             //String Methods
-            { "string-alphabetic?", AlphabeticExpression.Parse },
+            { "string-alphabetic?", StringAlphabeticExpression.Parse },
             { "string-append", StringAppendExpression.Parse },
             { "string-contains", StringContainsExpression.Parse },
             { "string-copy", StringCopyExpression.Parse },
             { "string-downcase", StringDowncaseExpression.Parse },
             { "string-length", StringLengthExpression.Parse },
             { "string-lower-case?", StringLowerCaseExpression.Parse },
-            { "string-numeric?", NumericExpression.Parse },
+            { "string-numeric?", StringNumericExpression.Parse },
             { "string-upcase", StringUpcaseExpression.Parse },
             { "string-upper-case?", StringUpperCaseExpression.Parse },
-            { "string-whitespace?", WhitespaceExpression.Parse },
+            { "string-whitespace?", StringWhitespaceExpression.Parse },
         };
     }
 }
