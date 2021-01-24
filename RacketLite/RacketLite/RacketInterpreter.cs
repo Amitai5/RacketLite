@@ -1,141 +1,180 @@
-﻿using AEapps.CoreLibrary.ConsoleTools;
-using System.Collections.Generic;
-using RacketLite.Oporators;
-using System;
-using RacketLite.Operands;
-using RacketLite.Exceptions;
+﻿using System.Collections.Generic;
+using RacketLite.ConsoleTools;
+using RacketLite.Expressions;
+using RacketLite.ValueTypes;
+using System.Text;
 using System.IO;
-using RacketLite.Parsing;
-using System.Text.RegularExpressions;
+using System;
+using System.Diagnostics;
 
 namespace RacketLite
 {
     public class RacketInterpreter
     {
-        private readonly ConsoleHelper Helper;
-        private readonly List<string> FunctionSignatures;
-        public const string RacketLiteVersion = "v2.2 beta";
-        public string TitleMessage => $"Welcome to Racket-Lite {RacketLiteVersion} [cs].";
+        public bool PrintTree { get; }
+        public bool ExpressionClear { get; }
 
-        public RacketInterpreter()
+        public const string Version = "v3.0 beta";
+        public const string CommandLinePrefix = ">";
+        public static string Title => $"Welcome to Racket-Lite {Version} [cs].";
+
+        private readonly ConsoleHelper helper;
+        private readonly Dictionary<string, Action> interpreterCommands = new Dictionary<string, Action>();
+
+        public RacketInterpreter(bool printTree, bool expressionClear)
         {
-            Helper = new ConsoleHelper(ConsoleColor.Black, ConsoleColor.White);
-            FunctionSignatures = OporatorDefinitions.GetFunctionSignatures();
-            Console.WriteLine(TitleMessage);
+            PrintTree = true;
+            ExpressionClear = expressionClear;
+
+            //Add interpreter commands
+            interpreterCommands.Add("#help", ShowRacketHelp);
+            interpreterCommands.Add("#ldf", () => ParseAndPrintFile());
+            interpreterCommands.Add("#loadfile", () => ParseAndPrintFile());
+            interpreterCommands.Add("#cls", () => { Console.Clear(); Console.WriteLine(Title); });
+            interpreterCommands.Add("#clear", () => { Console.Clear(); Console.WriteLine(Title); });
+
+            helper = new ConsoleHelper(ConsoleColor.Black, ConsoleColor.White);
+            Console.WriteLine(Title);
         }
 
-        public void ParseDirective(string directiveText)
+        public bool ParseAndPrintFile()
         {
-            switch (directiveText.ToLower())
+            string fileLocation = helper.ReadFilename(ConsoleColor.Green);
+
+            if (File.Exists(fileLocation))
             {
-                case "#help":
-                    PrintSignatures(FunctionSignatures);
-                    break;
-                case "#ldr":
-                case "#readfile":
-                case "#loadfile":
-                    string fileLocation = Helper.ReadFilename(ConsoleColor.Green);
-                    string fileInfo = File.ReadAllText(fileLocation);
-                    ParseMultiline(fileInfo);
-                    break;
-                case "#cls":
-                case "#clr":
-                case "#clear":
-                    Console.Clear();
-                    Console.WriteLine(TitleMessage);
-                    break;
+                helper.ResetColors();
+                string fileText = File.ReadAllText(fileLocation);
+                return ParseAndPrintMultiLine(fileText);
             }
+
+            helper.WriteLine($"Could not find file, {fileLocation}", ConsoleColor.Red);
+            helper.ResetColors();
+            return false;
         }
 
-        public void ParseMultiline(string multilinedExpression)
+        public bool ParseAndPrintMultiLine(string str)
         {
-            //Reset colors
-            Helper.ResetColors();
-            string[] expressions = multilinedExpression.Split('\n');
+            string[] expressions = str.Split('\n');
+            StringBuilder currentExpression = new StringBuilder();
 
-            //Parse each individual expression
-            for (int i = 3; i < expressions.Length; i++)
+            for (int i = 0; i < expressions.Length; i++)
             {
-                string currentExpression = expressions[i];
-                if (string.IsNullOrWhiteSpace(currentExpression) || expressions[i].StartsWith(';'))
+                if (string.IsNullOrWhiteSpace(expressions[i]) || expressions[i][0] == ';')
                 {
-                    //Ignore comments
+                    //Ignore comments and reader directives
                     continue;
                 }
 
                 //Parse multi-line expressions
-                while (currentExpression.ParenthesisBalance() == 1 && i < expressions.Length - 1)
+                currentExpression.Append(expressions[i]);
+                if (!BalancedParenthesis(currentExpression.ToString()) && i != expressions.Length - 1)
                 {
-                    i++;
-                    currentExpression += expressions[i];
+                    continue;
                 }
 
-                //Parse the expression
-                ParseSingleLine(currentExpression, i - 2);
+                if (!ParseAndPrintLine(currentExpression.ToString()))
+                {
+                    helper.WriteLine($"\tError: failed to parse line {i}", ConsoleColor.Red);
+                    helper.ResetColors();
+                    return false;
+                }
+                currentExpression.Clear();
             }
+            return true;
         }
 
-        public void ParseSingleLine(string expressionText, int lineNumber = -1)
+        public bool ReadAndParseLine()
         {
-            //Trim the extra spaces
-            expressionText = Regex.Replace(expressionText, @"\s+", " ").Trim();
+            Console.Write($"{CommandLinePrefix} ");
+            string str = Console.ReadLine() ?? "";
 
-            try
+            if (ExpressionClear)
             {
-                //Reset the current stack vars each command
-                StaticsManager.ResetCurrentStackVars();
-
-                RacketExpression mainEx = new RacketExpression(expressionText);
-                DynamicOperand result = mainEx.Evaluate();
-                if (result != null)
-                {
-                    Console.WriteLine(result.ToString());
-                }
+                Console.Clear();
+                Console.WriteLine($"Welcome to Racket-Lite {Version} [cs].");
+                Console.WriteLine($"{CommandLinePrefix} {str}");
             }
-
-            //Catch Racket Exceptions
-            catch (RacketException exception)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                if (lineNumber == -1)
-                {
-                    Console.WriteLine(exception.Message);
-                }
-                else
-                {
-                    Console.WriteLine($"Line {lineNumber}: {exception.Message}");
-                }
-                Console.ForegroundColor = ConsoleColor.White;
-            }
+            return ParseAndPrintLine(str);
         }
 
-        private void PrintSignatures(List<string> functionSignatures)
+        public bool ParseAndPrintLine(string str)
         {
-            //Print out title
-            Console.WriteLine("\n  Racket Function Definitions: \n");
-            for (int i = 0; i < functionSignatures.Count; i++)
+            if (ParseInterpreterCommand(str))
             {
-                //Space it a bit from the wall
-                Console.BackgroundColor = Helper.DefaultBackground;
-                Console.Write("  ");
-
-                //Switch colors every other line
-                if (Console.ForegroundColor == ConsoleColor.White)
-                {
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                }
-
-                //Write the function signature
-                Console.WriteLine(functionSignatures[i]);
+                return true;
             }
-            Helper.ResetColors();
-            Console.Write("\n");
+
+            (RacketExpression? expression, RacketValueType? result) = ParseLine(str);
+            if (result == null)
+            {
+                if (Console.CursorTop > 1)
+                {
+                    helper.ClearConsoleLine(1);
+                    Console.CursorTop--;
+                }
+
+                string cleanedExpression = $"{CommandLinePrefix} {str.Replace("\r", "").Replace("\n", "")}";
+                helper.WriteLine(cleanedExpression, ConsoleColor.Red);
+                helper.ResetColors();
+                return false;
+            }
+
+            if (PrintTree)
+            {
+                helper.Write($"\n{expression}", ConsoleColor.DarkGray);
+                helper.WriteLine("--------------------------", ConsoleColor.DarkGray);
+                helper.ResetColors();
+                Console.Write("Result: ");
+            }
+            Console.WriteLine(result.ToString());
+            return true;
+        }
+
+        private bool ParseInterpreterCommand(string str)
+        {
+            str = str.Trim().ToLower();
+            if (interpreterCommands.ContainsKey(str))
+            {
+                interpreterCommands[str].Invoke();
+                return true;
+            }
+            else if (str[0] == '#')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ShowRacketHelp()
+        {
+            helper.Write("For help with Racket-Lite, visit ", ConsoleColor.Yellow);
+            helper.WriteLine("https://github.com/Amitai5/RacketLite/wiki", ConsoleColor.Blue);
+            Process.Start(new ProcessStartInfo("cmd", "/c start https://github.com/Amitai5/RacketLite/wiki"));
+            helper.ResetColors();
+        }
+
+        private static (RacketExpression?, RacketValueType?) ParseLine(string str)
+        {
+            RacketExpression? expression = RacketExpression.Parse(str);
+            return (expression, expression?.Evaluate());
+        }
+
+        private static bool BalancedParenthesis(string str)
+        {
+            int balance = 0;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '(')
+                {
+                    balance++;
+                }
+                else if (str[i] == ')')
+                {
+                    balance--;
+                }
+            }
+            return balance == 0;
         }
     }
 }
