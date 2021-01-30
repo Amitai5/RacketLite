@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class SubtractOneExpression : RacketExpression
+    public sealed class SubtractOneExpression : NumericExpression
     {
         private SubtractOneExpression(List<IRacketObject> args)
             : base("SubtractOne")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new SubtractOneExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new SubtractOneExpression(arguments);

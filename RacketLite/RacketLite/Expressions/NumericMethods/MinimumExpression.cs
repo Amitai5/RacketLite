@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class MinimumExpression : RacketExpression
+    public sealed class MinimumExpression : NumericExpression
     {
         private MinimumExpression(List<IRacketObject> args)
             : base("Minimum")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new MinimumExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
                 return new MinimumExpression(arguments);

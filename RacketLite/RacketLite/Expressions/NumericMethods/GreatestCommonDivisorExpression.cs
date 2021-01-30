@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RacketLite.Expressions
 {
-    public sealed class GreatestCommonDivisorExpression : RacketExpression
+    public sealed class GreatestCommonDivisorExpression : NumericExpression
     {
         private GreatestCommonDivisorExpression(List<IRacketObject> args)
             : base("GreatestCommonDivisor")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new GreatestCommonDivisorExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
             if (arguments?.Count > 1)
             {
                 return new GreatestCommonDivisorExpression(arguments);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class SignExpression : RacketExpression
+    public sealed class SignExpression : NumericExpression
     {
         private SignExpression(List<IRacketObject> args)
             : base("Sign")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new SignExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new SignExpression(arguments);

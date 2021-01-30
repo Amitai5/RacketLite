@@ -1,12 +1,14 @@
-﻿using RacketLite.ValueTypes;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using RacketLite.ValueTypes;
+using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
     public abstract class RacketExpression : IRacketObject
     {
         public string ExpressionName { get; init; }
+        public Type? ReturnType { get; init; }
         protected List<IRacketObject> arguments = new List<IRacketObject>();
 
         protected RacketExpression(string name)
@@ -61,9 +63,21 @@ namespace RacketLite.Expressions
                 str = "";
             }
 
-            if(ExpressionDefinitions.MathDefinitions.ContainsKey(opCode))
+            if(ExpressionDefinitions.NumericDefinitions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.MathDefinitions[opCode].Invoke(str);
+                return ExpressionDefinitions.NumericDefinitions[opCode].Invoke(str);
+            }
+            else if (ExpressionDefinitions.BooleanDefinitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.BooleanDefinitions[opCode].Invoke(str);
+            }
+            else if (ExpressionDefinitions.StringDefinitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.StringDefinitions[opCode].Invoke(str);
+            }
+            else if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str);
             }
             return null;
         }

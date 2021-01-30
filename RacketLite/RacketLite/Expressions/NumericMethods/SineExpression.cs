@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class SineExpression : RacketExpression
+    public sealed class SineExpression : NumericExpression
     {
         private SineExpression(List<IRacketObject> args)
             : base("Sine")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new SineExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new SineExpression(arguments);

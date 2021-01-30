@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class SquareRootExpression : RacketExpression
+    public sealed class SquareRootExpression : NumericExpression
     {
         private SquareRootExpression(List<IRacketObject> args)
             : base("SquareRoot")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new SquareRootExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new SquareRootExpression(arguments);

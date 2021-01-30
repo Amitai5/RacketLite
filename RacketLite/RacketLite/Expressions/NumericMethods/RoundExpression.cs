@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class RoundExpression : RacketExpression
+    public sealed class RoundExpression : NumericExpression
     {
         private RoundExpression(List<IRacketObject> args)
             : base("Round")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new RoundExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new RoundExpression(arguments);

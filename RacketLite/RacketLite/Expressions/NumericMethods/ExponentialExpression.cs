@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ExponentialExpression : RacketExpression
+    public sealed class ExponentialExpression : NumericExpression
     {
         private ExponentialExpression(List<IRacketObject> args)
             : base("Exponential")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new ExponentialExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new ExponentialExpression(arguments);

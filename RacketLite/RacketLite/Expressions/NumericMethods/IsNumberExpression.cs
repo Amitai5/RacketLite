@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsNumberExpression : RacketExpression
+    public sealed class IsNumberExpression : BooleanExpression
     {
         private IsNumberExpression(List<IRacketObject> args)
             : base("IsNumber")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsNumberExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 1)
             {
                 return new IsNumberExpression(arguments);

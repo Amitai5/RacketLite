@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringWhitespaceExpression : RacketExpression
+    public sealed class StringWhitespaceExpression : BooleanExpression
     {
         private StringWhitespaceExpression(List<IRacketObject> args)
             : base("StringWhitespace")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new StringWhitespaceExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringWhitespaceExpression(arguments);

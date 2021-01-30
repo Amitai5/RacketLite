@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ArcCosineExpression : RacketExpression
+    public sealed class ArcCosineExpression : NumericExpression
     {
         private ArcCosineExpression(List<IRacketObject> args)
             : base("ArcCosine")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new ArcCosineExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new ArcCosineExpression(arguments);

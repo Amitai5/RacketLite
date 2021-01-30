@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsNegativeExpression : RacketExpression
+    public sealed class IsNegativeExpression : BooleanExpression
     {
         private IsNegativeExpression(List<IRacketObject> args)
             : base("IsNegative")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsNegativeExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new IsNegativeExpression(arguments);

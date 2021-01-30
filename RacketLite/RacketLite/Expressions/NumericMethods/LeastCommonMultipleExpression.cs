@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RacketLite.Expressions
 {
-    public sealed class LeastCommonMultipleExpression : RacketExpression
+    public sealed class LeastCommonMultipleExpression : NumericExpression
     {
         private LeastCommonMultipleExpression(List<IRacketObject> args)
             : base("LeastCommonMultiple")
@@ -15,7 +15,7 @@ namespace RacketLite.Expressions
 
         public static new LeastCommonMultipleExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
             if (arguments?.Count > 1)
             {
                 return new LeastCommonMultipleExpression(arguments);

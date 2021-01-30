@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsEvenExpression : RacketExpression
+    public sealed class IsEvenExpression : BooleanExpression
     {
         private IsEvenExpression(List<IRacketObject> args)
             : base("IsEven")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsEvenExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
             if (arguments?.Count == 1)
             {
                 return new IsEvenExpression(arguments);

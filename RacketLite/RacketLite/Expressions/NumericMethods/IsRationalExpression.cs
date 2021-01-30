@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsRationalExpression : RacketExpression
+    public sealed class IsRationalExpression : BooleanExpression
     {
         private IsRationalExpression(List<IRacketObject> args)
             : base("IsRational")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsRationalExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 1)
             {
                 return new IsRationalExpression(arguments);

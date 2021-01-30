@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringDowncaseExpression : RacketExpression
+    public sealed class StringDowncaseExpression : StringExpression
     {
         private StringDowncaseExpression(List<IRacketObject> args)
             : base("StringDowncase")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new StringDowncaseExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringDowncaseExpression(arguments);

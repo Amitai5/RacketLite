@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class TangentExpression : RacketExpression
+    public sealed class TangentExpression : NumericExpression
     {
         private TangentExpression(List<IRacketObject> args)
             : base("Cosine")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new TangentExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new TangentExpression(arguments);

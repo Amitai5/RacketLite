@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class BooleanToIntegerExpression : RacketExpression
+    public sealed class BooleanToIntegerExpression : NumericExpression
     {
         private BooleanToIntegerExpression(List<IRacketObject> args)
             : base("Boolean->Integer")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new BooleanToIntegerExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
             if (arguments?.Count == 1)
             {
                 return new BooleanToIntegerExpression(arguments);

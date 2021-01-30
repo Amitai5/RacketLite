@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AddOneExpression : RacketExpression
+    public sealed class AddOneExpression : NumericExpression
     {
         private AddOneExpression(List<IRacketObject> args)
             : base("AddOne")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new AddOneExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new AddOneExpression(arguments);

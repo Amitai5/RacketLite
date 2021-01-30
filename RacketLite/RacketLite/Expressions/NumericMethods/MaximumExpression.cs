@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class MaximumExpression : RacketExpression
+    public sealed class MaximumExpression : NumericExpression
     {
         private MaximumExpression(List<IRacketObject> args)
             : base("Maximum")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new MaximumExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
                 return new MaximumExpression(arguments);

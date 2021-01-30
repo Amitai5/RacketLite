@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class GreaterThanExpression : RacketExpression
+    public sealed class GreaterThanExpression : BooleanExpression
     {
         private GreaterThanExpression(List<IRacketObject> args)
             : base("GreaterThan")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new GreaterThanExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
                 return new GreaterThanExpression(arguments);

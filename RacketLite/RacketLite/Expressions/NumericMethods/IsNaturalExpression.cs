@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsNaturalExpression : RacketExpression
+    public sealed class IsNaturalExpression : BooleanExpression
     {
         private IsNaturalExpression(List<IRacketObject> args)
             : base("IsNatural")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsNaturalExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 1)
             {
                 return new IsNaturalExpression(arguments);

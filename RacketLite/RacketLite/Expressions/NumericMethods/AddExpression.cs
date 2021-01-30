@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AddExpression : RacketExpression
+    public sealed class AddExpression : NumericExpression
     {
         private AddExpression(List<IRacketObject> args)
             : base("Add")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new AddExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 0)
             {
                 return new AddExpression(arguments);
@@ -24,9 +24,9 @@ namespace RacketLite.Expressions
         public override RacketNumber Evaluate()
         {
             RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            bool isRational = currentNumber.IsRational;
             float retValue = currentNumber.Value;
             bool isExact = currentNumber.IsExact;
-            bool isRational = currentNumber.IsRational;
 
             for (int i = 1; i < arguments.Count; i++)
             {

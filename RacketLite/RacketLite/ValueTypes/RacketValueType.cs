@@ -20,11 +20,7 @@ namespace RacketLite.ValueTypes
             }
 
             valueType = RacketString.Parse(str);
-            if (valueType != null)
-            {
-                return valueType;
-            }
-            return null;
+            return valueType ?? RacketBoolean.Parse(str);
         }
     }
 }

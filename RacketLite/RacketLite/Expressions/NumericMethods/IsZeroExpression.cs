@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsZeroExpression : RacketExpression
+    public sealed class IsZeroExpression : BooleanExpression
     {
         private IsZeroExpression(List<IRacketObject> args)
             : base("IsZero")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsZeroExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new IsZeroExpression(arguments);

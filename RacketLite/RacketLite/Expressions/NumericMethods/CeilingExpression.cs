@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class CeilingExpression : RacketExpression
+    public sealed class CeilingExpression : NumericExpression
     {
         private CeilingExpression(List<IRacketObject> args)
             : base("Ceiling")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new CeilingExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new CeilingExpression(arguments);

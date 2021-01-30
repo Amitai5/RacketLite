@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class BooleanEqualExpression : RacketExpression
+    public sealed class BooleanEqualExpression : BooleanExpression
     {
         private BooleanEqualExpression(List<IRacketObject> args)
             : base("BooleanEqual")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new BooleanEqualExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
             if (arguments?.Count > 0)
             {
                 return new BooleanEqualExpression(arguments);

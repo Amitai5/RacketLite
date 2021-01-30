@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsExactExpression : RacketExpression
+    public sealed class IsExactExpression : BooleanExpression
     {
         private IsExactExpression(List<IRacketObject> args)
             : base("IsExact")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsExactExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new IsExactExpression(arguments);

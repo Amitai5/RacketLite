@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class AbsoluteValExpression : RacketExpression
+    public sealed class AbsoluteValExpression : NumericExpression
     {
         private AbsoluteValExpression(List<IRacketObject> args)
             : base("Abs")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new AbsoluteValExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new AbsoluteValExpression(arguments);

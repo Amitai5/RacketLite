@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class CurrentSecondsExpression : RacketExpression
+    public sealed class CurrentSecondsExpression : NumericExpression
     {
         private CurrentSecondsExpression(List<IRacketObject> args)
             : base("CurrentSeconds")

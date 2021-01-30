@@ -157,7 +157,18 @@ namespace RacketLite
         private static (RacketExpression?, RacketValueType?) ParseLine(string str)
         {
             RacketExpression? expression = RacketExpression.Parse(str);
-            return (expression, expression?.Evaluate());
+            RacketValueType? retValue;
+
+            try
+            {
+                retValue = expression?.Evaluate();
+            }
+            catch
+            {
+                retValue = null;
+            }
+
+            return (expression, retValue);
         }
 
         private static bool BalancedParenthesis(string str)

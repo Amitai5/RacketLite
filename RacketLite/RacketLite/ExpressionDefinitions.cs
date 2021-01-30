@@ -6,9 +6,9 @@ namespace RacketLite
 {
     public static class ExpressionDefinitions
     {
-        public static Dictionary<string, Func<string, RacketExpression?>> MathDefinitions { get; } = new Dictionary<string, Func<string, RacketExpression?>>()
+        public static Dictionary<string, Func<string, BooleanExpression?>> BooleanDefinitions { get; } = new Dictionary<string, Func<string, BooleanExpression?>>()
         {
-            //Boolean Methods
+            //Standard
             { "and", BooleanAndExpression.Parse },
             { "boolean=?", BooleanEqualExpression.Parse },
             { "boolean?", IsBooleanExpression.Parse },
@@ -16,35 +16,10 @@ namespace RacketLite
             { "not", BooleanNotExpression.Parse },
             { "or", BooleanOrExpression.Parse },
 
-
-            //Conversion Methods
-            { "boolean->integer", BooleanToIntegerExpression.Parse },
-            { "boolean->string", BooleanToStringExpression.Parse },
-            { "exact->inexact", ExactToInexactExpression.Parse },
-            { "inexact->exact", InexactToExactExpression.Parse },
-            { "number->string", NumberToStringExpression.Parse },
-
-
-            //Numeric Methods
-            { "abs", AbsoluteValExpression.Parse },
-            { "+", AddExpression.Parse },
-            { "add1", AddOneExpression.Parse },
-            { "acos", ArcCosineExpression.Parse },
-            { "asin", ArcSineExpression.Parse },
-            { "atan", ArcTangentExpression.Parse },
-            { "ceiling", CeilingExpression.Parse },
-            { "cos", CosineExpression.Parse },
-            { "current-seconds", CurrentSecondsExpression.Parse },
-            { "/", DivideExpression.Parse },
+            //Numeric
             { "=", EqualExpression.Parse },
-            { "expt", ExponentEpression.Parse },
-            { "exp", ExponentialExpression.Parse },
-            { "floor", FloorExpression.Parse },
             { ">", GreaterThanExpression.Parse },
             { ">=", GreaterThanEqualExpression.Parse },
-            { "gcd", GreatestCommonDivisorExpression.Parse },
-            { "cosh", HyperbolicCosineExpression.Parse },
-            { "sinh", HyperbolicSineExpression.Parse },
             { "even?", IsEvenExpression.Parse },
             { "exact?", IsExactExpression.Parse },
             { "integer?", IsIntegerExpression.Parse },
@@ -57,6 +32,35 @@ namespace RacketLite
             { "zero?", IsZeroExpression.Parse },
             { "<", LessThanExpression.Parse },
             { "<=", LessThanEqualExpression.Parse },
+
+            //String
+            { "string-alphabetic?", StringAlphabeticExpression.Parse},
+            { "string-contains", StringContainsExpression.Parse },
+            { "string-lower-case?", StringLowerCaseExpression.Parse },
+            { "string-numeric?", StringNumericExpression.Parse },
+            { "string-upper-case?", StringUpperCaseExpression.Parse },
+            { "string-whitespace?", StringWhitespaceExpression.Parse },
+        };
+
+        public static Dictionary<string, Func<string, NumericExpression?>> NumericDefinitions { get; } = new Dictionary<string, Func<string, NumericExpression?>>()
+        {
+            //Standard
+            { "abs", AbsoluteValExpression.Parse },
+            { "+", AddExpression.Parse },
+            { "add1", AddOneExpression.Parse },
+            { "acos", ArcCosineExpression.Parse },
+            { "asin", ArcSineExpression.Parse },
+            { "atan", ArcTangentExpression.Parse },
+            { "ceiling", CeilingExpression.Parse },
+            { "cos", CosineExpression.Parse },
+            { "current-seconds", CurrentSecondsExpression.Parse },
+            { "/", DivideExpression.Parse },
+            { "expt", ExponentEpression.Parse },
+            { "exp", ExponentialExpression.Parse },
+            { "floor", FloorExpression.Parse },
+            { "gcd", GreatestCommonDivisorExpression.Parse },
+            { "cosh", HyperbolicCosineExpression.Parse },
+            { "sinh", HyperbolicSineExpression.Parse },
             { "lcm", LeastCommonMultipleExpression.Parse },
             { "max", MaximumExpression.Parse },
             { "min", MinimumExpression.Parse },
@@ -75,23 +79,32 @@ namespace RacketLite
             { "sub1", SubtractOneExpression.Parse },
             { "tan", TangentExpression.Parse },
 
+            //Conversion Methods
+            { "boolean->integer", BooleanToIntegerExpression.Parse },
+            { "exact->inexact", ExactToInexactExpression.Parse },
+            { "inexact->exact", InexactToExactExpression.Parse },
 
-            //Special Methods
-            { "if", IfExpression.Parse },
+            //String
+            { "string-length", StringLengthExpression.Parse },
+        };
 
-
-            //String Methods
-            { "string-alphabetic?", StringAlphabeticExpression.Parse },
-            { "string-append", StringAppendExpression.Parse },
-            { "string-contains", StringContainsExpression.Parse },
+        public static Dictionary<string, Func<string, StringExpression?>> StringDefinitions { get; } = new Dictionary<string, Func<string, StringExpression?>>()
+        {
+            //Standard
+            { "string-append", StringAppendExpression.Parse},
             { "string-copy", StringCopyExpression.Parse },
             { "string-downcase", StringDowncaseExpression.Parse },
-            { "string-length", StringLengthExpression.Parse },
-            { "string-lower-case?", StringLowerCaseExpression.Parse },
-            { "string-numeric?", StringNumericExpression.Parse },
             { "string-upcase", StringUpcaseExpression.Parse },
-            { "string-upper-case?", StringUpperCaseExpression.Parse },
-            { "string-whitespace?", StringWhitespaceExpression.Parse },
+
+            //Conversion Methods
+            { "number->string", NumberToStringExpression.Parse },
+            { "boolean->string", BooleanToStringExpression.Parse },
+        };
+
+        public static Dictionary<string, Func<string, SpecialExpression?>> SpecialDefinitions { get; } = new Dictionary<string, Func<string, SpecialExpression?>>()
+        {
+            //Standard
+            { "if", IfExpression.Parse },
         };
     }
 }

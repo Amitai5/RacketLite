@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ExactToInexactExpression : RacketExpression
+    public sealed class ExactToInexactExpression : NumericExpression
     {
         private ExactToInexactExpression(List<IRacketObject> args)
             : base("Exact->Inexact")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new ExactToInexactExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new ExactToInexactExpression(arguments);

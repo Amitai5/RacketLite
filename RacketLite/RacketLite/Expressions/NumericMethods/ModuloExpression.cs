@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ModuloExpression : RacketExpression
+    public sealed class ModuloExpression : NumericExpression
     {
         private ModuloExpression(List<IRacketObject> args)
             : base("Modulo")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new ModuloExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
             if (arguments?.Count > 0)
             {
                 return new ModuloExpression(arguments);

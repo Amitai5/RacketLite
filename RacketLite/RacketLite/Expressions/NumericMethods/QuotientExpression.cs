@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class QuotientExpression : RacketExpression
+    public sealed class QuotientExpression : NumericExpression
     {
         private QuotientExpression(List<IRacketObject> args)
             : base("Quotient")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new QuotientExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
             if (arguments?.Count > 0)
             {
                 return new QuotientExpression(arguments);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringContainsExpression : RacketExpression
+    public sealed class StringContainsExpression : BooleanExpression
     {
         private StringContainsExpression(List<IRacketObject> args)
             : base("StringContains")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new StringContainsExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 2)
             {
                 return new StringContainsExpression(arguments);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringUpcaseExpression : RacketExpression
+    public sealed class StringUpcaseExpression : StringExpression
     {
         private StringUpcaseExpression(List<IRacketObject> args)
             : base("StringUpcase")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new StringUpcaseExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringUpcaseExpression(arguments);

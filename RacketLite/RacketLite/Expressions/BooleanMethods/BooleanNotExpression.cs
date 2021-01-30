@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class BooleanNotExpression : RacketExpression
+    public sealed class BooleanNotExpression : BooleanExpression
     {
         private BooleanNotExpression(List<IRacketObject> args)
             : base("Not")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new BooleanNotExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
             if (arguments?.Count == 1)
             {
                 return new BooleanNotExpression(arguments);

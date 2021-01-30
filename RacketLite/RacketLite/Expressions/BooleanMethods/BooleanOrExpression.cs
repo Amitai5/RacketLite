@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class BooleanOrExpression : RacketExpression
+    public sealed class BooleanOrExpression : BooleanExpression
     {
         private BooleanOrExpression(List<IRacketObject> args)
             : base("Or")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new BooleanOrExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
             if (arguments?.Count > 0)
             {
                 return new BooleanOrExpression(arguments);

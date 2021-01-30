@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsIntegerExpression : RacketExpression
+    public sealed class IsIntegerExpression : BooleanExpression
     {
         private IsIntegerExpression(List<IRacketObject> args)
             : base("IsInteger")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsIntegerExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 1)
             {
                 return new IsIntegerExpression(arguments);

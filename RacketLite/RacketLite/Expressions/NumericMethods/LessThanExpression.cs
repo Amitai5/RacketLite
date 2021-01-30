@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class LessThanExpression : RacketExpression
+    public sealed class LessThanExpression : BooleanExpression
     {
         private LessThanExpression(List<IRacketObject> args)
             : base("LessThan")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new LessThanExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
                 return new LessThanExpression(arguments);

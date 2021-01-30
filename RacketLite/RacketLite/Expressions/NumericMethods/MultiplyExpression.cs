@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class MultiplyExpression : RacketExpression
+    public sealed class MultiplyExpression : NumericExpression
     {
         private MultiplyExpression(List<IRacketObject> args)
             : base("Multiply")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new MultiplyExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 0)
             {
                 return new MultiplyExpression(arguments);

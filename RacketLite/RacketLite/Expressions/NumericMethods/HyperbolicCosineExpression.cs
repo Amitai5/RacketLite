@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class HyperbolicCosineExpression : RacketExpression
+    public sealed class HyperbolicCosineExpression : NumericExpression
     {
         private HyperbolicCosineExpression(List<IRacketObject> args)
             : base("HyperbolicCosine")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new HyperbolicCosineExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new HyperbolicCosineExpression(arguments);

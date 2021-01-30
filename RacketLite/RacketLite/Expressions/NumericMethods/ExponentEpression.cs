@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ExponentEpression : RacketExpression
+    public sealed class ExponentEpression : NumericExpression
     {
         private ExponentEpression(List<IRacketObject> args)
             : base("Exponent")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new ExponentEpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 1)
             {
                 return new ExponentEpression(arguments);

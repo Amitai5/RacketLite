@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringLowerCaseExpression : RacketExpression
+    public sealed class StringLowerCaseExpression : BooleanExpression
     {
         private StringLowerCaseExpression(List<IRacketObject> args)
             : base("StringLowerCase")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new StringLowerCaseExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringLowerCaseExpression(arguments);

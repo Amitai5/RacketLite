@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class HyperbolicSineExpression : RacketExpression
+    public sealed class HyperbolicSineExpression : NumericExpression
     {
         private HyperbolicSineExpression(List<IRacketObject> args)
             : base("HyperbolicSine")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new HyperbolicSineExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new HyperbolicSineExpression(arguments);

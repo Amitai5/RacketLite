@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class SquareExpression : RacketExpression
+    public sealed class SquareExpression : NumericExpression
     {
         private SquareExpression(List<IRacketObject> args)
             : base("Square")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new SquareExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new SquareExpression(arguments);

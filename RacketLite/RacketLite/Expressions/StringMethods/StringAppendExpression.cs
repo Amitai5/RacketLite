@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringAppendExpression : RacketExpression
+    public sealed class StringAppendExpression : StringExpression
     {
         private StringAppendExpression(List<IRacketObject> args)
             : base("StringAppend")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new StringAppendExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count >= 2)
             {
                 return new StringAppendExpression(arguments);

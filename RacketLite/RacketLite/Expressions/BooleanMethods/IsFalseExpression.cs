@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IsFalseExpression : RacketExpression
+    public sealed class IsFalseExpression : BooleanExpression
     {
         private IsFalseExpression(List<IRacketObject> args)
             : base("IsFalse")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsFalseExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 1)
             {
                 return new IsFalseExpression(arguments);

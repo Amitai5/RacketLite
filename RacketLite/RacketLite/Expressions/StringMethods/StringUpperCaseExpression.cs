@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringUpperCaseExpression : RacketExpression
+    public sealed class StringUpperCaseExpression : BooleanExpression
     {
         private StringUpperCaseExpression(List<IRacketObject> args)
             : base("StringUpperCase")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new StringUpperCaseExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringUpperCaseExpression(arguments);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class NumberToStringExpression : RacketExpression
+    public sealed class NumberToStringExpression : StringExpression
     {
         private NumberToStringExpression(List<IRacketObject> args)
             : base("Number->String")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new NumberToStringExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketNumber.Parse);
             if (arguments?.Count == 1)
             {
                 return new NumberToStringExpression(arguments);

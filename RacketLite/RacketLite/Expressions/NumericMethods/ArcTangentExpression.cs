@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class ArcTangentExpression : RacketExpression
+    public sealed class ArcTangentExpression : NumericExpression
     {
         private ArcTangentExpression(List<IRacketObject> args)
             : base("ArcTangent")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new ArcTangentExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new ArcTangentExpression(arguments);

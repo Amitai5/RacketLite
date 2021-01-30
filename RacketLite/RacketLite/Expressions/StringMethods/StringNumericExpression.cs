@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
-    public sealed class StringNumericExpression : RacketExpression
+    public sealed class StringNumericExpression : BooleanExpression
     {
         private StringNumericExpression(List<IRacketObject> args)
             : base("StringAlphabetic")
@@ -14,7 +14,7 @@ namespace RacketLite.Expressions
 
         public static new StringNumericExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketString.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
             if (arguments?.Count == 1)
             {
                 return new StringNumericExpression(arguments);

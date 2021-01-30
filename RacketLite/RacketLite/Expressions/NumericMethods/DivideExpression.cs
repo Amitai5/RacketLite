@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class DivideExpression : RacketExpression
+    public sealed class DivideExpression : NumericExpression
     {
         private DivideExpression(List<IRacketObject> args)
             : base("Divide")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new DivideExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count > 0)
             {
                 return new DivideExpression(arguments);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class IfExpression : RacketExpression
+    public sealed class IfExpression : SpecialExpression
     {
         private IfExpression(List<IRacketObject> args)
             : base("If")
@@ -14,8 +14,10 @@ namespace RacketLite.Expressions
 
         public static new IfExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketAny(str);
-            if (arguments?.Count == 3 && arguments[0].Evaluate() is RacketBoolean) //TODO: fix this using parent expressions. Ex: MathExpression, StringExpression, BooleanExpression based on what they return
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseSpecific(str, (RacketBoolean.Parse, BooleanExpression.Parse),
+                (RacketValueType.Parse, RacketExpression.Parse), (RacketValueType.Parse, RacketExpression.Parse));
+
+            if (arguments?.Count == 3)
             {
                 return new IfExpression(arguments);
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RacketLite.Expressions
 {
-    public sealed class BooleanToStringExpression : RacketExpression
+    public sealed class BooleanToStringExpression : StringExpression
     {
         private BooleanToStringExpression(List<IRacketObject> args)
             : base("Boolean->String")
@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new BooleanToStringExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketObjects(str, RacketBoolean.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
             if (arguments?.Count == 1)
             {
                 return new BooleanToStringExpression(arguments);
