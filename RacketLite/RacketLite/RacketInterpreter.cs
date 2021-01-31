@@ -23,7 +23,7 @@ namespace RacketLite
 
         public RacketInterpreter(bool printTree, bool expressionClear)
         {
-            PrintTree = true;
+            PrintTree = printTree;
             ExpressionClear = expressionClear;
 
             //Add interpreter commands
@@ -84,6 +84,8 @@ namespace RacketLite
             return true;
         }
 
+
+
         public bool ReadAndParseLine()
         {
             Console.Write($"{CommandLinePrefix} ");
@@ -105,20 +107,8 @@ namespace RacketLite
                 return true;
             }
 
-            (RacketExpression? expression, RacketValueType? result) = ParseLine(str);
-            if (result == null)
-            {
-                if (Console.CursorTop > 1)
-                {
-                    helper.ClearConsoleLine(1);
-                    Console.CursorTop--;
-                }
-
-                string cleanedExpression = $"{CommandLinePrefix} {str.Replace("\r", "").Replace("\n", "")}";
-                helper.WriteLine(cleanedExpression, ConsoleColor.Red);
-                helper.ResetColors();
-                return false;
-            }
+            (RacketExpression? expression, string result) = ParseLine(str);
+            bool validRacket = expression != null && !result.StartsWith(';');
 
             if (PrintTree)
             {
@@ -127,9 +117,43 @@ namespace RacketLite
                 helper.ResetColors();
                 Console.Write("Result: ");
             }
-            Console.WriteLine(result.ToString());
-            return true;
+
+            if(!validRacket)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
+            Console.Write(result);
+            helper.ResetColors();
+            return validRacket;
         }
+
+        private (RacketExpression?, string) ParseLine(string str)
+        {
+            RacketExpression? expression = null;
+            RacketValueType? retValue;
+            string retValueString;
+
+            try
+            {
+                expression = RacketExpression.Parse(str);
+                retValue = expression?.Evaluate();
+
+                retValueString = retValue?.ToString() ?? "";
+            }
+            catch (Exception ex)
+            {
+                retValueString = $"; {ex.Message}";
+            }
+
+            if (!string.IsNullOrEmpty(retValueString))
+            {
+                retValueString += Environment.NewLine;
+            }
+            return (expression, retValueString);
+        }
+
+        #region Helper Methods
 
         private bool ParseInterpreterCommand(string str)
         {
@@ -154,24 +178,7 @@ namespace RacketLite
             helper.ResetColors();
         }
 
-        private static (RacketExpression?, RacketValueType?) ParseLine(string str)
-        {
-            RacketExpression? expression = RacketExpression.Parse(str);
-            RacketValueType? retValue;
-
-            try
-            {
-                retValue = expression?.Evaluate();
-            }
-            catch
-            {
-                retValue = null;
-            }
-
-            return (expression, retValue);
-        }
-
-        private static bool BalancedParenthesis(string str)
+        private bool BalancedParenthesis(string str)
         {
             int balance = 0;
             for (int i = 0; i < str.Length; i++)
@@ -187,5 +194,7 @@ namespace RacketLite
             }
             return balance == 0;
         }
+
+        #endregion Helper Methods
     }
 }

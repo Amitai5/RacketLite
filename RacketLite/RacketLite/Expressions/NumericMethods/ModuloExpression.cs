@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new ModuloExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
             if (arguments?.Count > 0)
             {
                 return new ModuloExpression(arguments);

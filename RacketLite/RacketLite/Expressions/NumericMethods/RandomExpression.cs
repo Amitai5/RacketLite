@@ -16,7 +16,7 @@ namespace RacketLite.Expressions
 
         public static new RandomExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
             if (arguments?.Count == 1 && arguments[0] is RacketExpression)
             {
                 return new RandomExpression(arguments);

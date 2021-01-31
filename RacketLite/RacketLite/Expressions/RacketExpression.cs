@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using RacketLite.Exceptions;
 using RacketLite.ValueTypes;
 using System.Collections.Generic;
 
@@ -11,9 +12,10 @@ namespace RacketLite.Expressions
         public Type? ReturnType { get; init; }
         protected List<IRacketObject> arguments = new List<IRacketObject>();
 
-        protected RacketExpression(string name)
+        protected RacketExpression(string name, Type? returnType)
         {
             ExpressionName = name;
+            ReturnType = returnType;
         }
 
         public abstract RacketValueType Evaluate();
@@ -79,7 +81,7 @@ namespace RacketLite.Expressions
             {
                 return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str);
             }
-            return null;
+            throw new UndefinedOperatorException(opCode);
         }
     }
 }

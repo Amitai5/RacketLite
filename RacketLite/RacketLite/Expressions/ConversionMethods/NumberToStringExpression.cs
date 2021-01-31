@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new NumberToStringExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketNumber.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
             if (arguments?.Count == 1)
             {
                 return new NumberToStringExpression(arguments);

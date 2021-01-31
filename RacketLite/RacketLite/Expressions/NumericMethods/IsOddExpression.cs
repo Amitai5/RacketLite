@@ -13,7 +13,7 @@ namespace RacketLite.Expressions
 
         public static new IsOddExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.Parse(str, RacketInteger.Parse);
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
             if (arguments?.Count == 1)
             {
                 return new IsOddExpression(arguments);

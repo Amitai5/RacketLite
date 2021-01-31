@@ -5,9 +5,9 @@ namespace RacketLite.Expressions
     public abstract class BooleanExpression : RacketExpression
     {
         protected BooleanExpression(string name)
-            : base(name)
+            : base(name, typeof(RacketBoolean))
         {
-            ReturnType = typeof(RacketBoolean);
+
         }
 
         public override abstract RacketBoolean Evaluate();

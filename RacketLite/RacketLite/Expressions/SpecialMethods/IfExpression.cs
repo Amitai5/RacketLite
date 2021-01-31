@@ -14,11 +14,10 @@ namespace RacketLite.Expressions
 
         public static new IfExpression? Parse(string str)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseSpecific(str, (RacketBoolean.Parse, BooleanExpression.Parse),
-                (RacketValueType.Parse, RacketExpression.Parse), (RacketValueType.Parse, RacketExpression.Parse));
-
+            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 3)
             {
+                RacketParsingHelper.ValidateReturnType(typeof(RacketBoolean), arguments[0]);
                 return new IfExpression(arguments);
             }
             return null;
@@ -27,13 +26,12 @@ namespace RacketLite.Expressions
         public override RacketValueType Evaluate()
         {
             bool questionValue = ((RacketBoolean)arguments[0].Evaluate()).Value;
-            if(questionValue)
+            if (questionValue)
             {
                 return arguments[1].Evaluate();
             }
             return arguments[2].Evaluate();
         }
-
 
         #region Override Methods
 

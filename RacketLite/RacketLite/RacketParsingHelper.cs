@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using RacketLite.Expressions;
+﻿using System;
+using RacketLite.Exceptions;
 using RacketLite.ValueTypes;
-using System;
+using RacketLite.Expressions;
+using System.Collections.Generic;
 
 namespace RacketLite
 {
@@ -11,17 +12,30 @@ namespace RacketLite
 
         public static List<IRacketObject>? ParseRacketBooleans(string str)
         {
-            return Parse(str, RacketBoolean.Parse, BooleanExpression.Parse);
+            List<IRacketObject>? args = ParseAny(str);
+            ValidateReturnTypes(typeof(RacketBoolean), args);
+            return args;
         }
 
         public static List<IRacketObject>? ParseRacketStrings(string str)
         {
-            return Parse(str, RacketString.Parse, BooleanExpression.Parse);
+            List<IRacketObject>? args = ParseAny(str);
+            ValidateReturnTypes(typeof(RacketString), args);
+            return args;
         }
 
         public static List<IRacketObject>? ParseRacketNumbers(string str)
         {
-            return Parse(str, RacketNumber.Parse, NumericExpression.Parse);
+            List<IRacketObject>? args = ParseAny(str);
+            ValidateReturnTypes(typeof(RacketNumber), args);
+            return args;
+        }
+
+        public static List<IRacketObject>? ParseRacketIntegers(string str)
+        {
+            List<IRacketObject>? args = ParseAny(str);
+            ValidateReturnTypes(typeof(RacketInteger), args);
+            return args;
         }
 
         public static List<IRacketObject>? ParseAny(string str)
@@ -52,62 +66,32 @@ namespace RacketLite
             return arguments;
         }
 
-        public static List<IRacketObject>? Parse(string str, Func<string, IRacketObject?> valueTypeParser, Func<string, IRacketObject?>? expressionParser = null)
+        public static void ValidateReturnTypes(Type expectedType, List<IRacketObject>? args)
         {
-            string[] args = str.Split(" ");
-            List<IRacketObject> arguments = new List<IRacketObject>();
-
-            string predicate = "";
-            for (int i = 0; i < args.Length; i++)
+            if (args == null)
             {
-                string currentToken = predicate + args[i];
-                IRacketObject? newRacketObject = valueTypeParser.Invoke(currentToken) ?? expressionParser?.Invoke(currentToken) ?? SpecialExpression.Parse(currentToken);
-
-                if (newRacketObject != null)
-                {
-                    arguments.Add(newRacketObject);
-                    predicate = "";
-                    continue;
-                }
-                predicate += $"{args[i]} ";
+                throw new ContractViolationException(expectedType, null);
             }
 
-            if (predicate != "")
+            foreach (IRacketObject argument in args)
             {
-                return null;
+                ValidateReturnType(expectedType, argument);
             }
-            return arguments;
         }
 
-        public static List<IRacketObject>? ParseSpecific(string str, params (Func<string, IRacketObject?>, Func<string, IRacketObject?>)[] objectParsers)
+        public static void ValidateReturnType(Type expectedType, IRacketObject argument)
         {
-            string[] args = str.Split(" ");
-            List<IRacketObject> arguments = new List<IRacketObject>();
-
-            string predicate = "";
-            int parsedObjectCounter = 0;
-            for (int i = 0; i < args.Length; i++)
+            if (argument is RacketExpression expression && expression.ReturnType != null)
             {
-                string currentToken = predicate + args[i];
-
-                (Func<string, IRacketObject?>, Func<string, IRacketObject?>) currentParsers = objectParsers[parsedObjectCounter];
-                IRacketObject? newRacketObject = currentParsers.Item1.Invoke(currentToken) ?? currentParsers.Item2.Invoke(currentToken);
-
-                if (newRacketObject != null)
+                if (!expression.ReturnType.IsAssignableFrom(expectedType) && !expression.ReturnType.IsSubclassOf(expectedType))
                 {
-                    arguments.Add(newRacketObject);
-                    parsedObjectCounter++;
-                    predicate = "";
-                    continue;
+                    throw new ContractViolationException(expectedType, expression.ReturnType);
                 }
-                predicate += $"{args[i]} ";
             }
-
-            if (predicate != "")
+            else if (!argument.GetType().IsAssignableFrom(expectedType) && !argument.GetType().IsSubclassOf(expectedType))
             {
-                return null;
+                throw new ContractViolationException(expectedType, argument.GetType());
             }
-            return arguments;
         }
     }
 }

@@ -5,9 +5,9 @@ namespace RacketLite.Expressions
     public abstract class NumericExpression : RacketExpression
     {
         protected NumericExpression(string name)
-            : base(name)
+            : base(name, typeof(RacketNumber))
         {
-            ReturnType = typeof(RacketNumber);
+
         }
 
         public override abstract RacketNumber Evaluate();

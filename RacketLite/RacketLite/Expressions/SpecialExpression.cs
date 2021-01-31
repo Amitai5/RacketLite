@@ -5,9 +5,9 @@ namespace RacketLite.Expressions
     public abstract class SpecialExpression : RacketExpression
     {
         protected SpecialExpression(string name)
-            : base(name)
+            : base(name, typeof(RacketValueType))
         {
-            ReturnType = typeof(RacketNumber);
+
         }
 
         public new static SpecialExpression? Parse(string str)
