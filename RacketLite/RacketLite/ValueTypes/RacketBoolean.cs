@@ -13,14 +13,16 @@ namespace RacketLite.ValueTypes
 
         public new static RacketBoolean? Parse(string str)
         {
-            str = str.Replace("#", "").ToLower();
+            str = str.ToLower();
             return str switch
             {
+                "#false" => new RacketBoolean(false),
                 "false" => new RacketBoolean(false),
+                "#true" => new RacketBoolean(true),
                 "true" => new RacketBoolean(true),
 
-                "f" => new RacketBoolean(false),
-                "t" => new RacketBoolean(true),
+                "#f" => new RacketBoolean(false),
+                "#t" => new RacketBoolean(true),
                 _ => null
             };
         }

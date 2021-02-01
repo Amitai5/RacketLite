@@ -18,16 +18,8 @@ namespace RacketLite.Expressions
                 return null;
             }
 
-            string opCode = str[1..^1];
-            if (str.Contains(' '))
-            {
-                opCode = str[1..str.IndexOf(' ')];
-                str = str[str.IndexOf(' ')..^1].Trim();
-            }
-            else
-            {
-                str = "";
-            }
+            string opCode;
+            (opCode, str) = parseOpCode(str);
 
             if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
             {

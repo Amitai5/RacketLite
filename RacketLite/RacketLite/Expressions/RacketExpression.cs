@@ -54,18 +54,10 @@ namespace RacketLite.Expressions
                 return null;
             }
 
-            string opCode = str[1..^1];
-            if (str.Contains(' '))
-            {
-                opCode = str[1..str.IndexOf(' ')];
-                str = str[str.IndexOf(' ')..^1].Trim();
-            }
-            else
-            {
-                str = "";
-            }
+            string opCode;
+            (opCode, str) = parseOpCode(str);
 
-            if(ExpressionDefinitions.NumericDefinitions.ContainsKey(opCode))
+            if (ExpressionDefinitions.NumericDefinitions.ContainsKey(opCode))
             {
                 return ExpressionDefinitions.NumericDefinitions[opCode].Invoke(str);
             }
@@ -82,6 +74,25 @@ namespace RacketLite.Expressions
                 return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str);
             }
             throw new UndefinedOperatorException(opCode);
+        }
+
+        protected static (string opCode, string str) parseOpCode(string str)
+        {
+            string innerString = str[1..^1].Trim();
+            string opCode = "";
+
+            if (innerString.Contains(' '))
+            {
+                int nextParamIndex = innerString.IndexOf(' ');
+                opCode = innerString[0..nextParamIndex];
+                innerString = innerString.Remove(0, nextParamIndex);
+            }
+            else
+            {
+                innerString = "";
+            }
+
+            return (opCode, innerString);
         }
     }
 }

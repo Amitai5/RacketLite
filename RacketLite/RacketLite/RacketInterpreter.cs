@@ -2,10 +2,10 @@
 using RacketLite.ConsoleTools;
 using RacketLite.Expressions;
 using RacketLite.ValueTypes;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
 using System;
-using System.Diagnostics;
 
 namespace RacketLite
 {
@@ -43,7 +43,9 @@ namespace RacketLite
 
             if (File.Exists(fileLocation))
             {
+                helper.WriteLine("Reading File...", ConsoleColor.Yellow);
                 helper.ResetColors();
+
                 string fileText = File.ReadAllText(fileLocation);
                 return ParseAndPrintMultiLine(fileText);
             }
@@ -60,7 +62,7 @@ namespace RacketLite
 
             for (int i = 0; i < expressions.Length; i++)
             {
-                if (string.IsNullOrWhiteSpace(expressions[i]) || expressions[i][0] == ';')
+                if (string.IsNullOrWhiteSpace(expressions[i]) || expressions[i][0] == ';' || expressions[i][0] == '#')
                 {
                     //Ignore comments and reader directives
                     continue;
@@ -68,7 +70,7 @@ namespace RacketLite
 
                 //Parse multi-line expressions
                 currentExpression.Append(expressions[i]);
-                if (!BalancedParenthesis(currentExpression.ToString()) && i != expressions.Length - 1)
+                if (!parenthesisBalance(currentExpression.ToString(), out _) && i != expressions.Length - 1)
                 {
                     continue;
                 }
@@ -118,7 +120,7 @@ namespace RacketLite
                 Console.Write("Result: ");
             }
 
-            if(!validRacket)
+            if (!validRacket)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
@@ -178,9 +180,9 @@ namespace RacketLite
             helper.ResetColors();
         }
 
-        private bool BalancedParenthesis(string str)
+        private static bool parenthesisBalance(string str, out int balance)
         {
-            int balance = 0;
+            balance = 0;
             for (int i = 0; i < str.Length; i++)
             {
                 if (str[i] == '(')

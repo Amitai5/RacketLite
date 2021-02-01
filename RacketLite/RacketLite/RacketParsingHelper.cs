@@ -1,8 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using RacketLite.Expressions;
 using RacketLite.Exceptions;
 using RacketLite.ValueTypes;
-using RacketLite.Expressions;
-using System.Collections.Generic;
+using System;
 
 namespace RacketLite
 {
@@ -12,28 +12,28 @@ namespace RacketLite
 
         public static List<IRacketObject>? ParseRacketBooleans(string str)
         {
-            List<IRacketObject>? args = ParseAny(str);
+            List<IRacketObject>? args = ParseAny(str.Trim());
             ValidateReturnTypes(typeof(RacketBoolean), args);
             return args;
         }
 
         public static List<IRacketObject>? ParseRacketStrings(string str)
         {
-            List<IRacketObject>? args = ParseAny(str);
+            List<IRacketObject>? args = ParseAny(str.Trim());
             ValidateReturnTypes(typeof(RacketString), args);
             return args;
         }
 
         public static List<IRacketObject>? ParseRacketNumbers(string str)
         {
-            List<IRacketObject>? args = ParseAny(str);
+            List<IRacketObject>? args = ParseAny(str.Trim());
             ValidateReturnTypes(typeof(RacketNumber), args);
             return args;
         }
 
         public static List<IRacketObject>? ParseRacketIntegers(string str)
         {
-            List<IRacketObject>? args = ParseAny(str);
+            List<IRacketObject>? args = ParseAny(str.Trim());
             ValidateReturnTypes(typeof(RacketInteger), args);
             return args;
         }
