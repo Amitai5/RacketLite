@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsExactExpression : BooleanExpression
     {
         private IsExactExpression(List<IRacketObject> args)
-            : base("IsExact")
+            : base("exact?")
         {
             parameters = args;
         }

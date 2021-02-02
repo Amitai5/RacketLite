@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class BooleanOrExpression : BooleanExpression
     {
         private BooleanOrExpression(List<IRacketObject> args)
-            : base("Or")
+            : base("or")
         {
             parameters = args;
         }

@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsNaturalExpression : BooleanExpression
     {
         private IsNaturalExpression(List<IRacketObject> args)
-            : base("IsNatural")
+            : base("natural?")
         {
             parameters = args;
         }

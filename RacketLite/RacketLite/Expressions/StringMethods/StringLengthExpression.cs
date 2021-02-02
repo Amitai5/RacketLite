@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class StringLengthExpression : NumericExpression
     {
         private StringLengthExpression(List<IRacketObject> args)
-            : base("StringLength")
+            : base("string-length")
         {
             parameters = args;
         }

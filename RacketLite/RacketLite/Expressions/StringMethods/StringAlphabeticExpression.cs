@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class StringAlphabeticExpression : BooleanExpression
     {
         private StringAlphabeticExpression(List<IRacketObject> args)
-            : base("StringAlphabetic")
+            : base("string-alphabetic?")
         {
             parameters = args;
         }

@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class StringContainsExpression : BooleanExpression
     {
         private StringContainsExpression(List<IRacketObject> args)
-            : base("StringContains")
+            : base("string-contains?")
         {
             parameters = args;
         }

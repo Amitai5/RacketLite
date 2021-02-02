@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class CosineExpression : NumericExpression
     {
         private CosineExpression(List<IRacketObject> args)
-            : base("Cosine")
+            : base("cos")
         {
             parameters = args;
         }

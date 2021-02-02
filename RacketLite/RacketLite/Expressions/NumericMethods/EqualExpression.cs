@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class EqualExpression : BooleanExpression
     {
         private EqualExpression(List<IRacketObject> args)
-            : base("Equal")
+            : base("=")
         {
             parameters = args;
         }

@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class StringAppendExpression : StringExpression
     {
         private StringAppendExpression(List<IRacketObject> args)
-            : base("StringAppend")
+            : base("string-append")
         {
             parameters = args;
         }

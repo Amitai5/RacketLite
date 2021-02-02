@@ -11,7 +11,7 @@ namespace RacketLite.Expressions
         public string NewFuncCallName { get; init; }
 
         private DefineExpression(string newCallName, bool funcDef, List<IRacketObject> args)
-            : base("Define")
+            : base("define")
         {
             parameters = args;
             FuncDefinition = funcDef;

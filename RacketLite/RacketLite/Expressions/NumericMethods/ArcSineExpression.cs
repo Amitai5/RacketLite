@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class ArcSineExpression : NumericExpression
     {
         private ArcSineExpression(List<IRacketObject> args)
-            : base("ArcSine")
+            : base("asin")
         {
             parameters = args;
         }

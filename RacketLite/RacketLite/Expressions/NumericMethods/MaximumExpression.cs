@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class MaximumExpression : NumericExpression
     {
         private MaximumExpression(List<IRacketObject> args)
-            : base("Maximum")
+            : base("max")
         {
             parameters = args;
         }

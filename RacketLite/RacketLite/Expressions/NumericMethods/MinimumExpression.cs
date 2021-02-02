@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class MinimumExpression : NumericExpression
     {
         private MinimumExpression(List<IRacketObject> args)
-            : base("Minimum")
+            : base("min")
         {
             parameters = args;
         }

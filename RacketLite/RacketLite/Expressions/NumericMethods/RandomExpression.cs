@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace RacketLite.Expressions
         private static readonly Random random = new Random();
 
         private RandomExpression(List<IRacketObject> args)
-            : base("Random")
+            : base("random")
         {
             parameters = args;
         }
@@ -21,8 +22,13 @@ namespace RacketLite.Expressions
             {
                 return new RandomExpression(parameters);
             }
-            else if(parameters?.Count == 1 && ((RacketInteger)parameters[0]).IsNatural)
+            else if(parameters?.Count == 1)
             {
+                if(!((RacketInteger)parameters[0]).IsNatural)
+                {
+                    string givenTypeName = (parameters[0].GetType() == null ? "None" : parameters[0].GetType().Name);
+                    throw new ContractViolationException($"Racket contract violation. Expected RacketNatural, given {givenTypeName}");
+                }
                 return new RandomExpression(parameters);
             }
             return null;

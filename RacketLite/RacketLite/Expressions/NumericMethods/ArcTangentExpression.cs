@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class ArcTangentExpression : NumericExpression
     {
         private ArcTangentExpression(List<IRacketObject> args)
-            : base("ArcTangent")
+            : base("atan")
         {
             parameters = args;
         }

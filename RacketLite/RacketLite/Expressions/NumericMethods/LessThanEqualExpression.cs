@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class LessThanEqualExpression : BooleanExpression
     {
         private LessThanEqualExpression(List<IRacketObject> args)
-            : base("LessThanEqual")
+            : base("<=")
         {
             parameters = args;
         }

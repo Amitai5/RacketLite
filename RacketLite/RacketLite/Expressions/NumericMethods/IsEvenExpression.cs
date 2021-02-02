@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsEvenExpression : BooleanExpression
     {
         private IsEvenExpression(List<IRacketObject> args)
-            : base("IsEven")
+            : base("even?")
         {
             parameters = args;
         }

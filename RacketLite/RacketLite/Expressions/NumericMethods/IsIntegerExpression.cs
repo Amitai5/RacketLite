@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsIntegerExpression : BooleanExpression
     {
         private IsIntegerExpression(List<IRacketObject> args)
-            : base("IsInteger")
+            : base("integer?")
         {
             parameters = args;
         }

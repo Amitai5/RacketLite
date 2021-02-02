@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class BooleanNotExpression : BooleanExpression
     {
         private BooleanNotExpression(List<IRacketObject> args)
-            : base("Not")
+            : base("not")
         {
             parameters = args;
         }

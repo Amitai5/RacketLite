@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class MultiplyExpression : NumericExpression
     {
         private MultiplyExpression(List<IRacketObject> args)
-            : base("Multiply")
+            : base("*")
         {
             parameters = args;
         }

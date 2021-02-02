@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class BooleanEqualExpression : BooleanExpression
     {
         private BooleanEqualExpression(List<IRacketObject> args)
-            : base("BooleanEqual")
+            : base("boolean=?")
         {
             parameters = args;
         }

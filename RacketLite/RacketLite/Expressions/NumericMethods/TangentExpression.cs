@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class TangentExpression : NumericExpression
     {
         private TangentExpression(List<IRacketObject> args)
-            : base("Cosine")
+            : base("tan")
         {
             parameters = args;
         }

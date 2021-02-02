@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class ArcCosineExpression : NumericExpression
     {
         private ArcCosineExpression(List<IRacketObject> args)
-            : base("ArcCosine")
+            : base("acos")
         {
             parameters = args;
         }

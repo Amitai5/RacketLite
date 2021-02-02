@@ -8,7 +8,7 @@ namespace RacketLite.Expressions
     public sealed class LeastCommonMultipleExpression : NumericExpression
     {
         private LeastCommonMultipleExpression(List<IRacketObject> args)
-            : base("LeastCommonMultiple")
+            : base("lcm")
         {
             parameters = args;
         }

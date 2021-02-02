@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsPositiveExpression : BooleanExpression
     {
         private IsPositiveExpression(List<IRacketObject> args)
-            : base("IsPositive")
+            : base("positive?")
         {
             parameters = args;
         }

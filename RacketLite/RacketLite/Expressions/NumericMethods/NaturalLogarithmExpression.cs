@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class NaturalLogarithmExpression : NumericExpression
     {
         private NaturalLogarithmExpression(List<IRacketObject> args)
-            : base("NaturalLog")
+            : base("log")
         {
             parameters = args;
         }

@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class GreaterThanEqualExpression : BooleanExpression
     {
         private GreaterThanEqualExpression(List<IRacketObject> args)
-            : base("GreaterThanEqual")
+            : base(">=")
         {
             parameters = args;
         }

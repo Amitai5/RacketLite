@@ -35,7 +35,7 @@ namespace RacketLite
 
             //String
             { "string-alphabetic?", StringAlphabeticExpression.Parse},
-            { "string-contains", StringContainsExpression.Parse },
+            { "string-contains?", StringContainsExpression.Parse },
             { "string-lower-case?", StringLowerCaseExpression.Parse },
             { "string-numeric?", StringNumericExpression.Parse },
             { "string-upper-case?", StringUpperCaseExpression.Parse },

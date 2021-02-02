@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsRationalExpression : BooleanExpression
     {
         private IsRationalExpression(List<IRacketObject> args)
-            : base("IsRational")
+            : base("rational?")
         {
             parameters = args;
         }

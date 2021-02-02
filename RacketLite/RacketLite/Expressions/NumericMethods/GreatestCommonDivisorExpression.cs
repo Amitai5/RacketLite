@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class GreatestCommonDivisorExpression : NumericExpression
     {
         private GreatestCommonDivisorExpression(List<IRacketObject> args)
-            : base("GreatestCommonDivisor")
+            : base("gcd")
         {
             parameters = args;
         }

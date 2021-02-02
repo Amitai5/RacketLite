@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class HyperbolicCosineExpression : NumericExpression
     {
         private HyperbolicCosineExpression(List<IRacketObject> args)
-            : base("HyperbolicCosine")
+            : base("cosh")
         {
             parameters = args;
         }

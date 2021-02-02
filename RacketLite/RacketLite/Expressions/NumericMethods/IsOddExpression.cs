@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsOddExpression : BooleanExpression
     {
         private IsOddExpression(List<IRacketObject> args)
-            : base("IsOdd")
+            : base("odd?")
         {
             parameters = args;
         }

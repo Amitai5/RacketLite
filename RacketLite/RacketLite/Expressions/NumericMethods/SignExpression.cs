@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class SignExpression : NumericExpression
     {
         private SignExpression(List<IRacketObject> args)
-            : base("Sign")
+            : base("sign")
         {
             parameters = args;
         }

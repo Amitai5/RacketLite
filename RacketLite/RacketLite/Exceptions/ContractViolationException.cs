@@ -4,6 +4,12 @@ namespace RacketLite.Exceptions
 {
     public class ContractViolationException : RacketException
     {
+        public ContractViolationException(string message)
+            : base(message)
+        {
+
+        }
+
         public ContractViolationException(int expectedParamCount, int givenParamCount) 
             : base($"Racket contract violation. Expected {expectedParamCount} parameters, given {givenParamCount}")
         {

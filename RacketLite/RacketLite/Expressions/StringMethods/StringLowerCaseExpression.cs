@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class StringLowerCaseExpression : BooleanExpression
     {
         private StringLowerCaseExpression(List<IRacketObject> args)
-            : base("StringLowerCase")
+            : base("string-lower-case?")
         {
             parameters = args;
         }

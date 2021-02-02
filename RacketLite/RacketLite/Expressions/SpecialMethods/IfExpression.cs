@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class IfExpression : SpecialExpression
     {
         private IfExpression(List<IRacketObject> args)
-            : base("If")
+            : base("if")
         {
             parameters = args;
         }
@@ -54,11 +54,11 @@ namespace RacketLite.Expressions
             parameters[0].ToTreeString(stringBuilder, tabIndex);
 
             stringBuilder.Append('\t', tabIndex - 1);
-            stringBuilder.Append("Then").Append('\n');
+            stringBuilder.Append("then").Append('\n');
             parameters[1].ToTreeString(stringBuilder, tabIndex);
 
             stringBuilder.Append('\t', tabIndex - 1);
-            stringBuilder.Append("Else").Append('\n');
+            stringBuilder.Append("else").Append('\n');
             parameters[2].ToTreeString(stringBuilder, tabIndex);
         }
 

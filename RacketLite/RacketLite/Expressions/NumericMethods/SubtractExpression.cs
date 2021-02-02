@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class SubtractExpression : NumericExpression
     {
         private SubtractExpression(List<IRacketObject> args)
-            : base("Subtract")
+            : base("-")
         {
             parameters = args;
         }

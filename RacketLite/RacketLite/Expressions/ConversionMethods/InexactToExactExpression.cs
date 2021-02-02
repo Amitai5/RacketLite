@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class InexactToExactExpression : NumericExpression
     {
         private InexactToExactExpression(List<IRacketObject> args)
-            : base("Inexact->Exact")
+            : base("inexact->exact")
         {
             parameters = args;
         }

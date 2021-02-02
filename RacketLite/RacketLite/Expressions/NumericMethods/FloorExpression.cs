@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class FloorExpression : NumericExpression
     {
         private FloorExpression(List<IRacketObject> args)
-            : base("Floor")
+            : base("floor")
         {
             parameters = args;
         }

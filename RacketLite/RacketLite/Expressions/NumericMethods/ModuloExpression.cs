@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class ModuloExpression : NumericExpression
     {
         private ModuloExpression(List<IRacketObject> args)
-            : base("Modulo")
+            : base("modulo")
         {
             parameters = args;
         }

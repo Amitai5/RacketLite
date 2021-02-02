@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class BooleanToStringExpression : StringExpression
     {
         private BooleanToStringExpression(List<IRacketObject> args)
-            : base("Boolean->String")
+            : base("boolean->string")
         {
             parameters = args;
         }

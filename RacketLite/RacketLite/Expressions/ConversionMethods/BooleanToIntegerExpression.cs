@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class BooleanToIntegerExpression : NumericExpression
     {
         private BooleanToIntegerExpression(List<IRacketObject> args)
-            : base("Boolean->Integer")
+            : base("boolean->integer")
         {
             parameters = args;
         }

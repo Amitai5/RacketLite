@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class IsNegativeExpression : BooleanExpression
     {
         private IsNegativeExpression(List<IRacketObject> args)
-            : base("IsNegative")
+            : base("negative?")
         {
             parameters = args;
         }

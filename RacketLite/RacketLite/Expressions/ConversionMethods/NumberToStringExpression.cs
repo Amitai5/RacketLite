@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class NumberToStringExpression : StringExpression
     {
         private NumberToStringExpression(List<IRacketObject> args)
-            : base("Number->String")
+            : base("number->string")
         {
             parameters = args;
         }

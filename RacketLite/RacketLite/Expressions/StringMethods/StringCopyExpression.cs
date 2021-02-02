@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class StringCopyExpression : StringExpression
     {
         private StringCopyExpression(List<IRacketObject> args)
-            : base("StringCopy")
+            : base("string-copy")
         {
             parameters = args;
         }

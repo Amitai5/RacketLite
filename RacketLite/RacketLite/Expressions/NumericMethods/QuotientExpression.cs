@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class QuotientExpression : NumericExpression
     {
         private QuotientExpression(List<IRacketObject> args)
-            : base("Quotient")
+            : base("quotient")
         {
             parameters = args;
         }

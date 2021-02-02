@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class StringUpperCaseExpression : BooleanExpression
     {
         private StringUpperCaseExpression(List<IRacketObject> args)
-            : base("StringUpperCase")
+            : base("string-upper-case?")
         {
             parameters = args;
         }

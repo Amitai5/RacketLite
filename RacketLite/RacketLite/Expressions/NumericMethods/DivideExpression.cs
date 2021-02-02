@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class DivideExpression : NumericExpression
     {
         private DivideExpression(List<IRacketObject> args)
-            : base("Divide")
+            : base("/")
         {
             parameters = args;
         }

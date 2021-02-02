@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class StringWhitespaceExpression : BooleanExpression
     {
         private StringWhitespaceExpression(List<IRacketObject> args)
-            : base("StringWhitespace")
+            : base("string-whitespace?")
         {
             parameters = args;
         }

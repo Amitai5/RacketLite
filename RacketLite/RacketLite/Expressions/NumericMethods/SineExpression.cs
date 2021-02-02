@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class SineExpression : NumericExpression
     {
         private SineExpression(List<IRacketObject> args)
-            : base("Sine")
+            : base("sin")
         {
             parameters = args;
         }

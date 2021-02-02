@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class StringDowncaseExpression : StringExpression
     {
         private StringDowncaseExpression(List<IRacketObject> args)
-            : base("StringDowncase")
+            : base("string-downcase")
         {
             parameters = args;
         }

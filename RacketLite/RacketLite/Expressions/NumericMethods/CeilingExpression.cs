@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class CeilingExpression : NumericExpression
     {
         private CeilingExpression(List<IRacketObject> args)
-            : base("Ceiling")
+            : base("ceiling")
         {
             parameters = args;
         }

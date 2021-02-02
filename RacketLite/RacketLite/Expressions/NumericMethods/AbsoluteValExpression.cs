@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class AbsoluteValExpression : NumericExpression
     {
         private AbsoluteValExpression(List<IRacketObject> args)
-            : base("Abs")
+            : base("abs")
         {
             parameters = args;
         }

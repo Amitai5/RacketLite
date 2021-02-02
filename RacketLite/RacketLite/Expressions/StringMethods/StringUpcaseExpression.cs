@@ -6,7 +6,7 @@ namespace RacketLite.Expressions
     public sealed class StringUpcaseExpression : StringExpression
     {
         private StringUpcaseExpression(List<IRacketObject> args)
-            : base("StringUpcase")
+            : base("string-upcase")
         {
             parameters = args;
         }

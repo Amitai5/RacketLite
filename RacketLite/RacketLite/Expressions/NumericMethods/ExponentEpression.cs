@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class ExponentEpression : NumericExpression
     {
         private ExponentEpression(List<IRacketObject> args)
-            : base("Exponent")
+            : base("expt")
         {
             parameters = args;
         }

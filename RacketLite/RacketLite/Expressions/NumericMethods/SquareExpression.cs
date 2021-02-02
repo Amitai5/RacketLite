@@ -7,7 +7,7 @@ namespace RacketLite.Expressions
     public sealed class SquareExpression : NumericExpression
     {
         private SquareExpression(List<IRacketObject> args)
-            : base("Square")
+            : base("sqr")
         {
             parameters = args;
         }
