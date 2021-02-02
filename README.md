@@ -19,4 +19,6 @@ Racket-Lite is a simple [racket](https://racket-lang.org/) interpreter specifica
 
 ### 1.3 Lists
 ### 1.4 Characters
+
 ### [1.5 Strings](https://github.com/Amitai5/RacketLite/wiki/Strings)
+* [**String Methods**](https://github.com/Amitai5/RacketLite/wiki/Strings#string-methods)
