@@ -9,15 +9,15 @@ namespace RacketLite.Expressions
         private StringAppendExpression(List<IRacketObject> args)
             : base("StringAppend")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringAppendExpression? Parse(string str)
+        public static StringAppendExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count >= 2)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count >= 2)
             {
-                return new StringAppendExpression(arguments);
+                return new StringAppendExpression(parameters);
             }
             return null;
         }
@@ -25,9 +25,9 @@ namespace RacketLite.Expressions
         public override RacketString Evaluate()
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < arguments.Count; i++)
+            for (int i = 0; i < parameters.Count; i++)
             {
-                sb.Append(((RacketString)arguments[i].Evaluate()).Value);
+                sb.Append(((RacketString)parameters[i].Evaluate()).Value);
             }
             return new RacketString(sb.ToString());
         }

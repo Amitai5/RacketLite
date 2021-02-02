@@ -8,25 +8,25 @@ namespace RacketLite.Expressions
         private MaximumExpression(List<IRacketObject> args)
             : base("Maximum")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new MaximumExpression? Parse(string str)
+        public static MaximumExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count > 1)
             {
-                return new MaximumExpression(arguments);
+                return new MaximumExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber largestNumber = (RacketNumber)arguments[0].Evaluate();
-            for (int i = 1; i < arguments.Count; i++)
+            RacketNumber largestNumber = (RacketNumber)parameters[0].Evaluate();
+            for (int i = 1; i < parameters.Count; i++)
             {
-                RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
+                RacketNumber currentNumber = (RacketNumber)parameters[i].Evaluate();
                 largestNumber = currentNumber.Value > largestNumber.Value ? currentNumber : largestNumber;
             }
             return largestNumber;

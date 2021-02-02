@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private NumberToStringExpression(List<IRacketObject> args)
             : base("Number->String")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new NumberToStringExpression? Parse(string str)
+        public static NumberToStringExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new NumberToStringExpression(arguments);
+                return new NumberToStringExpression(parameters);
             }
             return null;
         }
 
         public override RacketString Evaluate()
         {
-            RacketNumber racketNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber racketNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketString(racketNumber.Value.ToString());
         }
     }

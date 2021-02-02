@@ -8,15 +8,15 @@ namespace RacketLite.Expressions
         private LessThanExpression(List<IRacketObject> args)
             : base("LessThan")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new LessThanExpression? Parse(string str)
+        public static LessThanExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count > 1)
             {
-                return new LessThanExpression(arguments);
+                return new LessThanExpression(parameters);
             }
             return null;
         }
@@ -24,10 +24,10 @@ namespace RacketLite.Expressions
         public override RacketBoolean Evaluate()
         {
             bool retValue = true;
-            RacketNumber firstNumber = (RacketNumber)arguments[0].Evaluate();
-            for (int i = 1; i < arguments.Count; i++)
+            RacketNumber firstNumber = (RacketNumber)parameters[0].Evaluate();
+            for (int i = 1; i < parameters.Count; i++)
             {
-                RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
+                RacketNumber currentNumber = (RacketNumber)parameters[i].Evaluate();
                 retValue = retValue && firstNumber.Value < currentNumber.Value;
             }
             return new RacketBoolean(retValue);

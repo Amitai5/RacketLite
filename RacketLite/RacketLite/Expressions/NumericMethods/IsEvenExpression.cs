@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private IsEvenExpression(List<IRacketObject> args)
             : base("IsEven")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsEvenExpression? Parse(string str)
+        public static IsEvenExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count == 1)
             {
-                return new IsEvenExpression(arguments);
+                return new IsEvenExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketBoolean(currentNumber.Value % 2 == 0);
         }
     }

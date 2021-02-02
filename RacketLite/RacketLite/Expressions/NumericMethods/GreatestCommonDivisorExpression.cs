@@ -9,15 +9,15 @@ namespace RacketLite.Expressions
         private GreatestCommonDivisorExpression(List<IRacketObject> args)
             : base("GreatestCommonDivisor")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new GreatestCommonDivisorExpression? Parse(string str)
+        public static GreatestCommonDivisorExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count > 1)
             {
-                return new GreatestCommonDivisorExpression(arguments);
+                return new GreatestCommonDivisorExpression(parameters);
             }
             return null;
         }
@@ -27,9 +27,9 @@ namespace RacketLite.Expressions
             bool isExact = true;
             List<long> gcdValues = new List<long>();
 
-            for(int i = 0; i < arguments.Count; i++)
+            for(int i = 0; i < parameters.Count; i++)
             {
-                RacketInteger racketInteger = (RacketInteger)arguments[i].Evaluate();
+                RacketInteger racketInteger = (RacketInteger)parameters[i].Evaluate();
                 isExact = isExact && racketInteger.IsExact;
                 gcdValues.Add((long)racketInteger.Value);
             }

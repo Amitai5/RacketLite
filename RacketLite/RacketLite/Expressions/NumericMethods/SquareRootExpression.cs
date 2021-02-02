@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private SquareRootExpression(List<IRacketObject> args)
             : base("SquareRoot")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new SquareRootExpression? Parse(string str)
+        public static SquareRootExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new SquareRootExpression(arguments);
+                return new SquareRootExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(MathF.Sqrt(currentNumber.Value), currentNumber.IsExact, currentNumber.IsRational);
         }
     }

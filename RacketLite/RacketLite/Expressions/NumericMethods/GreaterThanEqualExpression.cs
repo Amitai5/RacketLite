@@ -8,15 +8,15 @@ namespace RacketLite.Expressions
         private GreaterThanEqualExpression(List<IRacketObject> args)
             : base("GreaterThanEqual")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new GreaterThanEqualExpression? Parse(string str)
+        public static GreaterThanEqualExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count > 1)
             {
-                return new GreaterThanEqualExpression(arguments);
+                return new GreaterThanEqualExpression(parameters);
             }
             return null;
         }
@@ -24,10 +24,10 @@ namespace RacketLite.Expressions
         public override RacketBoolean Evaluate()
         {
             bool retValue = true;
-            RacketNumber firstNumber = (RacketNumber)arguments[0].Evaluate();
-            for (int i = 1; i < arguments.Count; i++)
+            RacketNumber firstNumber = (RacketNumber)parameters[0].Evaluate();
+            for (int i = 1; i < parameters.Count; i++)
             {
-                RacketNumber currentNumber = (RacketNumber)arguments[i].Evaluate();
+                RacketNumber currentNumber = (RacketNumber)parameters[i].Evaluate();
                 retValue = retValue && firstNumber.Value >= currentNumber.Value;
             }
             return new RacketBoolean(retValue);

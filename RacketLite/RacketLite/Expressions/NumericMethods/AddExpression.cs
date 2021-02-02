@@ -8,29 +8,29 @@ namespace RacketLite.Expressions
         private AddExpression(List<IRacketObject> args)
             : base("Add")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new AddExpression? Parse(string str)
+        public static AddExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count > 0)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count > 0)
             {
-                return new AddExpression(arguments);
+                return new AddExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             bool isRational = currentNumber.IsRational;
             float retValue = currentNumber.Value;
             bool isExact = currentNumber.IsExact;
 
-            for (int i = 1; i < arguments.Count; i++)
+            for (int i = 1; i < parameters.Count; i++)
             {
-                currentNumber = (RacketNumber)arguments[i].Evaluate();
+                currentNumber = (RacketNumber)parameters[i].Evaluate();
                 isRational = isRational && currentNumber.IsRational;
                 isExact = isExact && currentNumber.IsExact;
                 retValue += currentNumber.Value;

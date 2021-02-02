@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private ArcSineExpression(List<IRacketObject> args)
             : base("ArcSine")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new ArcSineExpression? Parse(string str)
+        public static ArcSineExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new ArcSineExpression(arguments);
+                return new ArcSineExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(MathF.Asin(currentNumber.Value), false, currentNumber.IsRational);
         }
     }

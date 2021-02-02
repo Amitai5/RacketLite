@@ -9,29 +9,29 @@ namespace RacketLite.Expressions
         private ExponentEpression(List<IRacketObject> args)
             : base("Exponent")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new ExponentEpression? Parse(string str)
+        public static ExponentEpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count > 1)
             {
-                return new ExponentEpression(arguments);
+                return new ExponentEpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             float retValue = currentNumber.Value;
             bool isExact = currentNumber.IsExact;
             bool isRational = currentNumber.IsRational;
 
-            for (int i = 1; i < arguments.Count; i++)
+            for (int i = 1; i < parameters.Count; i++)
             {
-                currentNumber = (RacketNumber)arguments[i].Evaluate();
+                currentNumber = (RacketNumber)parameters[i].Evaluate();
                 isRational = isRational && currentNumber.IsRational;
                 isExact = isExact && currentNumber.IsExact;
                 retValue = MathF.Pow(retValue, currentNumber.Value);

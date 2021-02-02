@@ -8,22 +8,21 @@ namespace RacketLite.Expressions
         private IsIntegerExpression(List<IRacketObject> args)
             : base("IsInteger")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsIntegerExpression? Parse(string str)
+        public static IsIntegerExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
-            if (arguments?.Count == 1)
+            if (parameters?.Count == 1)
             {
-                return new IsIntegerExpression(arguments);
+                return new IsIntegerExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            IRacketObject obj = arguments[0].Evaluate();
+            IRacketObject obj = parameters[0].Evaluate();
             if (obj is RacketInteger)
             {
                 return new RacketBoolean(true);

@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private BooleanToStringExpression(List<IRacketObject> args)
             : base("Boolean->String")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new BooleanToStringExpression? Parse(string str)
+        public static BooleanToStringExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketBoolean), parameters);
+            if (parameters?.Count == 1)
             {
-                return new BooleanToStringExpression(arguments);
+                return new BooleanToStringExpression(parameters);
             }
             return null;
         }
 
         public override RacketString Evaluate()
         {
-            bool booleanValue = ((RacketBoolean)arguments[0].Evaluate()).Value;
+            bool booleanValue = ((RacketBoolean)parameters[0].Evaluate()).Value;
             return new RacketString(booleanValue.ToString().ToLower());
         }
     }

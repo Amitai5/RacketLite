@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private IsNegativeExpression(List<IRacketObject> args)
             : base("IsNegative")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsNegativeExpression? Parse(string str)
+        public static IsNegativeExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new IsNegativeExpression(arguments);
+                return new IsNegativeExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketBoolean(currentNumber.Value < 0);
         }
     }

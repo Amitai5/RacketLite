@@ -8,22 +8,21 @@ namespace RacketLite.Expressions
         private IsRationalExpression(List<IRacketObject> args)
             : base("IsRational")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsRationalExpression? Parse(string str)
+        public static IsRationalExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
-            if (arguments?.Count == 1)
+            if (parameters?.Count == 1)
             {
-                return new IsRationalExpression(arguments);
+                return new IsRationalExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            IRacketObject obj = arguments[0].Evaluate();
+            IRacketObject obj = parameters[0].Evaluate();
             if (obj is RacketNumber racketNumber)
             {
                 return new RacketBoolean(racketNumber.IsRational);

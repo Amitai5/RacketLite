@@ -8,22 +8,21 @@ namespace RacketLite.Expressions
         private IsFalseExpression(List<IRacketObject> args)
             : base("IsFalse")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsFalseExpression? Parse(string str)
+        public static IsFalseExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
-            if (arguments?.Count == 1)
+            if (parameters?.Count == 1)
             {
-                return new IsFalseExpression(arguments);
+                return new IsFalseExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            IRacketObject obj = arguments[0].Evaluate();
+            IRacketObject obj = parameters[0].Evaluate();
             if (obj is RacketBoolean racketBoolean)
             {
                 return new RacketBoolean(!racketBoolean.Value);

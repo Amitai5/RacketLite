@@ -36,6 +36,10 @@ namespace RacketLite.ValueTypes
 
         public new static RacketNumber? Parse(string str)
         {
+            if (ConstantValueDefinitions.NumericDefinitions.ContainsKey(str))
+            {
+                return ConstantValueDefinitions.NumericDefinitions[str];
+            }
             return RacketInteger.Parse(str) ?? (RacketNumber?)RacketFloat.Parse(str);
         }
     }

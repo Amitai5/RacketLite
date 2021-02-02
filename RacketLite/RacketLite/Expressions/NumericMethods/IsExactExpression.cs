@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private IsExactExpression(List<IRacketObject> args)
             : base("IsExact")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsExactExpression? Parse(string str)
+        public static IsExactExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new IsExactExpression(arguments);
+                return new IsExactExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketBoolean(currentNumber.IsExact);
         }
     }

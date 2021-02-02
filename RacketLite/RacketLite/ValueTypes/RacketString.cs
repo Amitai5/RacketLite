@@ -17,6 +17,10 @@ namespace RacketLite.ValueTypes
             {
                 return new RacketString(str[1..^1]);
             }
+            else if(ConstantValueDefinitions.StringDefinitions.ContainsKey(str))
+            {
+                return ConstantValueDefinitions.StringDefinitions[str];
+            }
             return null;
         }
 

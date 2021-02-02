@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private IsOddExpression(List<IRacketObject> args)
             : base("IsOdd")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsOddExpression? Parse(string str)
+        public static IsOddExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count == 1)
             {
-                return new IsOddExpression(arguments);
+                return new IsOddExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketBoolean(currentNumber.Value % 2 == 1);
         }
     }

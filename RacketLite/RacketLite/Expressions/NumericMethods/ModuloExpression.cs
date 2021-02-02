@@ -8,28 +8,28 @@ namespace RacketLite.Expressions
         private ModuloExpression(List<IRacketObject> args)
             : base("Modulo")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new ModuloExpression? Parse(string str)
+        public static ModuloExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count > 0)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count > 0)
             {
-                return new ModuloExpression(arguments);
+                return new ModuloExpression(parameters);
             }
             return null;
         }
 
         public override RacketInteger Evaluate()
         {
-            RacketInteger currentNumber = (RacketInteger)arguments[0].Evaluate();
+            RacketInteger currentNumber = (RacketInteger)parameters[0].Evaluate();
             float retValue = currentNumber.Value;
             bool isExact = currentNumber.IsExact;
 
-            for (int i = 1; i < arguments.Count; i++)
+            for (int i = 1; i < parameters.Count; i++)
             {
-                currentNumber = (RacketInteger)arguments[i].Evaluate();
+                currentNumber = (RacketInteger)parameters[i].Evaluate();
                 isExact = isExact && currentNumber.IsExact;
                 retValue %= currentNumber.Value;
             }

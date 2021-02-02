@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private InexactToExactExpression(List<IRacketObject> args)
             : base("Inexact->Exact")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new InexactToExactExpression? Parse(string str)
+        public static InexactToExactExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new InexactToExactExpression(arguments);
+                return new InexactToExactExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber racketNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber racketNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketFloat(racketNumber.Value, true, racketNumber.IsRational);
         }
     }

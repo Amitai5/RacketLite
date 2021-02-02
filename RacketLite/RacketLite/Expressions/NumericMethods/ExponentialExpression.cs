@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private ExponentialExpression(List<IRacketObject> args)
             : base("Exponential")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new ExponentialExpression? Parse(string str)
+        public static ExponentialExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new ExponentialExpression(arguments);
+                return new ExponentialExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(MathF.Pow(MathF.E, currentNumber.Value), false, currentNumber.IsRational);
         }
     }

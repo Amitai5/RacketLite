@@ -8,27 +8,27 @@ namespace RacketLite.Expressions
         private BooleanAndExpression(List<IRacketObject> args)
             : base("And")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new BooleanAndExpression? Parse(string str)
+        public static BooleanAndExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
-            if (arguments?.Count > 0)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketBoolean), parameters);
+            if (parameters?.Count > 0)
             {
-                return new BooleanAndExpression(arguments);
+                return new BooleanAndExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketBoolean currentBool = (RacketBoolean)arguments[0].Evaluate();
+            RacketBoolean currentBool = (RacketBoolean)parameters[0].Evaluate();
             bool retValue = currentBool.Value;
 
-            for (int i = 1; i < arguments.Count; i++)
+            for (int i = 1; i < parameters.Count; i++)
             {
-                currentBool = (RacketBoolean)arguments[i].Evaluate();
+                currentBool = (RacketBoolean)parameters[i].Evaluate();
                 retValue = retValue && currentBool.Value;
             }
             return new RacketBoolean(retValue);

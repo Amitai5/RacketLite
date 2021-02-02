@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private SignExpression(List<IRacketObject> args)
             : base("Sign")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new SignExpression? Parse(string str)
+        public static SignExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new SignExpression(arguments);
+                return new SignExpression(parameters);
             }
             return null;
         }
 
         public override RacketInteger Evaluate()
         {
-            float value = ((RacketNumber)arguments[0].Evaluate()).Value;
+            float value = ((RacketNumber)parameters[0].Evaluate()).Value;
             if (value > 0)
             {
                 return new RacketInteger(1, true);

@@ -8,13 +8,13 @@ namespace RacketLite.Expressions
 {
     public abstract class RacketExpression : IRacketObject
     {
-        public string ExpressionName { get; init; }
+        public string CallName { get; init; }
         public Type? ReturnType { get; init; }
-        protected List<IRacketObject> arguments = new List<IRacketObject>();
+        protected List<IRacketObject> parameters = new List<IRacketObject>();
 
         protected RacketExpression(string name, Type? returnType)
         {
-            ExpressionName = name;
+            CallName = name;
             ReturnType = returnType;
         }
 
@@ -25,15 +25,15 @@ namespace RacketLite.Expressions
         public void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(ExpressionName).Append('\n');
+            stringBuilder.Append(CallName).Append('\n');
             ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
 
         protected void ArgumentsToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
-            for (int i = 0; i < arguments.Count; i++)
+            for (int i = 0; i < parameters.Count; i++)
             {
-                arguments[i].ToTreeString(stringBuilder, tabIndex);
+                parameters[i].ToTreeString(stringBuilder, tabIndex);
             }
         }
 
@@ -46,7 +46,7 @@ namespace RacketLite.Expressions
 
         #endregion Base Methods
 
-        public static RacketExpression? Parse(string str)
+        public static RacketExpression? Parse(string str, Dictionary<string, IRacketObject>? localVars = null)
         {
             str = str.Trim();
             if (!str.StartsWith('(') || !str.EndsWith(')'))
@@ -55,28 +55,47 @@ namespace RacketLite.Expressions
             }
 
             string opCode;
-            (opCode, str) = parseOpCode(str);
+            (opCode, str) = ParseOpCode(str);
+            if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str); //TODO: FIX THIS
+            }
 
+            List<IRacketObject>? parameters;
+            if (localVars == null)
+            {
+                parameters = RacketParsingHelper.ParseAny(str);
+            }
+            else
+            {
+                parameters = RacketParsingHelper.ParseAny(str, localVars);
+            }
+
+            return Parse(opCode, parameters);
+        }
+
+        protected static RacketExpression? Parse(string opCode, List<IRacketObject>? parameters)
+        {
             if (ExpressionDefinitions.NumericDefinitions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.NumericDefinitions[opCode].Invoke(str);
+                return ExpressionDefinitions.NumericDefinitions[opCode].Invoke(parameters);
             }
             else if (ExpressionDefinitions.BooleanDefinitions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.BooleanDefinitions[opCode].Invoke(str);
+                return ExpressionDefinitions.BooleanDefinitions[opCode].Invoke(parameters);
             }
             else if (ExpressionDefinitions.StringDefinitions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.StringDefinitions[opCode].Invoke(str);
+                return ExpressionDefinitions.StringDefinitions[opCode].Invoke(parameters);
             }
-            else if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
+            else if (ExpressionDefinitions.UserDefinedExpressions.ContainsKey(opCode))
             {
-                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str);
+                return UserDefinedExpression.Parse(opCode, parameters);
             }
             throw new UndefinedOperatorException(opCode);
         }
 
-        protected static (string opCode, string str) parseOpCode(string str)
+        protected static (string opCode, string str) ParseOpCode(string str)
         {
             string innerString = str[1..^1].Trim();
             string opCode = "";
@@ -92,7 +111,7 @@ namespace RacketLite.Expressions
                 innerString = "";
             }
 
-            return (opCode, innerString);
+            return (opCode, innerString.Trim());
         }
     }
 }

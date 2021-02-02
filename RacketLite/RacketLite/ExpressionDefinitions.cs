@@ -6,7 +6,7 @@ namespace RacketLite
 {
     public static class ExpressionDefinitions
     {
-        public static Dictionary<string, Func<string, BooleanExpression?>> BooleanDefinitions { get; } = new Dictionary<string, Func<string, BooleanExpression?>>()
+        public static Dictionary<string, Func<List<IRacketObject>?, BooleanExpression?>> BooleanDefinitions { get; } = new Dictionary<string, Func<List<IRacketObject>?, BooleanExpression?>>()
         {
             //Standard
             { "and", BooleanAndExpression.Parse },
@@ -42,7 +42,7 @@ namespace RacketLite
             { "string-whitespace?", StringWhitespaceExpression.Parse },
         };
 
-        public static Dictionary<string, Func<string, NumericExpression?>> NumericDefinitions { get; } = new Dictionary<string, Func<string, NumericExpression?>>()
+        public static Dictionary<string, Func<List<IRacketObject>?, NumericExpression?>> NumericDefinitions { get; } = new Dictionary<string, Func<List<IRacketObject>?, NumericExpression?>>()
         {
             //Standard
             { "abs", AbsoluteValExpression.Parse },
@@ -88,7 +88,7 @@ namespace RacketLite
             { "string-length", StringLengthExpression.Parse },
         };
 
-        public static Dictionary<string, Func<string, StringExpression?>> StringDefinitions { get; } = new Dictionary<string, Func<string, StringExpression?>>()
+        public static Dictionary<string, Func<List<IRacketObject>?, StringExpression?>> StringDefinitions { get; } = new Dictionary<string, Func<List<IRacketObject>?, StringExpression?>>()
         {
             //Standard
             { "string-append", StringAppendExpression.Parse},
@@ -103,8 +103,22 @@ namespace RacketLite
 
         public static Dictionary<string, Func<string, SpecialExpression?>> SpecialDefinitions { get; } = new Dictionary<string, Func<string, SpecialExpression?>>()
         {
-            //Standard
+            { "define", DefineExpression.Parse },
             { "if", IfExpression.Parse },
         };
+
+        public static Dictionary<string, UserDefinedExpression> UserDefinedExpressions = new Dictionary<string, UserDefinedExpression>();
+
+        public static bool ContainsPreDefinedKey(string callName)
+        {
+            return BooleanDefinitions.ContainsKey(callName) || NumericDefinitions.ContainsKey(callName)
+                || StringDefinitions.ContainsKey(callName) || SpecialDefinitions.ContainsKey(callName);
+        }
+
+        public static bool ContainsKey(string callName)
+        {
+            return BooleanDefinitions.ContainsKey(callName) || NumericDefinitions.ContainsKey(callName)
+                || StringDefinitions.ContainsKey(callName) || SpecialDefinitions.ContainsKey(callName) || UserDefinedExpressions.ContainsKey(callName);
+        }
     }
 }

@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private BooleanToIntegerExpression(List<IRacketObject> args)
             : base("Boolean->Integer")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new BooleanToIntegerExpression? Parse(string str)
+        public static BooleanToIntegerExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketBoolean), parameters);
+            if (parameters?.Count == 1)
             {
-                return new BooleanToIntegerExpression(arguments);
+                return new BooleanToIntegerExpression(parameters);
             }
             return null;
         }
 
         public override RacketInteger Evaluate()
         {
-            bool booleanValue = ((RacketBoolean)arguments[0].Evaluate()).Value;
+            bool booleanValue = ((RacketBoolean)parameters[0].Evaluate()).Value;
             int integerValue = Convert.ToInt32(booleanValue);
             return new RacketInteger(integerValue, true);
         }

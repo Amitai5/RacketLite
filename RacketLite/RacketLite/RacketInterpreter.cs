@@ -112,12 +112,16 @@ namespace RacketLite
             (RacketExpression? expression, string result) = ParseLine(str);
             bool validRacket = expression != null && !result.StartsWith(';');
 
-            if (PrintTree)
+            if (PrintTree && validRacket)
             {
                 helper.Write($"\n{expression}", ConsoleColor.DarkGray);
                 helper.WriteLine("--------------------------", ConsoleColor.DarkGray);
                 helper.ResetColors();
-                Console.Write("Result: ");
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    Console.Write("Result: ");
+                }
             }
 
             if (!validRacket)

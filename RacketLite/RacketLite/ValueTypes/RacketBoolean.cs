@@ -14,17 +14,11 @@ namespace RacketLite.ValueTypes
         public new static RacketBoolean? Parse(string str)
         {
             str = str.ToLower();
-            return str switch
+            if (ConstantValueDefinitions.BooleanDefinitions.ContainsKey(str))
             {
-                "#false" => new RacketBoolean(false),
-                "false" => new RacketBoolean(false),
-                "#true" => new RacketBoolean(true),
-                "true" => new RacketBoolean(true),
-
-                "#f" => new RacketBoolean(false),
-                "#t" => new RacketBoolean(true),
-                _ => null
-            };
+                return ConstantValueDefinitions.BooleanDefinitions[str];
+            }
+            return null;
         }
 
         public override void ToTreeString(StringBuilder stringBuilder, int tabIndex)

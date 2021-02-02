@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private BooleanNotExpression(List<IRacketObject> args)
             : base("Not")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new BooleanNotExpression? Parse(string str)
+        public static BooleanNotExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketBooleans(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketBoolean), parameters);
+            if (parameters?.Count == 1)
             {
-                return new BooleanNotExpression(arguments);
+                return new BooleanNotExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketBoolean currentBool = (RacketBoolean)arguments[0].Evaluate();
+            RacketBoolean currentBool = (RacketBoolean)parameters[0].Evaluate();
             return new RacketBoolean(!currentBool.Value);
         }
     }

@@ -8,23 +8,23 @@ namespace RacketLite.Expressions
         private StringContainsExpression(List<IRacketObject> args)
             : base("StringContains")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringContainsExpression? Parse(string str)
+        public static StringContainsExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count == 2)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count == 2)
             {
-                return new StringContainsExpression(arguments);
+                return new StringContainsExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            string secondVal = ((RacketString)arguments[1].Evaluate()).Value;
-            string firstVal = ((RacketString)arguments[0].Evaluate()).Value;
+            string secondVal = ((RacketString)parameters[1].Evaluate()).Value;
+            string firstVal = ((RacketString)parameters[0].Evaluate()).Value;
             return new RacketBoolean(secondVal.Contains(firstVal));
         }
     }

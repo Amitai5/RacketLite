@@ -8,22 +8,21 @@ namespace RacketLite.Expressions
         private IsBooleanExpression(List<IRacketObject> args)
             : base("IsBoolean")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsBooleanExpression? Parse(string str)
+        public static IsBooleanExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
-            if (arguments?.Count == 1)
+            if (parameters?.Count == 1)
             {
-                return new IsBooleanExpression(arguments);
+                return new IsBooleanExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            IRacketObject obj = arguments[0].Evaluate();
+            IRacketObject obj = parameters[0].Evaluate();
             if (obj is RacketBoolean)
             {
                 return new RacketBoolean(true);

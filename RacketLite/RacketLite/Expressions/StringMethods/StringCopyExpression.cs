@@ -6,24 +6,24 @@ namespace RacketLite.Expressions
     public sealed class StringCopyExpression : StringExpression
     {
         private StringCopyExpression(List<IRacketObject> args)
-            : base("StringContains")
+            : base("StringCopy")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringCopyExpression? Parse(string str)
+        public static StringCopyExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count == 1)
             {
-                return new StringCopyExpression(arguments);
+                return new StringCopyExpression(parameters);
             }
             return null;
         }
 
         public override RacketString Evaluate()
         {
-            string strValue = ((RacketString)arguments[0].Evaluate()).Value;
+            string strValue = ((RacketString)parameters[0].Evaluate()).Value;
             return new RacketString(strValue);
         }
     }

@@ -10,35 +10,8 @@ namespace RacketLite
     {
         public const string InexactNumberPrefix = "#i";
 
-        public static List<IRacketObject>? ParseRacketBooleans(string str)
-        {
-            List<IRacketObject>? args = ParseAny(str.Trim());
-            ValidateReturnTypes(typeof(RacketBoolean), args);
-            return args;
-        }
 
-        public static List<IRacketObject>? ParseRacketStrings(string str)
-        {
-            List<IRacketObject>? args = ParseAny(str.Trim());
-            ValidateReturnTypes(typeof(RacketString), args);
-            return args;
-        }
-
-        public static List<IRacketObject>? ParseRacketNumbers(string str)
-        {
-            List<IRacketObject>? args = ParseAny(str.Trim());
-            ValidateReturnTypes(typeof(RacketNumber), args);
-            return args;
-        }
-
-        public static List<IRacketObject>? ParseRacketIntegers(string str)
-        {
-            List<IRacketObject>? args = ParseAny(str.Trim());
-            ValidateReturnTypes(typeof(RacketInteger), args);
-            return args;
-        }
-
-        public static List<IRacketObject>? ParseAny(string str)
+        public static List<IRacketObject>? ParseAny(string str, Dictionary<string, IRacketObject> localVars)
         {
             string[] args = str.Split(" ");
             List<IRacketObject> arguments = new List<IRacketObject>();
@@ -46,9 +19,21 @@ namespace RacketLite
             string predicate = "";
             for (int i = 0; i < args.Length; i++)
             {
+                IRacketObject? newRacketObject;
                 string currentToken = predicate + args[i];
-                IRacketObject? newRacketObject = RacketBoolean.Parse(currentToken)
-                    ?? RacketNumber.Parse(currentToken) ?? RacketString.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken);
+                if (ConstantValueDefinitions.UserDefinedConstants.ContainsKey(currentToken))
+                {
+                    newRacketObject = ConstantValueDefinitions.UserDefinedConstants[currentToken];
+                }
+                else if(localVars.ContainsKey(currentToken))
+                {
+                    newRacketObject = localVars[currentToken];
+                }
+                else
+                {
+                    newRacketObject = RacketBoolean.Parse(currentToken) ?? RacketNumber.Parse(currentToken)
+                        ?? RacketString.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken, localVars);
+                }
 
                 if (newRacketObject != null)
                 {
@@ -66,7 +51,43 @@ namespace RacketLite
             return arguments;
         }
 
-        public static void ValidateReturnTypes(Type expectedType, List<IRacketObject>? args)
+        public static List<IRacketObject>? ParseAny(string str)
+        {
+            string[] args = str.Split(" ");
+            List<IRacketObject> arguments = new List<IRacketObject>();
+
+            string predicate = "";
+            for (int i = 0; i < args.Length; i++)
+            {
+                IRacketObject? newRacketObject;
+                string currentToken = predicate + args[i];
+                if (ConstantValueDefinitions.UserDefinedConstants.ContainsKey(currentToken))
+                {
+                    newRacketObject = ConstantValueDefinitions.UserDefinedConstants[currentToken];
+                }
+                else
+                {
+                    newRacketObject = RacketBoolean.Parse(currentToken) ?? RacketNumber.Parse(currentToken)
+                        ?? RacketString.Parse(currentToken) ?? (IRacketObject?)RacketExpression.Parse(currentToken);
+                }
+
+                if (newRacketObject != null)
+                {
+                    arguments.Add(newRacketObject);
+                    predicate = "";
+                    continue;
+                }
+                predicate += $"{args[i]} ";
+            }
+
+            if (predicate != "")
+            {
+                return null;
+            }
+            return arguments;
+        }
+
+        public static void ValidateParamTypes(Type expectedType, List<IRacketObject>? args)
         {
             if (args == null)
             {
@@ -75,12 +96,17 @@ namespace RacketLite
 
             foreach (IRacketObject argument in args)
             {
-                ValidateReturnType(expectedType, argument);
+                ValidateParamType(expectedType, argument);
             }
         }
 
-        public static void ValidateReturnType(Type expectedType, IRacketObject argument)
+        public static void ValidateParamType(Type expectedType, IRacketObject argument)
         {
+            if(argument is RacketVoid)
+            {
+                throw new ContractViolationException(expectedType, null);
+            }
+
             if (argument is RacketExpression expression && expression.ReturnType != null)
             {
                 if (!expression.ReturnType.IsAssignableFrom(expectedType) && !expression.ReturnType.IsSubclassOf(expectedType))

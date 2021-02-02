@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private StringUpcaseExpression(List<IRacketObject> args)
             : base("StringUpcase")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringUpcaseExpression? Parse(string str)
+        public static StringUpcaseExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count == 1)
             {
-                return new StringUpcaseExpression(arguments);
+                return new StringUpcaseExpression(parameters);
             }
             return null;
         }
 
         public override RacketString Evaluate()
         {
-            string strValue = ((RacketString)arguments[0].Evaluate()).Value;
+            string strValue = ((RacketString)parameters[0].Evaluate()).Value;
             return new RacketString(strValue.ToUpper());
         }
     }

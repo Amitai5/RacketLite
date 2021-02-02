@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private RoundExpression(List<IRacketObject> args)
             : base("Round")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new RoundExpression? Parse(string str)
+        public static RoundExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new RoundExpression(arguments);
+                return new RoundExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(MathF.Round(currentNumber.Value), currentNumber.IsExact, true);
         }
     }

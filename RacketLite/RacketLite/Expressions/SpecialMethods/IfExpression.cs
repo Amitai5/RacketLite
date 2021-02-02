@@ -9,15 +9,15 @@ namespace RacketLite.Expressions
         private IfExpression(List<IRacketObject> args)
             : base("If")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IfExpression? Parse(string str)
+        public static IfExpression? Parse(string str)
         {
             List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 3)
             {
-                RacketParsingHelper.ValidateReturnType(typeof(RacketBoolean), arguments[0]);
+                RacketParsingHelper.ValidateParamType(typeof(RacketBoolean), arguments[0]);
                 return new IfExpression(arguments);
             }
             return null;
@@ -25,12 +25,12 @@ namespace RacketLite.Expressions
 
         public override RacketValueType Evaluate()
         {
-            bool questionValue = ((RacketBoolean)arguments[0].Evaluate()).Value;
+            bool questionValue = ((RacketBoolean)parameters[0].Evaluate()).Value;
             if (questionValue)
             {
-                return arguments[1].Evaluate();
+                return parameters[1].Evaluate();
             }
-            return arguments[2].Evaluate();
+            return parameters[2].Evaluate();
         }
 
         #region Override Methods
@@ -45,21 +45,21 @@ namespace RacketLite.Expressions
         public new void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(ExpressionName).Append('\n');
+            stringBuilder.Append(CallName).Append('\n');
             this.ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
 
         public new void ArgumentsToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
-            arguments[0].ToTreeString(stringBuilder, tabIndex);
+            parameters[0].ToTreeString(stringBuilder, tabIndex);
 
             stringBuilder.Append('\t', tabIndex - 1);
             stringBuilder.Append("Then").Append('\n');
-            arguments[1].ToTreeString(stringBuilder, tabIndex);
+            parameters[1].ToTreeString(stringBuilder, tabIndex);
 
             stringBuilder.Append('\t', tabIndex - 1);
             stringBuilder.Append("Else").Append('\n');
-            arguments[2].ToTreeString(stringBuilder, tabIndex);
+            parameters[2].ToTreeString(stringBuilder, tabIndex);
         }
 
         #endregion Override Methods

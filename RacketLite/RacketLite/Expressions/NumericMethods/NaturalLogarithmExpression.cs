@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private NaturalLogarithmExpression(List<IRacketObject> args)
             : base("NaturalLog")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new NaturalLogarithmExpression? Parse(string str)
+        public static NaturalLogarithmExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new NaturalLogarithmExpression(arguments);
+                return new NaturalLogarithmExpression(parameters);
             }
             return null;
         }
 
         public override RacketFloat Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketFloat(MathF.Pow(MathF.E, currentNumber.Value), false, false);
         }
     }

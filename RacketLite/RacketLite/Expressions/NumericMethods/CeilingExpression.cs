@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private CeilingExpression(List<IRacketObject> args)
             : base("Ceiling")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new CeilingExpression? Parse(string str)
+        public static CeilingExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new CeilingExpression(arguments);
+                return new CeilingExpression(parameters);
             }
             return null;
         }
 
         public override RacketInteger Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketInteger((long)MathF.Ceiling(currentNumber.Value), true);
         }
     }

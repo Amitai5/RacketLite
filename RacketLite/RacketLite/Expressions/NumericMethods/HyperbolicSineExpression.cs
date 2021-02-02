@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private HyperbolicSineExpression(List<IRacketObject> args)
             : base("HyperbolicSine")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new HyperbolicSineExpression? Parse(string str)
+        public static HyperbolicSineExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new HyperbolicSineExpression(arguments);
+                return new HyperbolicSineExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(MathF.Sinh(currentNumber.Value), false, currentNumber.IsRational);
         }
     }

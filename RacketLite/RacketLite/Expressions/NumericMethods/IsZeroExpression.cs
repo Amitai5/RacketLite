@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private IsZeroExpression(List<IRacketObject> args)
             : base("IsZero")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsZeroExpression? Parse(string str)
+        public static IsZeroExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new IsZeroExpression(arguments);
+                return new IsZeroExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return new RacketBoolean(currentNumber.Value == 0);
         }
     }

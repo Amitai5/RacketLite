@@ -8,22 +8,22 @@ namespace RacketLite.Expressions
         private SubtractOneExpression(List<IRacketObject> args)
             : base("SubtractOne")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new SubtractOneExpression? Parse(string str)
+        public static SubtractOneExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketNumbers(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketNumber), parameters);
+            if (parameters?.Count == 1)
             {
-                return new SubtractOneExpression(arguments);
+                return new SubtractOneExpression(parameters);
             }
             return null;
         }
 
         public override RacketNumber Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             return RacketNumber.Parse(currentNumber.Value - 1, currentNumber.IsExact, currentNumber.IsRational);
         }
     }

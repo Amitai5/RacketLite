@@ -8,22 +8,21 @@ namespace RacketLite.Expressions
         private IsNaturalExpression(List<IRacketObject> args)
             : base("IsNatural")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new IsNaturalExpression? Parse(string str)
+        public static IsNaturalExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
-            if (arguments?.Count == 1)
+            if (parameters?.Count == 1)
             {
-                return new IsNaturalExpression(arguments);
+                return new IsNaturalExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            IRacketObject obj = arguments[0].Evaluate();
+            IRacketObject obj = parameters[0].Evaluate();
             if (obj is RacketInteger racketInteger)
             {
                 return new RacketBoolean(racketInteger.IsNatural);

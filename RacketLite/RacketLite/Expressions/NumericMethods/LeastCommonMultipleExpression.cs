@@ -10,15 +10,15 @@ namespace RacketLite.Expressions
         private LeastCommonMultipleExpression(List<IRacketObject> args)
             : base("LeastCommonMultiple")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new LeastCommonMultipleExpression? Parse(string str)
+        public static LeastCommonMultipleExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count > 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count > 1)
             {
-                return new LeastCommonMultipleExpression(arguments);
+                return new LeastCommonMultipleExpression(parameters);
             }
             return null;
         }
@@ -28,9 +28,9 @@ namespace RacketLite.Expressions
             bool isExact = true;
             List<long> lcmValues = new List<long>();
 
-            for (int i = 0; i < arguments.Count; i++)
+            for (int i = 0; i < parameters.Count; i++)
             {
-                RacketInteger racketInteger = (RacketInteger)arguments[i].Evaluate();
+                RacketInteger racketInteger = (RacketInteger)parameters[i].Evaluate();
                 isExact = isExact && racketInteger.IsExact;
                 lcmValues.Add((long)racketInteger.Value);
             }

@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private StringNumericExpression(List<IRacketObject> args)
             : base("StringAlphabetic")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringNumericExpression? Parse(string str)
+        public static StringNumericExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count == 1)
             {
-                return new StringNumericExpression(arguments);
+                return new StringNumericExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            string value = ((RacketString)arguments[0].Evaluate()).Value;
+            string value = ((RacketString)parameters[0].Evaluate()).Value;
             return new RacketBoolean(Regex.IsMatch(value, "^\\d+$"));
         }
     }

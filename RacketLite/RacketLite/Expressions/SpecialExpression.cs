@@ -9,23 +9,5 @@ namespace RacketLite.Expressions
         {
 
         }
-
-        public new static SpecialExpression? Parse(string str)
-        {
-            str = str.Trim();
-            if (!str.StartsWith('(') || !str.EndsWith(')'))
-            {
-                return null;
-            }
-
-            string opCode;
-            (opCode, str) = parseOpCode(str);
-
-            if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
-            {
-                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str);
-            }
-            return null;
-        }
     }
 }

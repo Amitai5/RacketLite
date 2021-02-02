@@ -8,28 +8,28 @@ namespace RacketLite.Expressions
         private QuotientExpression(List<IRacketObject> args)
             : base("Quotient")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new QuotientExpression? Parse(string str)
+        public static QuotientExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketIntegers(str);
-            if (arguments?.Count > 0)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
+            if (parameters?.Count > 0)
             {
-                return new QuotientExpression(arguments);
+                return new QuotientExpression(parameters);
             }
             return null;
         }
 
         public override RacketInteger Evaluate()
         {
-            RacketNumber currentNumber = (RacketNumber)arguments[0].Evaluate();
+            RacketNumber currentNumber = (RacketNumber)parameters[0].Evaluate();
             long retValue = (long)currentNumber.Value;
             bool isExact = currentNumber.IsExact;
 
-            for (int i = 1; i < arguments.Count; i++)
+            for (int i = 1; i < parameters.Count; i++)
             {
-                currentNumber = (RacketNumber)arguments[i].Evaluate();
+                currentNumber = (RacketNumber)parameters[i].Evaluate();
                 isExact = isExact && currentNumber.IsExact;
                 retValue /= (long)currentNumber.Value;
             }

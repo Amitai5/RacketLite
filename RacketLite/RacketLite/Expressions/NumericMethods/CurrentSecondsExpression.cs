@@ -9,12 +9,12 @@ namespace RacketLite.Expressions
         private CurrentSecondsExpression(List<IRacketObject> args)
             : base("CurrentSeconds")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new CurrentSecondsExpression? Parse(string str)
+        public static CurrentSecondsExpression? Parse(List<IRacketObject>? parameters)
         {
-            if (str.Trim()?.Length == 0)
+            if (parameters == null || parameters.Count == 0)
             {
                 return new CurrentSecondsExpression(new List<IRacketObject>());
             }

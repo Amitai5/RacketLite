@@ -9,22 +9,22 @@ namespace RacketLite.Expressions
         private StringUpperCaseExpression(List<IRacketObject> args)
             : base("StringUpperCase")
         {
-            arguments = args;
+            parameters = args;
         }
 
-        public static new StringUpperCaseExpression? Parse(string str)
+        public static StringUpperCaseExpression? Parse(List<IRacketObject>? parameters)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseRacketStrings(str);
-            if (arguments?.Count == 1)
+            RacketParsingHelper.ValidateParamTypes(typeof(RacketString), parameters);
+            if (parameters?.Count == 1)
             {
-                return new StringUpperCaseExpression(arguments);
+                return new StringUpperCaseExpression(parameters);
             }
             return null;
         }
 
         public override RacketBoolean Evaluate()
         {
-            string strValue = ((RacketString)arguments[0].Evaluate()).Value;
+            string strValue = ((RacketString)parameters[0].Evaluate()).Value;
             return new RacketBoolean(Regex.IsMatch(strValue, "^[A-Z]+$"));
         }
     }
