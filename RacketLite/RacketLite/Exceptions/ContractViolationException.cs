@@ -10,8 +10,8 @@ namespace RacketLite.Exceptions
 
         }
 
-        public ContractViolationException(int expectedParamCount, int givenParamCount) 
-            : base($"Racket contract violation. Expected {expectedParamCount} parameters, given {givenParamCount}")
+        public ContractViolationException(int expectedParamCount, int givenParamCount, bool atLeast = false)
+            : base($"Racket contract violation. Expected {(atLeast ? $"at least {expectedParamCount}" : expectedParamCount)} parameter{(expectedParamCount > 1 ? "s" : "")}, given {givenParamCount}")
         {
 
         }

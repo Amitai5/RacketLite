@@ -3,6 +3,7 @@ using System.Text;
 using RacketLite.Exceptions;
 using RacketLite.ValueTypes;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace RacketLite.Expressions
 {
@@ -25,7 +26,7 @@ namespace RacketLite.Expressions
         public void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(CallName).Append('\n');
+            stringBuilder.Append("-> ").Append(CallName).Append('\n');
             ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
 
@@ -46,29 +47,29 @@ namespace RacketLite.Expressions
 
         #endregion Base Methods
 
-        public static RacketExpression? Parse(string str, Dictionary<string, IRacketObject>? localVars = null)
+        public static RacketExpression? Parse(string cleanedSTR, Dictionary<string, IRacketObject>? localVars = null)
         {
-            str = str.Trim();
-            if (!str.StartsWith('(') || !str.EndsWith(')'))
+            cleanedSTR = Regex.Replace(cleanedSTR, "([\\s ]{2,})(?![^\"]*\"\\B)", " ");
+            if (!ValidParenthesis(cleanedSTR, out _))
             {
                 return null;
             }
 
             string opCode;
-            (opCode, str) = ParseOpCode(str);
-            if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
+            (opCode, cleanedSTR) = ParseOpCode(cleanedSTR);
+            if (opCode == "define")
             {
-                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(str); //TODO: FIX THIS
+                return DefineExpression.Parse(cleanedSTR);
             }
 
             List<IRacketObject>? parameters;
             if (localVars == null)
             {
-                parameters = RacketParsingHelper.ParseAny(str);
+                parameters = RacketParsingHelper.ParseAny(cleanedSTR);
             }
             else
             {
-                parameters = RacketParsingHelper.ParseAny(str, localVars);
+                parameters = RacketParsingHelper.ParseAny(cleanedSTR, localVars);
             }
 
             return Parse(opCode, parameters);
@@ -87,6 +88,10 @@ namespace RacketLite.Expressions
             else if (ExpressionDefinitions.StringDefinitions.ContainsKey(opCode))
             {
                 return ExpressionDefinitions.StringDefinitions[opCode].Invoke(parameters);
+            }
+            else if (ExpressionDefinitions.SpecialDefinitions.ContainsKey(opCode))
+            {
+                return ExpressionDefinitions.SpecialDefinitions[opCode].Invoke(parameters);
             }
             else if (ExpressionDefinitions.UserDefinedExpressions.ContainsKey(opCode))
             {
@@ -108,10 +113,33 @@ namespace RacketLite.Expressions
             }
             else
             {
+                opCode = innerString;
                 innerString = "";
             }
 
             return (opCode, innerString.Trim());
+        }
+
+        private static bool ValidParenthesis(string str, out int balance)
+        {
+            balance = 0;
+            if (str[0] != '(')
+            {
+                return false;
+            }
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '(')
+                {
+                    balance++;
+                }
+                else if (str[i] == ')')
+                {
+                    balance--;
+                }
+            }
+            return balance == 0;
         }
     }
 }

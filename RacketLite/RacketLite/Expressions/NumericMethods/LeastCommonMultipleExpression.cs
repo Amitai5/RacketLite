@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace RacketLite.Expressions
             {
                 return new LeastCommonMultipleExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(2, parameters?.Count ?? 0, true);
         }
 
         public override RacketInteger Evaluate()

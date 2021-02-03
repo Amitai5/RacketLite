@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using RacketLite.ValueTypes;
 using System.Collections.Generic;
+using RacketLite.Exceptions;
 
 namespace RacketLite.Expressions
 {
@@ -19,7 +20,7 @@ namespace RacketLite.Expressions
             {
                 return new StringAppendExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(2, parameters?.Count ?? 0, true);
         }
 
         public override RacketString Evaluate()

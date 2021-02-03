@@ -30,7 +30,7 @@ namespace RacketLite.Expressions
             if (!isFunction)
             {
                 List<IRacketObject>? parameters = RacketParsingHelper.ParseAny(str);
-                if(parameters?.Count == 1)
+                if (parameters?.Count == 1)
                 {
                     return new DefineExpression(callName, isFunction, parameters);
                 }
@@ -85,7 +85,7 @@ namespace RacketLite.Expressions
         public new void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(CallName).Append('\n');
+            stringBuilder.Append("-> ").Append(CallName).Append('\n');
             ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
 

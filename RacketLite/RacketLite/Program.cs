@@ -8,7 +8,7 @@ namespace RacketLite
         {
             //Set up console window
             Console.Title = "Racket-Lite";
-            RacketInterpreter interpreter = new RacketInterpreter(true, false);
+            RacketInterpreter interpreter = new RacketInterpreter(false, false);
 
             while(true)
             {

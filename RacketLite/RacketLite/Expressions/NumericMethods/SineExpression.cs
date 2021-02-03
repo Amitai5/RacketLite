@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System;
 using System.Collections.Generic;
 
@@ -19,7 +20,7 @@ namespace RacketLite.Expressions
             {
                 return new SineExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0);
         }
 
         public override RacketNumber Evaluate()

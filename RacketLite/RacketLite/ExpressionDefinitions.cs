@@ -101,9 +101,8 @@ namespace RacketLite
             { "boolean->string", BooleanToStringExpression.Parse },
         };
 
-        public static Dictionary<string, Func<string, SpecialExpression?>> SpecialDefinitions { get; } = new Dictionary<string, Func<string, SpecialExpression?>>()
+        public static Dictionary<string, Func<List<IRacketObject>?, SpecialExpression?>> SpecialDefinitions { get; } = new Dictionary<string, Func<List<IRacketObject>?, SpecialExpression?>>()
         {
-            { "define", DefineExpression.Parse },
             { "if", IfExpression.Parse },
         };
 

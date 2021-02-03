@@ -1,6 +1,7 @@
 ﻿using System;
 using RacketLite.ValueTypes;
 using System.Collections.Generic;
+using RacketLite.Exceptions;
 
 namespace RacketLite.Expressions
 {
@@ -19,7 +20,7 @@ namespace RacketLite.Expressions
             {
                 return new BooleanToIntegerExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0);
         }
 
         public override RacketInteger Evaluate()

@@ -10,7 +10,6 @@ namespace RacketLite
     {
         public const string InexactNumberPrefix = "#i";
 
-
         public static List<IRacketObject>? ParseAny(string str, Dictionary<string, IRacketObject> localVars)
         {
             string[] args = str.Split(" ");
@@ -61,7 +60,11 @@ namespace RacketLite
             {
                 IRacketObject? newRacketObject;
                 string currentToken = predicate + args[i];
-                if (ConstantValueDefinitions.UserDefinedConstants.ContainsKey(currentToken))
+                if (currentToken == null || currentToken.Trim().Length == 0)
+                {
+                    continue;
+                }
+                else if (ConstantValueDefinitions.UserDefinedConstants.ContainsKey(currentToken))
                 {
                     newRacketObject = ConstantValueDefinitions.UserDefinedConstants[currentToken];
                 }

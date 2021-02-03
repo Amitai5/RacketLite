@@ -31,7 +31,7 @@ namespace RacketLite.Expressions
                 }
                 return new RandomExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0);
         }
 
         public override RacketInteger Evaluate()

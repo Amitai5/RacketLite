@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -19,7 +20,7 @@ namespace RacketLite.Expressions
             {
                 return new StringLowerCaseExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0);
         }
 
         public override RacketBoolean Evaluate()

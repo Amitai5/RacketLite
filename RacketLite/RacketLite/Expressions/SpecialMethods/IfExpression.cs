@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using RacketLite.ValueTypes;
 using System.Collections.Generic;
+using RacketLite.Exceptions;
 
 namespace RacketLite.Expressions
 {
@@ -12,15 +13,14 @@ namespace RacketLite.Expressions
             parameters = args;
         }
 
-        public static IfExpression? Parse(string str)
+        public static IfExpression? Parse(List<IRacketObject>? arguments)
         {
-            List<IRacketObject>? arguments = RacketParsingHelper.ParseAny(str);
             if (arguments?.Count == 3)
             {
                 RacketParsingHelper.ValidateParamType(typeof(RacketBoolean), arguments[0]);
                 return new IfExpression(arguments);
             }
-            return null;
+            throw new ContractViolationException(3, arguments?.Count ?? 0);
         }
 
         public override RacketValueType Evaluate()
@@ -45,7 +45,7 @@ namespace RacketLite.Expressions
         public new void ToTreeString(StringBuilder stringBuilder, int tabIndex)
         {
             stringBuilder.Append('\t', tabIndex);
-            stringBuilder.Append(CallName).Append('\n');
+            stringBuilder.Append("-> ").Append(CallName).Append('\n');
             this.ArgumentsToTreeString(stringBuilder, tabIndex + 1);
         }
 

@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System.Collections.Generic;
 
 namespace RacketLite.Expressions
@@ -14,11 +15,11 @@ namespace RacketLite.Expressions
         public static QuotientExpression? Parse(List<IRacketObject>? parameters)
         {
             RacketParsingHelper.ValidateParamTypes(typeof(RacketInteger), parameters);
-            if (parameters?.Count > 0)
+            if (parameters?.Count > 1)
             {
                 return new QuotientExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0, true);
         }
 
         public override RacketInteger Evaluate()

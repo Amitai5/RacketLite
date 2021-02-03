@@ -1,4 +1,5 @@
-﻿using RacketLite.ValueTypes;
+﻿using RacketLite.Exceptions;
+using RacketLite.ValueTypes;
 using System.Collections.Generic;
 
 namespace RacketLite.Expressions
@@ -17,7 +18,7 @@ namespace RacketLite.Expressions
             {
                 return new IsNaturalExpression(parameters);
             }
-            return null;
+            throw new ContractViolationException(1, parameters?.Count ?? 0);
         }
 
         public override RacketBoolean Evaluate()
